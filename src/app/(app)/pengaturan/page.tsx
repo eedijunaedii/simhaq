@@ -1,0 +1,261 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { KeyRound, Power, Trash2 } from "lucide-react";
+import {
+  Kartu,
+  KepalaKartu,
+  Kosong,
+  JudulHalaman,
+  Lencana,
+  Tabel,
+  Td,
+  Th,
+  Tr,
+} from "@/components/ui";
+import { GENDER_LABEL, ROLE_LABEL, type Role } from "@/lib/constants";
+import { wajibAdmin } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { fmtTanggalJam } from "@/lib/tanggal";
+import { cabutTokenWali, resetKataSandi, ubahStatusAkun } from "./aksi";
+import { FormPengaturan, FormTokenWali } from "./form-pengaturan";
+
+export const metadata: Metadata = { title: "Pengaturan" };
+export const dynamic = "force-dynamic";
+
+export default async function HalamanPengaturan() {
+  const pengguna = await wajibAdmin();
+
+  const [pengaturan, pengurus, santri, tokenWali, audit] = await Promise.all([
+    prisma.pengaturanSistem.findMany(),
+    prisma.user.findMany({
+      where: { role: { in: ["MUSYRIF", "ADMIN"] } },
+      select: {
+        id: true,
+        nama: true,
+        username: true,
+        role: true,
+        gender: true,
+        aktif: true,
+        pengajar: { select: { jabatan: true, dewanGuru: true } },
+        _count: { select: { halaqahDiampu: true } },
+      },
+      orderBy: [{ role: "asc" }, { nama: "asc" }],
+    }),
+    prisma.profilSantri.findMany({
+      select: { id: true, user: { select: { nama: true } } },
+      orderBy: { user: { nama: "asc" } },
+    }),
+    prisma.waliToken.findMany({
+      where: { aktif: true },
+      select: {
+        id: true,
+        token: true,
+        namaWali: true,
+        hubungan: true,
+        terakhirDibuka: true,
+        santri: { select: { id: true, user: { select: { nama: true } } } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 30,
+    }),
+    prisma.auditLog.findMany({
+      select: {
+        id: true,
+        aksi: true,
+        entitas: true,
+        entitasId: true,
+        createdAt: true,
+        user: { select: { nama: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 40,
+    }),
+  ]);
+
+  const nilai = Object.fromEntries(pengaturan.map((p) => [p.kunci, p.nilai]));
+
+  return (
+    <>
+      <JudulHalaman
+        judul="Pengaturan sistem"
+        keterangan="Konfigurasi presensi, akun pengurus, akses wali santri, dan jejak aktivitas."
+      />
+
+      <div className="space-y-6">
+        <Kartu>
+          <KepalaKartu
+            judul="Parameter presensi"
+            keterangan="Berlaku sebagai nilai bawaan untuk seluruh sesi presensi."
+          />
+          <FormPengaturan nilai={nilai} />
+        </Kartu>
+
+        <Kartu>
+          <KepalaKartu
+            judul="Akun pengurus"
+            keterangan={`${pengurus.length} akun musyrif, dewan guru, dan admin`}
+          />
+          <Tabel>
+            <thead>
+              <tr>
+                <Th>Nama</Th>
+                <Th className="hidden sm:table-cell">Peran</Th>
+                <Th className="hidden lg:table-cell">Halaqah diampu</Th>
+                <Th className="text-center">Status</Th>
+                <Th className="text-right">Tindakan</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {pengurus.map((u) => (
+                <Tr key={u.id}>
+                  <Td>
+                    <span className="block font-medium text-white">{u.nama}</span>
+                    <span className="block text-xs text-emerald-100/40">
+                      {u.username} · {GENDER_LABEL[u.gender]}
+                    </span>
+                  </Td>
+                  <Td className="hidden text-emerald-100/60 sm:table-cell">
+                    {ROLE_LABEL[u.role as Role]}
+                    {u.pengajar ? (
+                      <span className="block text-xs text-emerald-100/35">
+                        {u.pengajar.jabatan}
+                      </span>
+                    ) : null}
+                  </Td>
+                  <Td className="hidden text-center text-emerald-100/60 lg:table-cell">
+                    {u._count.halaqahDiampu}
+                  </Td>
+                  <Td className="text-center">
+                    <Lencana
+                      className={
+                        u.aktif
+                          ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
+                          : "bg-rose-500/15 text-rose-300 ring-rose-400/30"
+                      }
+                    >
+                      {u.aktif ? "Aktif" : "Nonaktif"}
+                    </Lencana>
+                  </Td>
+                  <Td className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <form action={resetKataSandi.bind(null, u.id)}>
+                        <button
+                          type="submit"
+                          className="rounded-lg p-2 text-emerald-100/50 transition hover:bg-white/10 hover:text-white"
+                          title="Atur ulang kata sandi (nilai baru tercatat pada log audit)"
+                        >
+                          <KeyRound size={15} />
+                        </button>
+                      </form>
+                      {u.id !== pengguna.sub ? (
+                        <form action={ubahStatusAkun.bind(null, u.id, !u.aktif)}>
+                          <button
+                            type="submit"
+                            className="rounded-lg p-2 text-emerald-100/50 transition hover:bg-white/10 hover:text-white"
+                            title={u.aktif ? "Nonaktifkan akun" : "Aktifkan akun"}
+                          >
+                            <Power size={15} />
+                          </button>
+                        </form>
+                      ) : null}
+                    </div>
+                  </Td>
+                </Tr>
+              ))}
+            </tbody>
+          </Tabel>
+          <p className="border-t border-white/10 px-5 py-3 text-xs text-emerald-100/35">
+            Kata sandi sementara hasil pengaturan ulang dapat dilihat pada log audit di
+            bawah halaman ini, lalu sampaikan langsung kepada yang bersangkutan.
+          </p>
+        </Kartu>
+
+        <Kartu>
+          <KepalaKartu
+            judul="Akses wali santri"
+            keterangan="Wali melihat rekap kehadiran anaknya melalui tautan bertoken, tanpa perlu membuat akun."
+          />
+          <FormTokenWali
+            santri={santri.map((s) => ({ id: s.id, nama: s.user.nama }))}
+          />
+          {tokenWali.length === 0 ? (
+            <Kosong judul="Belum ada tautan wali" />
+          ) : (
+            <Tabel>
+              <thead>
+                <tr>
+                  <Th>Santri</Th>
+                  <Th>Wali</Th>
+                  <Th className="hidden md:table-cell">Tautan</Th>
+                  <Th className="text-right">Tindakan</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokenWali.map((w) => (
+                  <Tr key={w.id}>
+                    <Td>
+                      <Link
+                        href={`/santri/${w.santri.id}`}
+                        className="font-medium text-white hover:text-emerald-300"
+                      >
+                        {w.santri.user.nama}
+                      </Link>
+                    </Td>
+                    <Td className="text-emerald-100/70">
+                      {w.namaWali}
+                      <span className="block text-xs text-emerald-100/35">
+                        {w.hubungan}
+                      </span>
+                    </Td>
+                    <Td className="hidden md:table-cell">
+                      <code className="break-all text-[11px] text-emerald-200/70">
+                        /wali/{w.token}
+                      </code>
+                      {w.terakhirDibuka ? (
+                        <span className="block text-[11px] text-emerald-100/30">
+                          dibuka {fmtTanggalJam(w.terakhirDibuka)}
+                        </span>
+                      ) : null}
+                    </Td>
+                    <Td className="text-right">
+                      <form action={cabutTokenWali.bind(null, w.id)}>
+                        <button
+                          type="submit"
+                          className="rounded-lg p-2 text-rose-300/60 transition hover:bg-rose-500/10 hover:text-rose-300"
+                          title="Cabut tautan"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </form>
+                    </Td>
+                  </Tr>
+                ))}
+              </tbody>
+            </Tabel>
+          )}
+        </Kartu>
+
+        <Kartu>
+          <KepalaKartu judul="Log aktivitas" keterangan="40 catatan terakhir" />
+          <ul className="divide-y divide-white/5">
+            {audit.map((a) => (
+              <li
+                key={a.id}
+                className="flex flex-wrap items-center gap-3 px-5 py-2.5 text-sm"
+              >
+                <code className="rounded bg-white/[0.07] px-2 py-0.5 text-[11px] text-emerald-200">
+                  {a.aksi}
+                </code>
+                <span className="text-emerald-100/60">{a.entitas}</span>
+                <span className="text-emerald-100/35">{a.user?.nama ?? "sistem"}</span>
+                <span className="ml-auto text-xs text-emerald-100/30">
+                  {fmtTanggalJam(a.createdAt)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Kartu>
+      </div>
+    </>
+  );
+}

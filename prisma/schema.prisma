@@ -1,0 +1,385 @@
+// SIMHAQ - Sistem Informasi Presensi & Perizinan Santri
+// PPM Minhajul Haq, Bandung
+//
+// Catatan portabilitas: skema ini sengaja TIDAK memakai `enum` maupun tipe
+// array Postgres, sehingga file yang sama bisa dipakai di SQLite (development
+// lokal) dan PostgreSQL (produksi/Neon). Cukup ganti `provider` di bawah dan
+// isi DATABASE_URL. Nilai yang sah untuk setiap kolom "enum-like" ada di
+// src/lib/constants.ts.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite" // produksi: ganti menjadi "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Identitas & akses
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String  @id @default(cuid())
+  nama         String
+  username     String  @unique
+  passwordHash String
+  role         String // SANTRI | MUSYRIF | ADMIN
+  gender       String // PUTRA | PUTRI
+  email        String?
+  telepon      String?
+  aktif        Boolean @default(true)
+
+  santri   ProfilSantri?
+  pengajar ProfilPengajar?
+
+  halaqahDiampu   Halaqah[]        @relation("MusyrifHalaqah")
+  sesiDibuka      SesiPresensi[]   @relation("SesiDibukaOleh")
+  sesiDitutup     SesiPresensi[]   @relation("SesiDitutupOleh")
+  presensiDicatat Presensi[]       @relation("PresensiDicatatOleh")
+  izinDiproses    Izin[]           @relation("IzinDiprosesOleh")
+  flagDitangani   FlagPelanggaran[] @relation("FlagDitanganiOleh")
+  auditLog        AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([gender])
+}
+
+model ProfilSantri {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nim         String
+  kampus      String
+  jurusan     String
+  angkatan    Int
+  asalDaerah  String
+  tanggalLahir DateTime?
+  tanggalMasuk DateTime  @default(now())
+  status      String    @default("AKTIF") // AKTIF | CUTI | ALUMNI
+
+  kamarId   String?
+  kamar     Kamar?   @relation(fields: [kamarId], references: [id], onDelete: SetNull)
+  halaqahId String?
+  halaqah   Halaqah? @relation(fields: [halaqahId], references: [id], onDelete: SetNull)
+
+  // Keterikatan perangkat: satu akun santri terikat pada satu perangkat.
+  deviceId      String?
+  deviceLabel   String?
+  deviceBoundAt DateTime?
+
+  presensi   Presensi[]
+  izin       Izin[]
+  flag       FlagPelanggaran[]
+  waliToken  WaliToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kamarId])
+  @@index([halaqahId])
+  @@index([status])
+}
+
+model ProfilPengajar {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  gelar    String?
+  jabatan  String // Musyrif | Musyrifah | Dewan Guru | Pimpinan | Sekretaris
+  bidang   String // bidang keilmuan / kegiatan yang diampu
+  dewanGuru Boolean @default(false)
+
+  kegiatanDiampu Kegiatan[] @relation("PengampuKegiatan")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Data induk
+// ---------------------------------------------------------------------------
+
+model Kamar {
+  id       String @id @default(cuid())
+  nama     String
+  gedung   String
+  gender   String // PUTRA | PUTRI
+  kapasitas Int   @default(8)
+  lantai   Int    @default(1)
+
+  santri ProfilSantri[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([nama, gedung])
+  @@index([gender])
+}
+
+model Halaqah {
+  id        String  @id @default(cuid())
+  nama      String
+  gender    String // PUTRA | PUTRI
+  deskripsi String?
+
+  musyrifId String?
+  musyrif   User?   @relation("MusyrifHalaqah", fields: [musyrifId], references: [id], onDelete: SetNull)
+
+  santri ProfilSantri[]
+  sesi   SesiPresensi[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([nama])
+  @@index([gender])
+}
+
+model Kegiatan {
+  id        String  @id @default(cuid())
+  kode      String  @unique
+  nama      String
+  kategori  String // HARIAN | MINGGUAN | BULANAN | INSIDENTAL
+  deskripsi String?
+  gender    String  @default("SEMUA") // PUTRA | PUTRI | SEMUA
+  wajib     Boolean @default(true)
+  toleransiTerlambatMenit Int @default(10)
+  aktif     Boolean @default(true)
+
+  pengampuId String?
+  pengampu   ProfilPengajar? @relation("PengampuKegiatan", fields: [pengampuId], references: [id], onDelete: SetNull)
+
+  jadwal JadwalKegiatan[]
+  sesi   SesiPresensi[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kategori])
+  @@index([aktif])
+}
+
+model JadwalKegiatan {
+  id         String   @id @default(cuid())
+  kegiatanId String
+  kegiatan   Kegiatan @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+
+  hari       Int // 0 = Ahad ... 6 = Sabtu
+  jamMulai   String // "04:30"
+  jamSelesai String // "05:30"
+  lokasi     String
+  aktif      Boolean @default(true)
+
+  sesi SesiPresensi[]
+
+  createdAt DateTime @default(now())
+
+  @@index([kegiatanId, hari])
+}
+
+// ---------------------------------------------------------------------------
+// Modul A - Presensi
+// ---------------------------------------------------------------------------
+
+model SesiPresensi {
+  id         String   @id @default(cuid())
+  kegiatanId String
+  kegiatan   Kegiatan @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+
+  jadwalId String?
+  jadwal   JadwalKegiatan? @relation(fields: [jadwalId], references: [id], onDelete: SetNull)
+
+  halaqahId String?
+  halaqah   Halaqah? @relation(fields: [halaqahId], references: [id], onDelete: SetNull)
+
+  gender  String // PUTRA | PUTRI | SEMUA
+  tanggal DateTime
+
+  waktuBuka   DateTime
+  waktuTutup  DateTime // jadwal tutup otomatis
+  batasTerlambat DateTime
+  ditutupPada DateTime?
+  status      String   @default("DIBUKA") // DIBUKA | DITUTUP | DIBATALKAN
+
+  // Rahasia per sesi untuk menandatangani token QR dinamis.
+  secret         String
+  rotasiDetik    Int     @default(12)
+
+  // Pembatasan lokasi (opsional, bisa dimatikan per sesi)
+  wajibLokasi Boolean @default(false)
+  lokasiLat   Float?
+  lokasiLng   Float?
+  radiusMeter Int     @default(150)
+
+  dibukaOlehId String
+  dibukaOleh   User   @relation("SesiDibukaOleh", fields: [dibukaOlehId], references: [id])
+
+  ditutupOlehId String?
+  ditutupOleh   User?   @relation("SesiDitutupOleh", fields: [ditutupOlehId], references: [id], onDelete: SetNull)
+
+  presensi Presensi[]
+  flag     FlagPelanggaran[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([tanggal])
+  @@index([kegiatanId, tanggal])
+}
+
+model Presensi {
+  id     String       @id @default(cuid())
+  sesiId String
+  sesi   SesiPresensi @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+
+  santriId String
+  santri   ProfilSantri @relation(fields: [santriId], references: [id], onDelete: Cascade)
+
+  status    String // HADIR | TERLAMBAT | IZIN | SAKIT | ALFA
+  metode    String // QR | MANUAL | OTOMATIS_IZIN
+  waktuScan DateTime?
+  catatan   String?
+
+  dicatatOlehId String?
+  dicatatOleh   User?   @relation("PresensiDicatatOleh", fields: [dicatatOlehId], references: [id], onDelete: SetNull)
+
+  izinId String?
+  izin   Izin?   @relation(fields: [izinId], references: [id], onDelete: SetNull)
+
+  deviceId  String?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sesiId, santriId])
+  @@index([santriId, status])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Modul B - Perizinan
+// ---------------------------------------------------------------------------
+
+model Izin {
+  id   String @id @default(cuid())
+  kode String @unique
+
+  santriId String
+  santri   ProfilSantri @relation(fields: [santriId], references: [id], onDelete: Cascade)
+
+  jenis   String // KULIAH | KEGIATAN_KAMPUS | SAKIT | PULANG | KELUARGA | LAINNYA
+  mulai   DateTime
+  selesai DateTime
+  alasan  String
+  tujuan  String?
+
+  status String @default("DIAJUKAN") // DIAJUKAN | DIPROSES | DISETUJUI | DITOLAK | SELESAI | DIBATALKAN
+
+  diprosesOlehId String?
+  diprosesOleh   User?   @relation("IzinDiprosesOleh", fields: [diprosesOlehId], references: [id], onDelete: SetNull)
+  waktuProses    DateTime?
+  catatanPengurus String?
+
+  waktuKembali     DateTime?
+  terlambatKembali Boolean @default(false)
+
+  lampiran  LampiranIzin[]
+  presensi  Presensi[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([santriId, status])
+  @@index([status])
+  @@index([mulai, selesai])
+}
+
+model LampiranIzin {
+  id     String @id @default(cuid())
+  izinId String
+  izin   Izin   @relation(fields: [izinId], references: [id], onDelete: Cascade)
+
+  namaFile String
+  mimeType String
+  ukuran   Int
+  data     String // data URI (base64) - cukup untuk skala pesantren & hosting gratis
+
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Pengawasan & audit
+// ---------------------------------------------------------------------------
+
+model FlagPelanggaran {
+  id String @id @default(cuid())
+
+  santriId String
+  santri   ProfilSantri @relation(fields: [santriId], references: [id], onDelete: Cascade)
+
+  sesiId String?
+  sesi   SesiPresensi? @relation(fields: [sesiId], references: [id], onDelete: SetNull)
+
+  jenis       String // PERANGKAT_GANDA | DILUAR_RADIUS | TOKEN_KEDALUWARSA | TELAT_KEMBALI
+  keterangan  String
+  status      String @default("BARU") // BARU | DITINJAU | SELESAI
+
+  ditanganiOlehId String?
+  ditanganiOleh   User?   @relation("FlagDitanganiOleh", fields: [ditanganiOlehId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([santriId])
+}
+
+model AuditLog {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  aksi      String
+  entitas   String
+  entitasId String?
+  detail    String? // JSON string
+  ip        String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([entitas, entitasId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Akses wali santri (tanpa akun)
+// ---------------------------------------------------------------------------
+
+model WaliToken {
+  id    String @id @default(cuid())
+  token String @unique
+
+  santriId String
+  santri   ProfilSantri @relation(fields: [santriId], references: [id], onDelete: Cascade)
+
+  namaWali   String
+  hubungan   String @default("Orang tua")
+  aktif      Boolean @default(true)
+  kadaluarsa DateTime?
+  terakhirDibuka DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+model PengaturanSistem {
+  kunci String @id
+  nilai String
+  updatedAt DateTime @updatedAt
+}

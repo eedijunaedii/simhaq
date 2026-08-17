@@ -1,0 +1,144 @@
+import type { Metadata } from "next";
+import { CheckCircle2, ShieldQuestion, XCircle } from "lucide-react";
+import { LogoTeks } from "@/components/logo";
+import { Kartu, Lencana } from "@/components/ui";
+import {
+  APP,
+  JENIS_IZIN_LABEL,
+  STATUS_IZIN_LABEL,
+  STATUS_IZIN_STYLE,
+} from "@/lib/constants";
+import { prisma } from "@/lib/prisma";
+import { fmtTanggalJam } from "@/lib/tanggal";
+
+export const metadata: Metadata = { title: "Verifikasi Izin" };
+export const dynamic = "force-dynamic";
+
+/**
+ * Halaman verifikasi kartu izin — dapat dibuka tanpa akun oleh petugas yang
+ * memindai QR pada kartu izin santri. Hanya menampilkan data seperlunya.
+ */
+export default async function HalamanVerifikasi(props: {
+  params: Promise<{ kode: string }>;
+}) {
+  const { kode } = await props.params;
+
+  const izin = await prisma.izin.findUnique({
+    where: { kode: decodeURIComponent(kode).toUpperCase() },
+    select: {
+      kode: true,
+      jenis: true,
+      mulai: true,
+      selesai: true,
+      status: true,
+      tujuan: true,
+      santri: {
+        select: {
+          nim: true,
+          user: { select: { nama: true } },
+          halaqah: { select: { nama: true } },
+        },
+      },
+    },
+  });
+
+  const sekarang = new Date();
+  const sah =
+    izin !== null &&
+    izin.status === "DISETUJUI" &&
+    izin.mulai <= sekarang &&
+    izin.selesai >= sekarang;
+
+  return (
+    <div className="flex min-h-dvh flex-col items-center justify-center px-5 py-12">
+      <div className="w-full max-w-md">
+        <div className="mb-7 flex justify-center">
+          <LogoTeks ukuran={38} />
+        </div>
+
+        <Kartu className="overflow-hidden">
+          <div
+            className={`px-6 py-7 text-center ${
+              !izin
+                ? "bg-white/[0.04]"
+                : sah
+                  ? "bg-emerald-500/10"
+                  : "bg-amber-500/10"
+            }`}
+          >
+            <span
+              className={`mx-auto grid size-14 place-items-center rounded-full ${
+                !izin
+                  ? "bg-white/10 text-emerald-100/50"
+                  : sah
+                    ? "bg-emerald-500/20 text-emerald-300"
+                    : "bg-amber-500/20 text-amber-300"
+              }`}
+            >
+              {!izin ? (
+                <ShieldQuestion size={28} />
+              ) : sah ? (
+                <CheckCircle2 size={28} />
+              ) : (
+                <XCircle size={28} />
+              )}
+            </span>
+            <p className="mt-4 text-lg font-semibold text-white">
+              {!izin
+                ? "Kartu izin tidak ditemukan"
+                : sah
+                  ? "Izin sah dan sedang berlaku"
+                  : "Izin tidak sedang berlaku"}
+            </p>
+            <p className="mt-1 text-sm text-emerald-100/55">
+              {!izin
+                ? "Kode pada kartu tidak terdaftar di sistem."
+                : sah
+                  ? "Santri berikut diizinkan berada di luar area pesantren."
+                  : `Status pengajuan: ${STATUS_IZIN_LABEL[izin.status]}.`}
+            </p>
+          </div>
+
+          {izin ? (
+            <dl className="divide-y divide-white/5">
+              <Baris label="Nama santri" nilai={izin.santri.user.nama} />
+              <Baris label="NIM" nilai={izin.santri.nim} />
+              <Baris label="Halaqah" nilai={izin.santri.halaqah?.nama ?? "-"} />
+              <Baris label="Jenis izin" nilai={JENIS_IZIN_LABEL[izin.jenis]} />
+              <Baris label="Tujuan" nilai={izin.tujuan ?? "-"} />
+              <Baris label="Mulai" nilai={fmtTanggalJam(izin.mulai)} />
+              <Baris label="Selesai" nilai={fmtTanggalJam(izin.selesai)} />
+              <div className="flex items-center justify-between gap-4 px-5 py-3.5">
+                <dt className="text-sm text-emerald-100/50">Status</dt>
+                <dd>
+                  <Lencana className={STATUS_IZIN_STYLE[izin.status]}>
+                    {STATUS_IZIN_LABEL[izin.status]}
+                  </Lencana>
+                </dd>
+              </div>
+              <div className="px-5 py-3.5">
+                <p className="text-center font-mono text-xs text-emerald-100/40">
+                  {izin.kode}
+                </p>
+              </div>
+            </dl>
+          ) : null}
+        </Kartu>
+
+        <p className="mt-6 text-center text-xs leading-relaxed text-emerald-100/35">
+          Halaman verifikasi resmi {APP.lembaga}. Data ditampilkan seperlunya untuk
+          keperluan pemeriksaan di gerbang pesantren.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Baris({ label, nilai }: { label: string; nilai: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-5 py-3.5">
+      <dt className="text-sm text-emerald-100/50">{label}</dt>
+      <dd className="text-right text-sm text-emerald-50/90">{nilai}</dd>
+    </div>
+  );
+}

@@ -1,26 +1,155 @@
 @import "tailwindcss";
 
+/*
+  Palet mengikuti situs resmi PPM Minhajul Haq (https://www.ppmmh.site):
+  latar hijau tua pekat, aksen hijau zamrud bertingkat, dan panel kaca
+  (glassmorphism) dengan garis tepi putih transparan.
+*/
+
+@theme {
+  --color-ppm-bg: #0a1f0d;
+  --color-ppm-dark: #064e3b;
+  --color-ppm: #047857;
+  --color-ppm-light: #10b981;
+  --color-ppm-accent: #34d399;
+  --color-ppm-ink: #f8fafc;
+
+  --font-sans: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ppm-bg: #0a1f0d;
+  --ppm-dark-green: #064e3b;
+  --ppm-green: #047857;
+  --ppm-light-green: #10b981;
+  --ppm-accent: #34d399;
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background-color: var(--ppm-bg);
+  color: #f8fafc;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  background-image:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(6, 78, 59, 0.55), transparent 60%),
+    radial-gradient(50rem 35rem at 95% 0%, rgba(4, 120, 87, 0.35), transparent 55%),
+    radial-gradient(45rem 45rem at 50% 110%, rgba(16, 185, 129, 0.14), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* --- Komponen dasar ------------------------------------------------------ */
+
+@layer components {
+  .kaca {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .kartu {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 1rem;
+  }
+
+  .judul-bagian {
+    @apply text-lg font-semibold tracking-tight text-white;
+  }
+
+  .teks-redup {
+    @apply text-sm text-emerald-100/60;
+  }
+
+  .tautan-halus {
+    @apply text-emerald-300 underline-offset-4 transition hover:text-emerald-200 hover:underline;
+  }
+}
+
+/* --- Elemen form --------------------------------------------------------- */
+
+input,
+select,
+textarea {
+  color-scheme: dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(209, 250, 229, 0.35);
+}
+
+/* Pilihan dropdown agar terbaca di latar gelap (Windows/Chrome). */
+select option {
+  background-color: #0f2a18;
+  color: #f8fafc;
+}
+
+/* --- Scrollbar ----------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(52, 211, 153, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(52, 211, 153, 0.3);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* --- Animasi ------------------------------------------------------------- */
+
+@keyframes denyut {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.denyut {
+  animation: denyut 1.6s ease-in-out infinite;
+}
+
+@keyframes munculHalus {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.muncul {
+  animation: munculHalus 0.35s ease-out both;
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .tanpa-cetak {
+    display: none !important;
+  }
 }

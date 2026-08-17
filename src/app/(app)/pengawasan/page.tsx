@@ -1,0 +1,269 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { revalidatePath } from "next/cache";
+import { AlertTriangle, Check, Eye } from "lucide-react";
+import {
+  Kartu,
+  KartuStat,
+  KepalaKartu,
+  Kosong,
+  JudulHalaman,
+  Lencana,
+  Tombol,
+} from "@/components/ui";
+import {
+  JENIS_FLAG_LABEL,
+  METODE_PRESENSI_LABEL,
+  STATUS_FLAG_LABEL,
+} from "@/lib/constants";
+import { catatAudit, filterGender, wajibPengurus } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { fmtTanggalJam } from "@/lib/tanggal";
+import { cn } from "@/lib/utils";
+
+export const metadata: Metadata = { title: "Pengawasan" };
+export const dynamic = "force-dynamic";
+
+async function ubahStatusFlag(id: string, status: string) {
+  "use server";
+  const sesi = await wajibPengurus();
+  await prisma.flagPelanggaran.update({
+    where: { id },
+    data: { status, ditanganiOlehId: sesi.sub },
+  });
+  await catatAudit({
+    userId: sesi.sub,
+    aksi: "TANGANI_FLAG",
+    entitas: "FlagPelanggaran",
+    entitasId: id,
+    detail: { status },
+  });
+  revalidatePath("/pengawasan");
+}
+
+export default async function HalamanPengawasan(props: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const pengguna = await wajibPengurus();
+  const sp = await props.searchParams;
+  const { gender } = filterGender(pengguna);
+  const saring = sp.status ?? "BARU";
+
+  const whereGender = gender ? { santri: { user: { gender } } } : {};
+
+  const [flag, hitung, presensiManual] = await Promise.all([
+    prisma.flagPelanggaran.findMany({
+      where: {
+        ...whereGender,
+        ...(saring === "SEMUA" ? {} : { status: saring }),
+      },
+      select: {
+        id: true,
+        jenis: true,
+        keterangan: true,
+        status: true,
+        createdAt: true,
+        ditanganiOleh: { select: { nama: true } },
+        santri: {
+          select: {
+            id: true,
+            user: { select: { nama: true } },
+            halaqah: { select: { nama: true } },
+          },
+        },
+        sesi: {
+          select: { id: true, kegiatan: { select: { nama: true } } },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    }),
+    prisma.flagPelanggaran.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+      where: whereGender,
+    }),
+    prisma.presensi.findMany({
+      where: {
+        metode: "MANUAL",
+        dicatatOlehId: { not: null },
+        ...(gender ? { santri: { user: { gender } } } : {}),
+      },
+      select: {
+        id: true,
+        status: true,
+        catatan: true,
+        createdAt: true,
+        santri: { select: { id: true, user: { select: { nama: true } } } },
+        dicatatOleh: { select: { nama: true } },
+        sesi: { select: { id: true, kegiatan: { select: { nama: true } } } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 25,
+    }),
+  ]);
+
+  const perStatus: Record<string, number> = {};
+  for (const h of hitung) perStatus[h.status] = h._count._all;
+
+  return (
+    <>
+      <JudulHalaman
+        judul="Pengawasan"
+        keterangan="Temuan sistem yang perlu ditinjau pengurus: indikasi titip absen, pemindaian di luar area, dan keterlambatan kembali dari izin."
+      />
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KartuStat
+          label="Temuan baru"
+          nilai={perStatus.BARU ?? 0}
+          nada={(perStatus.BARU ?? 0) > 0 ? "waspada" : "baik"}
+        />
+        <KartuStat label="Sedang ditinjau" nilai={perStatus.DITINJAU ?? 0} />
+        <KartuStat label="Selesai ditangani" nilai={perStatus.SELESAI ?? 0} nada="baik" />
+        <KartuStat
+          label="Presensi manual"
+          nilai={presensiManual.length}
+          keterangan="25 catatan terakhir dengan jejak audit"
+        />
+      </div>
+
+      <Kartu className="mb-6">
+        <div className="flex flex-wrap gap-1.5 border-b border-white/10 px-4 py-3">
+          {["BARU", "DITINJAU", "SELESAI", "SEMUA"].map((s) => (
+            <Link
+              key={s}
+              href={`/pengawasan?status=${s}`}
+              className={cn(
+                "rounded-lg px-3.5 py-1.5 text-sm transition",
+                saring === s
+                  ? "bg-emerald-500/15 font-medium text-emerald-200"
+                  : "text-emerald-100/55 hover:bg-white/[0.06] hover:text-white"
+              )}
+            >
+              {STATUS_FLAG_LABEL[s] ?? "Semua"}
+            </Link>
+          ))}
+        </div>
+
+        {flag.length === 0 ? (
+          <Kosong
+            judul="Tidak ada temuan"
+            keterangan="Belum ada indikasi pelanggaran pada kategori ini."
+          />
+        ) : (
+          <ul className="divide-y divide-white/5">
+            {flag.map((f) => (
+              <li key={f.id} className="flex flex-wrap items-start gap-4 px-5 py-4">
+                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-amber-500/15 text-amber-300">
+                  <AlertTriangle size={17} />
+                </span>
+
+                <div className="min-w-52 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                      href={`/santri/${f.santri.id}`}
+                      className="font-medium text-white transition hover:text-emerald-300"
+                    >
+                      {f.santri.user.nama}
+                    </Link>
+                    <Lencana className="bg-amber-500/10 text-amber-200 ring-amber-400/25">
+                      {JENIS_FLAG_LABEL[f.jenis]}
+                    </Lencana>
+                    <Lencana
+                      className={
+                        f.status === "BARU"
+                          ? "bg-rose-500/15 text-rose-300 ring-rose-400/30"
+                          : f.status === "DITINJAU"
+                            ? "bg-sky-500/15 text-sky-300 ring-sky-400/30"
+                            : "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
+                      }
+                    >
+                      {STATUS_FLAG_LABEL[f.status]}
+                    </Lencana>
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-emerald-100/65">
+                    {f.keterangan}
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-100/35">
+                    {fmtTanggalJam(f.createdAt)}
+                    {f.santri.halaqah ? ` · ${f.santri.halaqah.nama}` : ""}
+                    {f.sesi ? ` · ${f.sesi.kegiatan.nama}` : ""}
+                    {f.ditanganiOleh ? ` · ditangani ${f.ditanganiOleh.nama}` : ""}
+                  </p>
+                </div>
+
+                <div className="flex shrink-0 gap-2">
+                  {f.status === "BARU" ? (
+                    <form
+                      action={async () => {
+                        "use server";
+                        await ubahStatusFlag(f.id, "DITINJAU");
+                      }}
+                    >
+                      <Tombol type="submit" gaya="kedua" ukuran="sm">
+                        <Eye size={14} />
+                        Tinjau
+                      </Tombol>
+                    </form>
+                  ) : null}
+                  {f.status !== "SELESAI" ? (
+                    <form
+                      action={async () => {
+                        "use server";
+                        await ubahStatusFlag(f.id, "SELESAI");
+                      }}
+                    >
+                      <Tombol type="submit" ukuran="sm">
+                        <Check size={14} />
+                        Selesai
+                      </Tombol>
+                    </form>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Kartu>
+
+      <Kartu>
+        <KepalaKartu
+          judul="Jejak presensi manual"
+          keterangan="Setiap presensi yang diinput pengurus tercatat lengkap dengan siapa yang menginput."
+        />
+        {presensiManual.length === 0 ? (
+          <Kosong judul="Belum ada presensi manual" />
+        ) : (
+          <ul className="divide-y divide-white/5">
+            {presensiManual.map((p) => (
+              <li
+                key={p.id}
+                className="flex flex-wrap items-center gap-3 px-5 py-3 text-sm"
+              >
+                <Link
+                  href={`/santri/${p.santri.id}`}
+                  className="font-medium text-white transition hover:text-emerald-300"
+                >
+                  {p.santri.user.nama}
+                </Link>
+                <span className="text-emerald-100/45">·</span>
+                <Link
+                  href={`/presensi/${p.sesi.id}`}
+                  className="text-emerald-100/60 transition hover:text-emerald-300"
+                >
+                  {p.sesi.kegiatan.nama}
+                </Link>
+                <Lencana>{p.status}</Lencana>
+                <span className="ml-auto text-xs text-emerald-100/35">
+                  {METODE_PRESENSI_LABEL.MANUAL} oleh {p.dicatatOleh?.nama ?? "-"} ·{" "}
+                  {fmtTanggalJam(p.createdAt)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Kartu>
+    </>
+  );
+}
