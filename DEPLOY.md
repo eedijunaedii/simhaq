@@ -1,139 +1,104 @@
-# Runbook deploy SIMHAQ ke Vercel
+# Deploy SIMHAQ — status & runbook
 
-Status persiapan (sudah selesai, tidak perlu diulang):
+## Sudah tayang
 
-- [x] Seluruh kode ter-commit di git (`9dfb74b`)
-- [x] Skrip pengalih basis data `npm run db:postgres` / `npm run db:sqlite`
-- [x] Build jalur PostgreSQL sudah diuji lolos dengan connection string dummy
-- [x] `.env` dan `*.db` dipastikan tidak ikut ter-commit
-- [x] `serverExternalPackages` disetel agar driver database tidak ikut dibundel
-
----
-
-## Bagian A — yang perlu Anda kerjakan (butuh login)
-
-### A1. Login Vercel
-
-Jalankan di terminal, lalu selesaikan di browser yang terbuka:
-
-```bash
-npx vercel login
-```
-
-Verifikasi berhasil:
-
-```bash
-npx vercel whoami
-```
-
-### A2. Siapkan PostgreSQL
-
-Pilih salah satu penyedia gratis. **Yang dibutuhkan adalah connection string biasa
-berawalan `postgresql://`.**
-
-| Penyedia | Cara |
+| | |
 | --- | --- |
-| **Neon** (disarankan) | Daftar di [neon.tech](https://neon.tech) → buat project → region `Singapore (ap-southeast-1)` → salin connection string |
-| **Supabase** | [supabase.com](https://supabase.com) → Project Settings → Database → **Connection pooling** (port 6543) |
-| **Vercel Marketplace** | Dashboard Vercel → Storage → pilih **Neon** atau **Supabase** |
+| **URL** | <https://simhaq.vercel.app> |
+| Project Vercel | `eedijunaediis-projects/simhaq` |
+| Dashboard | <https://vercel.com/eedijunaediis-projects/simhaq> |
+| Basis data | Neon PostgreSQL, region `ap-southeast-1` (Singapura) |
+| Isi database | 82 santri · 11 pengajar · 7 kegiatan · 316 sesi · 7.052 presensi · 55 izin |
 
-> **Hindari Prisma Postgres / Accelerate** untuk saat ini. Connection string-nya
-> berbentuk `prisma+postgres://` dan memerlukan ekstensi Accelerate yang tidak
-> dipakai aplikasi ini. Kalau tetap ingin memakainya, ambil connection string
-> *direct* PostgreSQL-nya.
+### Environment variable produksi
 
-### A3. Tulis kredensial ke `.env` (berkas ini tidak ikut ter-commit)
+| Nama | Keterangan |
+| --- | --- |
+| `DATABASE_URL` | Connection string Neon, memakai `sslmode=verify-full` |
+| `AUTH_SECRET` | Kunci penandatanganan sesi (64 karakter heksadesimal) |
+| `ADMIN_LINTAS_GENDER` | `false` |
 
-Ganti isi `.env` di folder project menjadi:
+Zona waktu **tidak** disetel lewat environment variable — Vercel mencadangkan
+nama `TZ`. Nilainya ditetapkan di `src/instrumentation.ts`, dengan override
+lewat `ZONA_WAKTU`.
 
-```
-DATABASE_URL="postgresql://...connection string dari langkah A2..."
-AUTH_SECRET="c0384e7ff86cad149508b1c48a1613fa907b3d72a1f134d5c39d0cd908da604d"
-ADMIN_LINTAS_GENDER="false"
-```
+### Hasil pengujian di produksi
 
-`AUTH_SECRET` di atas sudah dibuat acak khusus untuk deploy ini — boleh dipakai
-apa adanya, atau buat baru dengan:
+| Uji | Hasil |
+| --- | --- |
+| Landing page, login, manifest PWA | 200 |
+| Login admin → dasbor dengan data Neon | 45 santri putra, kehadiran 84,9% |
+| Buka sesi presensi | QR dinamis tergambar, rotasi 12 detik |
+| API token QR | 200, token terbit, `sisaMs` menghitung mundur |
+| Pindai QR sebagai santri | "kehadiran Anda tercatat", perangkat terikat |
+| Batas terlambat (jadwal 19.30 + toleransi 15 menit) | 19.45 WIB — benar |
+| Unduh Excel | 200, `PK..`, 12 KB |
+| Unduh PDF | 200, `%PDF-`, 126 KB |
+| Seluruh halaman pengurus | 200 |
+
+Data uji (sesi percobaan, keterikatan perangkat, flag pengawasan) sudah
+dibersihkan kembali setelah pengujian.
+
+---
+
+## Yang masih perlu Anda kerjakan
+
+### 1. Rotasi kata sandi Neon — disarankan segera
+
+Connection string sempat dikirim lewat percakapan, jadi sebaiknya diganti.
+
+1. Neon → project → **Roles** → `neondb_owner` → **Reset password**
+2. Salin connection string baru, tambahkan `?sslmode=verify-full` di akhir
+3. Perbarui:
 
 ```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+npx vercel env rm DATABASE_URL production --yes
 ```
 
-### A4. Kabari saya
+```bash
+npx vercel env add DATABASE_URL production
+```
 
-Cukup bilang "sudah login" — saya lanjutkan Bagian B. Saya membaca `DATABASE_URL`
-langsung dari berkas `.env`, jadi **tidak perlu menempelkan connection string ke
-percakapan**.
+```bash
+npx vercel deploy --prod
+```
 
----
+Jangan lupa perbarui juga `.env` lokal.
 
-## Bagian B — yang saya kerjakan setelah itu
+### 2. Sebelum dipakai sungguhan oleh pesantren
 
-1. Alihkan skema ke PostgreSQL
+- Ganti seluruh nama pengajar dan santri fiktif di `prisma/seed.ts` dengan data
+  asli, atau input lewat aplikasi.
+- Atur ulang kata sandi seluruh akun — kata sandi seed masih seragam
+  (`admin123` / `musyrif123` / `santri123`).
+- Hapus blok "Akun uji coba" pada halaman login: konstanta `AKUN_UJI` di
+  `src/app/login/page.tsx`.
+- Pertimbangkan mengaktifkan **Deployment Protection** di Vercel selama masa uji
+  coba, agar URL tidak terbuka untuk umum.
 
-   ```bash
-   npm run db:postgres
-   ```
+### 3. Subdomain pesantren (opsional)
 
-2. Bangun tabel di database produksi
-
-   ```bash
-   npx prisma db push
-   ```
-
-3. Isi data awal (82 santri, 11 pengajar, 7 kegiatan, riwayat 28 hari)
-
-   ```bash
-   npm run db:seed
-   ```
-
-4. Tautkan project ke Vercel
-
-   ```bash
-   npx vercel link --yes
-   ```
-
-5. Daftarkan environment variable produksi dari `.env`
-
-   ```bash
-   npx vercel env add DATABASE_URL production
-   ```
-
-   ```bash
-   npx vercel env add AUTH_SECRET production
-   ```
-
-6. Deploy produksi
-
-   ```bash
-   npx vercel deploy --prod
-   ```
-
-7. Uji hasil deploy: login tiga peran, buka sesi presensi, pindai QR dari ponsel,
-   ajukan dan setujui izin, unduh rekap Excel/PDF.
+Vercel → **Settings → Domains** → tambahkan `presensi.ppmmh.site`, lalu buat
+catatan `CNAME` ke `cname.vercel-dns.com` pada pengelola DNS `ppmmh.site`.
 
 ---
 
-## Setelah berhasil
+## Perintah yang sering dipakai
 
-### Kembali bekerja lokal dengan SQLite
+| Kebutuhan | Perintah |
+| --- | --- |
+| Deploy ulang setelah mengubah kode | `npx vercel deploy --prod` |
+| Lihat log runtime | `npx vercel logs https://simhaq.vercel.app` |
+| Lihat environment variable | `npx vercel env ls production` |
+| Terapkan perubahan skema ke Neon | `npx prisma db push` |
+| Isi ulang data contoh | `npm run db:seed` |
+
+## Kembali bekerja lokal dengan SQLite
 
 ```bash
 npm run db:sqlite
 ```
 
 Lalu kembalikan `DATABASE_URL="file:./dev.db"` pada `.env` dan jalankan
-`npm run db:migrate`.
-
-### Memakai subdomain pesantren
-
-Di Vercel: **Settings → Domains** → tambahkan `presensi.ppmmh.site`, lalu buat
-catatan `CNAME` ke `cname.vercel-dns.com` pada pengelola DNS `ppmmh.site`.
-
-### Sebelum dipakai sungguhan
-
-- Ganti seluruh nama pengajar dan santri fiktif di `prisma/seed.ts` dengan data
-  asli pesantren.
-- Atur ulang kata sandi seluruh akun (menu Pengaturan) — kata sandi seed seragam.
-- Hapus blok "Akun uji coba" pada halaman login
-  (`src/app/login/page.tsx`, konstanta `AKUN_UJI`).
+`npm run db:migrate`. Untuk kembali ke PostgreSQL: `npm run db:postgres`.
+Kedua skrip menjalankan `prisma generate` sendiri.

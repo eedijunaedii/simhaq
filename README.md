@@ -257,8 +257,12 @@ di **Settings → Domains** pada Vercel, lalu buat catatan `CNAME` yang mengarah
 
 - **HTTPS wajib.** Pemindaian QR memakai `getUserMedia`, yang hanya tersedia pada
   `https://` atau `http://localhost`.
-- **Zona waktu.** Seluruh tampilan waktu diformat ke Asia/Jakarta (WIB). Pastikan
-  zona waktu server produksi konsisten.
+- **Zona waktu.** Perhitungan batas terlambat, rentang "hari ini", dan
+  pengelompokan rekap harian memakai waktu lokal server. Runtime hosting umumnya
+  berjalan pada UTC, jadi zona waktu disetel ke Asia/Jakarta lewat
+  [`src/instrumentation.ts`](src/instrumentation.ts) — Vercel tidak mengizinkan
+  variabel lingkungan bernama `TZ` karena nama itu dicadangkan. Untuk zona lain,
+  setel `ZONA_WAKTU`.
 - **Jaringan lemah.** Pemindaian yang gagal terkirim disimpan sementara di
   perangkat (localStorage) dan dikirim ulang otomatis setelah jaringan pulih.
 - **Ganti ponsel.** Santri dapat melepas keterikatan perangkatnya sendiri dari
