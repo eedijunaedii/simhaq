@@ -9,15 +9,27 @@ import { PrismaClient } from "@/generated/prisma/client";
  */
 
 const url = process.env.DATABASE_URL ?? "file:./dev.db";
-const pakaiPostgres = /^postgres(ql)?:\/\//i.test(url);
 
 async function buatAdapter() {
-  if (pakaiPostgres) {
+  if (/^postgres(ql)?:\/\//i.test(url)) {
     const { PrismaPg } = await import("@prisma/adapter-pg");
     return new PrismaPg({ connectionString: url });
   }
-  const { PrismaBetterSqlite3 } = await import("@prisma/adapter-better-sqlite3");
-  return new PrismaBetterSqlite3({ url });
+
+  if (/^file:/i.test(url)) {
+    const { PrismaBetterSqlite3 } = await import("@prisma/adapter-better-sqlite3");
+    return new PrismaBetterSqlite3({ url });
+  }
+
+  // Gagal terang-terangan daripada diam-diam jatuh ke SQLite. Kasus yang paling
+  // sering: DATABASE_URL berbentuk `prisma+postgres://` (Prisma Accelerate),
+  // yang memerlukan ekstensi tersendiri dan tidak dipakai aplikasi ini.
+  const skema = url.split(":")[0];
+  throw new Error(
+    `DATABASE_URL memakai skema "${skema}:" yang tidak didukung. ` +
+      `Gunakan connection string PostgreSQL langsung (postgresql://...) untuk produksi, ` +
+      `atau file:./dev.db untuk development lokal.`
+  );
 }
 
 const globalForPrisma = globalThis as unknown as {
