@@ -10,6 +10,7 @@
  *   node scripts/basis-data.mjs sqlite     -> kembali ke development lokal
  */
 import { readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -62,10 +63,21 @@ if (existsSync(folderMigrasi)) {
 }
 
 console.log(`Provider basis data diubah menjadi "${provider}".`);
+
+// Client hasil generate menyimpan nama provider di dalamnya. Tanpa generate
+// ulang, adapter yang dipakai aplikasi akan ditolak karena dianggap tidak cocok
+// dengan skema.
+console.log("Menjalankan prisma generate...");
+execFileSync("npx", ["prisma", "generate"], {
+  cwd: akar,
+  stdio: "inherit",
+  shell: process.platform === "win32",
+});
+
 console.log(
   provider === "postgresql"
     ? "\nLangkah berikutnya:\n" +
-        '  1. Set DATABASE_URL ke connection string PostgreSQL Anda\n' +
+        "  1. Set DATABASE_URL ke connection string PostgreSQL Anda\n" +
         "  2. npx prisma db push\n" +
         "  3. npm run db:seed"
     : "\nLangkah berikutnya:\n  1. npm run db:migrate\n  2. npm run db:seed"

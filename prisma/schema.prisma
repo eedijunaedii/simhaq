@@ -13,7 +13,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // produksi: ganti menjadi "postgresql"
+  provider = "postgresql" // development lokal: kembalikan ke "sqlite"
 }
 
 // ---------------------------------------------------------------------------
