@@ -46,7 +46,7 @@ export default async function HalamanScan(props: {
     <>
       <JudulHalaman
         judul="Pindai QR presensi"
-        keterangan="Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti setiap belasan detik sehingga tangkapan layar tidak berlaku."
+        keterangan="Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti setiap 40 detik sehingga tangkapan layar tidak berlaku."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">

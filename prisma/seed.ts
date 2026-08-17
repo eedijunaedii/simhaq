@@ -635,7 +635,7 @@ async function main() {
             ditutupPada: selesai,
             status: "DITUTUP",
             secret: randomBytes(32).toString("hex"),
-            rotasiDetik: 12,
+            rotasiDetik: 40,
             dibukaOlehId: pembuka,
             ditutupOlehId: pembuka,
           },

@@ -53,7 +53,7 @@ export default async function HalamanBukaSesi() {
 
       <JudulHalaman
         judul="Buka sesi presensi"
-        keterangan="Sesi akan menampilkan QR Code dinamis yang isinya berganti setiap belasan detik. Sesi menutup sendiri pada waktu yang ditentukan."
+        keterangan="Sesi akan menampilkan QR Code dinamis yang isinya berganti setiap 40 detik. Sesi menutup sendiri pada waktu yang ditentukan."
       />
 
       <div className="max-w-3xl">

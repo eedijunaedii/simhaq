@@ -21,7 +21,7 @@ const FITUR = [
   {
     ikon: QrCode,
     judul: "Presensi QR Code dinamis",
-    isi: "Musyrif membuka sesi, layar menampilkan QR yang isinya berganti setiap belasan detik. Santri cukup memindai dari ponsel masing-masing.",
+    isi: "Musyrif membuka sesi, layar menampilkan QR yang isinya berganti setiap 40 detik. Santri cukup memindai dari ponsel masing-masing.",
   },
   {
     ikon: FileCheck2,
@@ -53,7 +53,7 @@ const FITUR = [
 const PENGAMANAN = [
   {
     judul: "QR dinamis",
-    isi: "Isi QR memuat penanda sesi, waktu, dan tanda tangan digital yang diperbarui setiap 12 detik. Tangkapan layar kedaluwarsa sebelum sempat dipakai.",
+    isi: "Isi QR memuat penanda sesi, waktu, dan tanda tangan digital yang diperbarui setiap 40 detik. Tangkapan layar kedaluwarsa sebelum sempat dipakai.",
   },
   {
     judul: "Keterikatan perangkat",

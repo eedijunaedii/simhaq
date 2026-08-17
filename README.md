@@ -80,7 +80,8 @@ sebagai pengurus.
 ### Modul A — Presensi kegiatan berbasis QR Code
 
 - Musyrif membuka sesi presensi untuk kegiatan tertentu; layar menampilkan QR
-  Code yang isinya berganti setiap 10–15 detik (bawaan 12 detik).
+  Code yang isinya berganti otomatis (bawaan 40 detik, dapat diatur 5–60 detik
+  per sesi).
 - Santri memindai QR dari ponsel masing-masing lewat peramban.
 - Status otomatis: **hadir**, **terlambat**, **izin**, **sakit**, atau **tanpa
   keterangan**.
@@ -93,7 +94,7 @@ sebagai pengurus.
 
 | Lapis | Cara kerja |
 | --- | --- |
-| QR dinamis | Isi QR = `idSesi.slot.tandaTangan`. Tanda tangan HMAC-SHA256 memakai rahasia yang dibuat acak per sesi, dan `slot` berganti setiap belasan detik. Tangkapan layar kedaluwarsa sebelum sempat disebarkan. |
+| QR dinamis | Isi QR = `idSesi.slot.tandaTangan`. Tanda tangan HMAC-SHA256 memakai rahasia yang dibuat acak per sesi, dan `slot` berganti setiap 40 detik. Verifikasi menerima slot berjalan dan satu slot sebelumnya, sehingga masa berlaku efektif sebuah kode adalah 40–80 detik. |
 | Keterikatan perangkat | Satu akun santri terikat pada satu perangkat (id disimpan di peramban). Bila dua akun memindai dari perangkat yang sama, sistem menolak dan menandainya untuk ditinjau pengurus. |
 | Jendela waktu | Pemindaian hanya diterima selama sesi berstatus dibuka dan berada di antara waktu buka–tutup. |
 | Pembatasan lokasi | Opsional per sesi. Radius diukur dari titik koordinat pesantren memakai rumus haversine. Dimatikan secara bawaan karena akurasi GPS di dalam bangunan tidak selalu stabil. |

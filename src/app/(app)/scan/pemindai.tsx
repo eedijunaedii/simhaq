@@ -6,6 +6,7 @@ import {
   CameraOff,
   CheckCircle2,
   Loader2,
+  RefreshCw,
   RotateCcw,
   ScanLine,
   WifiOff,
@@ -221,6 +222,14 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
     };
   }, []);
 
+  // Kode berganti hanyalah jeda, bukan kegagalan: nyalakan kamera lagi sendiri
+  // supaya santri cukup mengarahkan ponsel tanpa menekan tombol apa pun.
+  useEffect(() => {
+    if (fase !== "hasil" || hasil?.status !== "berganti") return;
+    const jeda = setTimeout(() => void mulaiKamera(), 1400);
+    return () => clearTimeout(jeda);
+  }, [fase, hasil?.status, mulaiKamera]);
+
   function ulangi() {
     setHasil(null);
     setFase("siap");
@@ -230,14 +239,24 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
 
   if (fase === "hasil" && hasil) {
     const sukses = hasil.status === "sukses";
+    const berganti = hasil.status === "berganti";
+
+    const gayaIkon = sukses
+      ? "bg-emerald-500/15 text-emerald-300"
+      : berganti
+        ? "bg-amber-500/15 text-amber-300"
+        : "bg-rose-500/15 text-rose-300";
+
     return (
       <Kartu className="p-8 text-center">
-        <span
-          className={`mx-auto grid size-16 place-items-center rounded-full ${
-            sukses ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300"
-          }`}
-        >
-          {sukses ? <CheckCircle2 size={34} /> : <XCircle size={34} />}
+        <span className={`mx-auto grid size-16 place-items-center rounded-full ${gayaIkon}`}>
+          {sukses ? (
+            <CheckCircle2 size={34} />
+          ) : berganti ? (
+            <RefreshCw size={32} className="animate-spin [animation-duration:2.4s]" />
+          ) : (
+            <XCircle size={34} />
+          )}
         </span>
         <p className="mt-5 text-lg font-semibold text-white">{hasil.pesan}</p>
         {hasil.kegiatan ? (
@@ -249,12 +268,16 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
           </p>
         ) : null}
 
-        <div className="mt-7 flex justify-center gap-3">
-          <Tombol onClick={ulangi} gaya={sukses ? "kedua" : "utama"}>
-            <RotateCcw size={16} />
-            Pindai lagi
-          </Tombol>
-        </div>
+        {berganti ? (
+          <p className="mt-5 text-sm text-emerald-300">Menyalakan kamera kembali...</p>
+        ) : (
+          <div className="mt-7 flex justify-center gap-3">
+            <Tombol onClick={ulangi} gaya={sukses ? "kedua" : "utama"}>
+              <RotateCcw size={16} />
+              Pindai lagi
+            </Tombol>
+          </div>
+        )}
       </Kartu>
     );
   }
@@ -292,7 +315,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
                 <p className="mt-4 font-medium text-white">Siap memindai</p>
                 <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-emerald-100/50">
                   Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti
-                  setiap belasan detik, jadi pindai langsung dari layarnya.
+                  setiap 40 detik, jadi pindai langsung dari layarnya.
                 </p>
                 <Tombol onClick={mulaiKamera} className="mt-5">
                   <ScanLine size={16} />

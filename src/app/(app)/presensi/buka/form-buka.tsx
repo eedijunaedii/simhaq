@@ -124,8 +124,11 @@ export function FormBukaSesi({
         <Bidang label="Durasi sesi (menit)">
           <Input type="number" name="durasiMenit" defaultValue={60} min={5} max={480} />
         </Bidang>
-        <Bidang label="Rotasi QR (detik)" petunjuk="Disarankan 10–15 detik.">
-          <Input type="number" name="rotasiDetik" defaultValue={12} min={5} max={60} />
+        <Bidang
+          label="Rotasi QR (detik)"
+          petunjuk="Bawaan 40 detik. Makin kecil makin aman dari tangkapan layar, makin besar makin nyaman dipindai."
+        >
+          <Input type="number" name="rotasiDetik" defaultValue={40} min={5} max={60} />
         </Bidang>
       </div>
 

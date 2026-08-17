@@ -208,7 +208,7 @@ model SesiPresensi {
 
   // Rahasia per sesi untuk menandatangani token QR dinamis.
   secret         String
-  rotasiDetik    Int     @default(12)
+  rotasiDetik    Int     @default(40)
 
   // Pembatasan lokasi (opsional, bisa dimatikan per sesi)
   wajibLokasi Boolean @default(false)

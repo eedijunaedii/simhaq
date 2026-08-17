@@ -20,7 +20,7 @@ export async function bukaSesi(_sebelum: Hasil, data: FormData): Promise<Hasil> 
   const gender = String(data.get("gender") ?? sesi.gender);
   const jamMulai = String(data.get("jamMulai") ?? "");
   const durasiMenit = Number(data.get("durasiMenit") ?? 60);
-  const rotasiDetik = Number(data.get("rotasiDetik") ?? 12);
+  const rotasiDetik = Number(data.get("rotasiDetik") ?? 40);
   const wajibLokasi = data.get("wajibLokasi") === "on";
   const radiusMeter = Number(data.get("radiusMeter") ?? 150);
   const lat = data.get("lat") ? Number(data.get("lat")) : null;
@@ -226,12 +226,24 @@ export async function setPresensiManual(
 // --- Pemindaian QR oleh santri -------------------------------------------
 
 export type HasilPindai = {
-  status: "sukses" | "gagal";
+  /**
+   * `berganti` = kode sudah berputar sebelum pemindaian sampai ke server.
+   * Ini kejadian wajar (jeda jaringan, atau santri baru selesai login), bukan
+   * kegagalan, sehingga ditampilkan berbeda dari `gagal`.
+   */
+  status: "sukses" | "berganti" | "gagal";
   pesan: string;
   detail?: string;
   kegiatan?: string;
   statusPresensi?: string;
 };
+
+/**
+ * Batas usia token yang masih dianggap jeda wajar. Di atas ini, pemindaian
+ * lebih mungkin berasal dari tangkapan layar yang disebarkan, sehingga dicatat
+ * untuk ditinjau pengurus.
+ */
+const AMBANG_CURIGA_DETIK = 120;
 
 export async function pindaiQr(input: {
   token: string;
@@ -288,19 +300,32 @@ export async function pindaiQr(input: {
   const cek = verifikasiTokenQr(input.token, sesi.secret, sesi.rotasiDetik);
   if (!cek.ok) {
     if (cek.alasan === "KEDALUWARSA") {
+      // Jeda wajar: kode berputar sebelum pemindaian sampai. Tidak dicatat
+      // sebagai temuan, dan santri cukup mengarahkan kamera lagi.
+      if (cek.usiaDetik <= AMBANG_CURIGA_DETIK) {
+        return {
+          status: "berganti",
+          pesan: "Kode sudah berganti.",
+          detail: `Kode di layar berputar setiap ${sesi.rotasiDetik} detik. Arahkan kamera ke layar sekali lagi.`,
+          kegiatan: sesi.kegiatan.nama,
+        };
+      }
+
       await prisma.flagPelanggaran.create({
         data: {
           santriId,
           sesiId: sesi.id,
           jenis: "TOKEN_KEDALUWARSA",
-          keterangan:
-            "Memindai kode QR yang sudah kedaluwarsa (kemungkinan tangkapan layar).",
+          keterangan: `Memindai kode QR yang sudah lewat sekitar ${Math.round(
+            cek.usiaDetik / 60
+          )} menit (kemungkinan tangkapan layar).`,
         },
       });
       return {
         status: "gagal",
         pesan: "Kode QR sudah kedaluwarsa.",
-        detail: `Kode berganti setiap ${sesi.rotasiDetik} detik. Arahkan kamera ke layar dan pindai ulang.`,
+        detail:
+          "Kode ini sudah lama berlalu, jadi tidak dapat dipakai. Pindai langsung dari layar yang ditampilkan musyrif.",
       };
     }
     return { status: "gagal", pesan: "Kode QR tidak sah." };

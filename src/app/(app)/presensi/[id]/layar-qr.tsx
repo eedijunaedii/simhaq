@@ -145,7 +145,7 @@ export function LayarQr({
         >
           {galat
             ? galat
-            : `Kode berganti otomatis setiap ${muatan?.rotasiDetik ?? 12} detik`}
+            : `Kode berganti otomatis setiap ${muatan?.rotasiDetik ?? 40} detik`}
         </p>
       </div>
 

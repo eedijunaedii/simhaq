@@ -5,11 +5,20 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
  *
  * Isi QR = `sesiId.slot.tandaTangan`, di mana `slot` adalah nomor jendela
  * waktu (detik sekarang dibagi lama rotasi). Setiap sesi punya `secret`
- * sendiri, sehingga tangkapan layar QR kedaluwarsa dalam belasan detik dan
+ * sendiri, sehingga tangkapan layar QR kedaluwarsa dalam hitungan detik dan
  * QR sesi lain tidak bisa dipakai ulang.
  */
 
-const TOLERANSI_SLOT = 1; // terima slot sebelumnya/berikutnya (jeda jaringan & selisih jam)
+/**
+ * Slot lampau yang masih diterima, untuk menyerap jeda antara kode tergambar
+ * di layar dan pemindaian sampai ke server.
+ *
+ * Slot masa depan sengaja tidak diterima: token dibuat dan diverifikasi oleh
+ * jam yang sama, sehingga slot pada token tidak pernah lebih besar daripada
+ * slot saat verifikasi. Menerimanya hanya akan memperpanjang masa berlaku
+ * tangkapan layar tanpa manfaat.
+ */
+const SLOT_LAMPAU_DITERIMA = 1;
 
 export function buatSecretSesi() {
   return randomBytes(32).toString("hex");
@@ -38,7 +47,13 @@ export function buatTokenQr(sesiId: string, secret: string, rotasiDetik: number)
 
 export type HasilVerifikasi =
   | { ok: true; sesiId: string }
-  | { ok: false; alasan: "FORMAT" | "KEDALUWARSA" | "TANDA_TANGAN" };
+  | { ok: false; alasan: "FORMAT" | "TANDA_TANGAN" }
+  | {
+      ok: false;
+      alasan: "KEDALUWARSA";
+      /** Usia token dalam detik, dipakai membedakan jeda wajar dari tangkapan layar. */
+      usiaDetik: number;
+    };
 
 export function verifikasiTokenQr(
   token: string,
@@ -53,8 +68,13 @@ export function verifikasiTokenQr(
   if (!sesiId || !Number.isFinite(slot) || !sig) return { ok: false, alasan: "FORMAT" };
 
   const sekarang = slotSaatIni(rotasiDetik);
-  if (Math.abs(sekarang - slot) > TOLERANSI_SLOT) {
-    return { ok: false, alasan: "KEDALUWARSA" };
+  const selisih = sekarang - slot;
+  if (selisih > SLOT_LAMPAU_DITERIMA || selisih < 0) {
+    return {
+      ok: false,
+      alasan: "KEDALUWARSA",
+      usiaDetik: Math.max(0, selisih) * rotasiDetik,
+    };
   }
 
   const harusnya = tandaTangan(secret, sesiId, slot);
