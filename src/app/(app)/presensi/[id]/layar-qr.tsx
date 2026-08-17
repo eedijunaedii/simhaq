@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useRouter } from "next/navigation";
 import { Maximize2, Minimize2, RefreshCw } from "lucide-react";
@@ -30,6 +30,8 @@ export function LayarQr({
   keterangan: string;
 }) {
   const kanvas = useRef<HTMLCanvasElement>(null);
+  /** Pengukur lebar yang tersedia untuk QR, tanpa ikut padding kartu putih. */
+  const kotak = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const [muatan, setMuatan] = useState<Muatan | null>(null);
@@ -71,17 +73,50 @@ export function LayarQr({
     };
   }, [sesiId, router]);
 
-  // Gambar QR setiap token berganti.
-  useEffect(() => {
-    if (!muatan?.token || !kanvas.current) return;
-    const url = `${window.location.origin}/scan?t=${encodeURIComponent(muatan.token)}`;
-    QRCode.toCanvas(kanvas.current, url, {
-      width: 460,
+  const token = muatan?.token ?? null;
+
+  /**
+   * Gambar QR seukuran ruang yang tersedia, dikalikan kerapatan piksel layar.
+   *
+   * Sebelumnya kanvas selalu digambar 460 px lalu diperkecil oleh CSS; hasilnya
+   * tepi modul menjadi buram dan lebih sulit dipindai dari jarak beberapa meter.
+   */
+  const gambarQr = useCallback(() => {
+    const el = kanvas.current;
+    const wadah = kotak.current;
+    if (!token || !el || !wadah) return;
+
+    const sisi = Math.round(wadah.clientWidth);
+    if (sisi <= 0) return;
+
+    const kerapatan = Math.min(window.devicePixelRatio || 1, 3);
+    const url = `${window.location.origin}/scan?t=${encodeURIComponent(token)}`;
+
+    QRCode.toCanvas(el, url, {
+      width: Math.round(sisi * kerapatan),
+      // Satu modul putih di dalam kanvas, sisanya dari padding kartu putih.
+      // Gabungan keduanya melampaui zona hening 4 modul yang disarankan.
       margin: 1,
-      errorCorrectionLevel: "M",
+      // Kode tampil di layar bersih dan berumur pendek, jadi koreksi galat
+      // paling ringan sudah memadai — modulnya lebih besar dan lebih terbaca.
+      errorCorrectionLevel: "L",
       color: { dark: "#064e3b", light: "#ffffff" },
-    }).catch(() => setGalat("Gagal menggambar kode QR."));
-  }, [muatan?.token]);
+    })
+      .then(() => {
+        el.style.width = `${sisi}px`;
+        el.style.height = `${sisi}px`;
+      })
+      .catch(() => setGalat("Gagal menggambar kode QR."));
+  }, [token]);
+
+  useEffect(() => {
+    gambarQr();
+  }, [gambarQr, penuh]);
+
+  useEffect(() => {
+    window.addEventListener("resize", gambarQr);
+    return () => window.removeEventListener("resize", gambarQr);
+  }, [gambarQr]);
 
   // Bilah hitung mundur.
   useEffect(() => {
@@ -111,18 +146,25 @@ export function LayarQr({
         </p>
       </div>
 
+      {/* Kartu putih: kotak QR ditambah zona hening yang lega di keempat sisi. */}
       <div
         className={cn(
-          "relative rounded-3xl bg-white p-5 shadow-2xl shadow-emerald-900/40",
-          penuh ? "p-8" : "p-5"
+          "relative w-full bg-white shadow-2xl shadow-emerald-900/40",
+          penuh
+            ? "max-w-[min(64vh,32rem)] rounded-[2rem] p-7"
+            : "max-w-[17.5rem] rounded-[1.5rem] p-5"
         )}
       >
-        <canvas
-          ref={kanvas}
-          className={cn("h-auto", penuh ? "w-[min(70vh,34rem)]" : "w-full max-w-[18rem]")}
-        />
+        <div ref={kotak} className="w-full">
+          <canvas ref={kanvas} className="block h-auto w-full" />
+        </div>
         {muatan?.status !== "DIBUKA" && muatan ? (
-          <div className="absolute inset-0 grid place-items-center rounded-3xl bg-[#0a1f0d]/92 text-center">
+          <div
+            className={cn(
+              "absolute inset-0 grid place-items-center bg-[#0a1f0d]/92 text-center",
+              penuh ? "rounded-[2rem]" : "rounded-[1.5rem]"
+            )}
+          >
             <p className="px-6 text-sm font-medium text-white">
               Sesi sudah ditutup. Kode QR tidak berlaku lagi.
             </p>
@@ -130,7 +172,7 @@ export function LayarQr({
         ) : null}
       </div>
 
-      <div className={cn("w-full", penuh ? "max-w-xl" : "max-w-[18rem]")}>
+      <div className={cn("w-full", penuh ? "max-w-[min(64vh,32rem)]" : "max-w-[17.5rem]")}>
         <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
           <div
             className="h-full rounded-full bg-emerald-400 transition-[width] duration-100 ease-linear"
@@ -152,7 +194,7 @@ export function LayarQr({
       <div
         className={cn(
           "grid w-full grid-cols-4 gap-2 text-center",
-          penuh ? "max-w-2xl" : "max-w-[20rem]"
+          penuh ? "max-w-2xl" : "max-w-[17.5rem]"
         )}
       >
         {[
