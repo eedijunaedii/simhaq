@@ -58,3 +58,6 @@ next-env.d.ts
 # skill bawaan generator Prisma
 /.claude/skills
 /skills-lock.json
+
+.vercel
+.env*
