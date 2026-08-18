@@ -62,6 +62,7 @@ Buka <http://localhost:3000>.
 | Admin / Pimpinan | `admin` | `admin123` |
 | Pimpinan pesantren | `pimpinan` | `admin123` |
 | Musyrif putra (Halaqah Al-Fatih) | `hanif` | `musyrif123` |
+| Petugas keamanan (pos gerbang) | `satpam` | `petugas123` |
 | Musyrifah putri (Halaqah Khadijah) | `aisyah` | `musyrif123` |
 | Santri | pola `namaXXX`, mis. `luthfiabdi001` | `santri123` |
 
@@ -112,10 +113,15 @@ radius) dicatat sebagai temuan pada menu **Pengawasan**.
 - Izin yang disetujui **otomatis menutup seluruh sesi presensi pada rentang
   waktunya** — termasuk sesi yang sudah berlalu — tanpa menimpa kehadiran yang
   benar-benar terjadi.
-- **Kartu izin digital** berupa QR yang dapat ditunjukkan saat keluar area
-  pesantren. QR mengarah ke halaman verifikasi publik `/verifikasi/<kode>` yang
-  bisa dibuka petugas gerbang tanpa akun.
-- Peringatan otomatis bila santri belum tercatat kembali melewati batas izin.
+- **Kartu izin digital** berupa QR yang berguna dua arah:
+  - **Saat keluar** — petugas memindainya untuk memeriksa keabsahan izin.
+    Halaman `/verifikasi/<kode>` terbuka tanpa perlu akun.
+  - **Saat kembali** — petugas yang sudah masuk memindai kartu yang sama, lalu
+    menekan "Tandai sudah kembali". Santri tidak perlu memindai apa pun.
+- Izin yang lewat batas dan belum dikonfirmasi muncul sebagai **daftar tugas**
+  di halaman Pengawasan, bukan sebagai pelanggaran — belum dikonfirmasi belum
+  tentu terlambat. Temuan pelanggaran baru dibuat bila ada yang mengonfirmasi
+  kepulangan setelah batas waktu.
 
 ### Modul C — Rekapitulasi dan pelaporan
 
@@ -133,10 +139,14 @@ radius) dicatat sebagai temuan pada menu **Pengawasan**.
 | Santri | Memindai QR, mengajukan izin beserta lampiran, melihat rekap kehadiran pribadi. |
 | Musyrif / Musyrifah | Membuka & menutup sesi, menyetujui/menolak izin, presensi manual, melihat rekap santri binaan. |
 | Admin / Pimpinan | Data induk santri, kamar, kegiatan & jadwal; dasbor keseluruhan; unduh laporan; pengaturan sistem. |
+| Petugas Keamanan | Memeriksa kartu izin di gerbang dan mencatat kepulangan santri. Hak paling sempit di sistem: tidak dapat membuka data santri, rekap kehadiran, sesi presensi, maupun alasan dan lampiran izin. |
 | Wali santri | Melihat rekap kehadiran anaknya lewat tautan bertoken `/wali/<token>`, tanpa perlu membuat akun. |
 
 Hak akses dipisahkan berdasarkan gender sesuai kebijakan hijab pesantren:
 pengurus putra hanya dapat mengakses data santri putra, demikian pula sebaliknya.
+Petugas keamanan dikecualikan karena menjaga satu pintu untuk seluruh santri —
+sebagai gantinya, data yang ditampilkan kepadanya dibatasi seminimal mungkin:
+nama, jenis izin, dan batas waktu kembali saja.
 Untuk membuka akses lintas gender bagi admin, setel `ADMIN_LINTAS_GENDER="true"`
 pada `.env`.
 
