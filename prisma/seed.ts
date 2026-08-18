@@ -287,6 +287,7 @@ async function main() {
   await bersihkan();
 
   const sandiAdmin = await bcrypt.hash("admin123", 10);
+  const sandiPetugas = await bcrypt.hash("petugas123", 10);
   const sandiMusyrif = await bcrypt.hash("musyrif123", 10);
   const sandiSantri = await bcrypt.hash("santri123", 10);
 
@@ -300,6 +301,20 @@ async function main() {
       role: "ADMIN",
       gender: "PUTRA",
       email: "ppmminhajulhaq@gmail.com",
+      telepon: "+62 878-8982-7126",
+    },
+  });
+
+  // 1b. Petugas keamanan gerbang -------------------------------------------
+  // Satu akun untuk pos jaga. Haknya paling sempit: hanya memeriksa kartu izin
+  // dan mencatat kepulangan santri.
+  await prisma.user.create({
+    data: {
+      nama: "Pos Satpam PPM Minhajul Haq",
+      username: "satpam",
+      passwordHash: sandiPetugas,
+      role: "PETUGAS",
+      gender: "PUTRA",
       telepon: "+62 878-8982-7126",
     },
   });
@@ -758,6 +773,7 @@ Seed selesai.
 
 Akun uji:
   admin    / admin123     (Admin / Pimpinan)
+  satpam   / petugas123   (Petugas Keamanan - pos gerbang)
   hanif    / musyrif123   (Musyrif putra - Halaqah Al-Fatih)
   aisyah   / musyrif123   (Musyrifah putri - Halaqah Khadijah)
   ${slugUsername(santriSemua[0].nama, 1)} / santri123 (Santri: ${santriSemua[0].nama})

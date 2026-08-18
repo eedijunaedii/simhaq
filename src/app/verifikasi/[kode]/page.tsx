@@ -1,7 +1,10 @@
+import Link from "next/link";
 import type { Metadata } from "next";
-import { CheckCircle2, ShieldQuestion, XCircle } from "lucide-react";
+import { CheckCircle2, LogIn, ShieldQuestion, XCircle } from "lucide-react";
 import { LogoTeks } from "@/components/logo";
-import { Kartu, Lencana } from "@/components/ui";
+import { Kartu, Lencana, Peringatan, Tombol } from "@/components/ui";
+import { ambilSesi, bolehJagaGerbang } from "@/lib/auth";
+import { tandaiKembali } from "@/app/(app)/izin/aksi";
 import {
   APP,
   JENIS_IZIN_LABEL,
@@ -32,6 +35,8 @@ export default async function HalamanVerifikasi(props: {
       selesai: true,
       status: true,
       tujuan: true,
+      id: true,
+      waktuKembali: true,
       santri: {
         select: {
           nim: true,
@@ -41,6 +46,15 @@ export default async function HalamanVerifikasi(props: {
       },
     },
   });
+
+  // Tombol pencatatan hanya muncul untuk petugas gerbang yang sedang masuk.
+  // Bagi siapa pun yang lain, halaman ini tetap sekadar bacaan.
+  const pengguna = await ambilSesi();
+  const bolehCatat =
+    pengguna !== null &&
+    bolehJagaGerbang(pengguna.role) &&
+    izin?.status === "DISETUJUI" &&
+    izin.waktuKembali === null;
 
   const sekarang = new Date();
   const sah =
@@ -124,6 +138,47 @@ export default async function HalamanVerifikasi(props: {
             </dl>
           ) : null}
         </Kartu>
+
+        {bolehCatat && izin ? (
+          <Kartu className="mt-5 p-5">
+            <p className="text-sm font-semibold text-white">Santri kembali sekarang?</p>
+            <p className="mt-1 text-xs leading-relaxed text-emerald-100/55">
+              Tekan bila santri ini sudah masuk kembali ke area pesantren. Waktu
+              kembali dicatat otomatis atas nama {pengguna.nama}.
+            </p>
+            <form
+              action={async () => {
+                "use server";
+                await tandaiKembali(izin.id);
+              }}
+              className="mt-4"
+            >
+              <Tombol type="submit" className="w-full">
+                <LogIn size={16} />
+                Tandai sudah kembali
+              </Tombol>
+            </form>
+          </Kartu>
+        ) : null}
+
+        {izin?.status === "SELESAI" && izin.waktuKembali ? (
+          <div className="mt-5">
+            <Peringatan nada="sukses" judul="Sudah tercatat kembali">
+              Kepulangan santri ini sudah dikonfirmasi pada{" "}
+              {fmtTanggalJam(izin.waktuKembali)}.
+            </Peringatan>
+          </div>
+        ) : null}
+
+        {!pengguna && izin?.status === "DISETUJUI" ? (
+          <p className="mt-5 text-center text-xs text-emerald-100/40">
+            Petugas gerbang:{" "}
+            <Link href={`/login?lanjut=/verifikasi/${izin.kode}`} className="tautan-halus">
+              masuk
+            </Link>{" "}
+            untuk mencatat kepulangan santri ini.
+          </p>
+        ) : null}
 
         <p className="mt-6 text-center text-xs leading-relaxed text-emerald-100/35">
           Halaman verifikasi resmi {APP.lembaga}. Data ditampilkan seperlunya untuk

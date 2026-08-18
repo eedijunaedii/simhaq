@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { catatAudit, mulaiSesi, verifikasiKredensial } from "@/lib/auth";
+import { catatAudit, halamanAwal, mulaiSesi, verifikasiKredensial } from "@/lib/auth";
 
 export type StatusLogin = { galat?: string };
 
@@ -11,7 +11,7 @@ export async function masuk(
 ): Promise<StatusLogin> {
   const username = String(data.get("username") ?? "").trim();
   const kataSandi = String(data.get("kataSandi") ?? "");
-  const lanjut = String(data.get("lanjut") ?? "/dashboard");
+  const lanjutDiminta = String(data.get("lanjut") ?? "");
 
   if (!username || !kataSandi) {
     return { galat: "Nama pengguna dan kata sandi wajib diisi." };
@@ -30,5 +30,11 @@ export async function masuk(
     entitasId: sesi.sub,
   });
 
-  redirect(lanjut.startsWith("/") ? lanjut : "/dashboard");
+  // Petugas keamanan tidak punya dasbor; halaman awalnya adalah pos gerbang.
+  const bawaan = halamanAwal(sesi.role);
+  const lanjut =
+    lanjutDiminta.startsWith("/") && lanjutDiminta !== "/dashboard"
+      ? lanjutDiminta
+      : bawaan;
+  redirect(lanjut);
 }

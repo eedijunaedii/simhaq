@@ -2,7 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { catatAudit, genderYangBolehDiakses, wajibLogin, wajibPengurus } from "@/lib/auth";
+import {
+  catatAudit,
+  genderYangBolehDiakses,
+  wajibLogin,
+  wajibPengurus,
+  wajibPenjagaGerbang,
+} from "@/lib/auth";
 import { JENIS_IZIN, MAKS_LAMPIRAN, ROLE } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { terapkanIzinKeSemuaSesi } from "@/lib/presensi";
@@ -210,17 +216,26 @@ export async function tolakIzinDariForm(data: FormData) {
   await prosesIzin(izinId, "DITOLAK", catatan);
 }
 
-/** Catat bahwa santri sudah kembali ke pesantren. */
+/**
+ * Catat bahwa santri sudah kembali ke pesantren.
+ *
+ * Boleh dilakukan petugas keamanan di gerbang maupun musyrif. Petugas tidak
+ * dibatasi gender karena ia menjaga satu pintu untuk seluruh santri.
+ */
 export async function tandaiKembali(izinId: string) {
-  const konteks = await pastikanBerwenang(izinId);
-  if (!konteks) return;
-  const { sesi } = konteks;
+  const sesi = await wajibPenjagaGerbang();
 
   const izin = await prisma.izin.findUnique({
     where: { id: izinId },
-    select: { selesai: true, status: true, santriId: true },
+    select: {
+      selesai: true,
+      status: true,
+      santriId: true,
+      santri: { select: { user: { select: { gender: true } } } },
+    },
   });
   if (!izin || izin.status !== "DISETUJUI") return;
+  if (!genderYangBolehDiakses(sesi).includes(izin.santri.user.gender)) return;
 
   const sekarang = new Date();
   const terlambat = sekarang > izin.selesai;
@@ -234,6 +249,8 @@ export async function tandaiKembali(izinId: string) {
     },
   });
 
+  // Temuan pengawasan hanya dibuat bila keterlambatan benar-benar terbukti,
+  // yakni saat ada orang yang mengonfirmasi kepulangan setelah batas waktu.
   if (terlambat) {
     await prisma.flagPelanggaran.create({
       data: {
@@ -241,7 +258,7 @@ export async function tandaiKembali(izinId: string) {
         jenis: "TELAT_KEMBALI",
         keterangan: `Kembali ${Math.round(
           (sekarang.getTime() - izin.selesai.getTime()) / 60000
-        )} menit melewati batas izin.`,
+        )} menit melewati batas izin, dikonfirmasi ${sesi.nama}.`,
       },
     });
   }
@@ -256,45 +273,43 @@ export async function tandaiKembali(izinId: string) {
 
   revalidatePath(`/izin/${izinId}`);
   revalidatePath("/izin");
+  revalidatePath("/gerbang");
 }
 
 /**
- * Tandai izin yang batas waktunya sudah lewat namun santri belum tercatat
- * kembali. Dipanggil saat halaman perizinan dimuat.
+ * Izin yang batas waktunya sudah lewat namun belum ada yang mengonfirmasi
+ * kepulangan santrinya.
+ *
+ * Ini sengaja TIDAK dicatat sebagai temuan pelanggaran. Belum dikonfirmasi
+ * belum tentu terlambat — bisa jadi santrinya pulang tepat waktu dan petugas
+ * yang belum sempat menandai. Menuduh lebih dulu membuat halaman Pengawasan
+ * penuh laporan palsu, dan pengurus berhenti mempercayainya.
+ *
+ * Keterlambatan baru dicatat sebagai temuan oleh `tandaiKembali()`, yaitu saat
+ * ada orang yang benar-benar mengonfirmasi kepulangan setelah batas waktu.
  */
-export async function periksaTelatKembali() {
-  const lewat = await prisma.izin.findMany({
+export async function izinBelumDikonfirmasi(gender?: string) {
+  return prisma.izin.findMany({
     where: {
       status: "DISETUJUI",
       selesai: { lt: new Date() },
       waktuKembali: null,
+      ...(gender ? { santri: { user: { gender } } } : {}),
     },
-    select: { id: true, santriId: true, selesai: true },
+    select: {
+      id: true,
+      kode: true,
+      jenis: true,
+      mulai: true,
+      selesai: true,
+      santri: {
+        select: {
+          id: true,
+          user: { select: { nama: true } },
+          halaqah: { select: { nama: true } },
+        },
+      },
+    },
+    orderBy: { selesai: "asc" },
   });
-
-  for (const z of lewat) {
-    const sudahDitandai = await prisma.flagPelanggaran.findFirst({
-      where: {
-        santriId: z.santriId,
-        jenis: "TELAT_KEMBALI",
-        createdAt: { gte: z.selesai },
-      },
-      select: { id: true },
-    });
-    if (sudahDitandai) continue;
-
-    await prisma.flagPelanggaran.create({
-      data: {
-        santriId: z.santriId,
-        jenis: "TELAT_KEMBALI",
-        keterangan:
-          "Batas waktu izin sudah lewat tetapi santri belum tercatat kembali ke pesantren.",
-      },
-    });
-    await prisma.izin.update({
-      where: { id: z.id },
-      data: { terlambatKembali: true },
-    });
-  }
-  return lewat.length;
 }

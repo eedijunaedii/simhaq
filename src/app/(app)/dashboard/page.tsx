@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JudulHalaman } from "@/components/ui";
 import { filterGender, wajibLogin } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { APP, ROLE } from "@/lib/constants";
 import { fmtTanggal } from "@/lib/tanggal";
 import { DasborPengurus } from "./dasbor-pengurus";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HalamanDasbor() {
   const sesi = await wajibLogin();
+  if (sesi.role === ROLE.PETUGAS) redirect("/gerbang");
   const { gender } = filterGender(sesi);
 
   const sapaan = sesi.role === ROLE.SANTRI ? "Assalamu'alaikum" : "Assalamu'alaikum";

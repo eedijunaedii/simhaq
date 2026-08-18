@@ -7,6 +7,7 @@ import {
   BadgeCheck,
   BookOpen,
   CalendarClock,
+  DoorClosed,
   ClipboardList,
   DoorOpen,
   FileBarChart,
@@ -42,6 +43,12 @@ const MENU: { grup: string; item: Menu[] }[] = [
         label: "Dasbor",
         ikon: LayoutDashboard,
         peran: ["SANTRI", "MUSYRIF", "ADMIN"],
+      },
+      {
+        href: "/gerbang",
+        label: "Pos Gerbang",
+        ikon: DoorClosed,
+        peran: ["PETUGAS", "MUSYRIF", "ADMIN"],
       },
       { href: "/scan", label: "Pindai QR", ikon: ScanLine, peran: ["SANTRI"] },
       {

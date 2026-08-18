@@ -23,7 +23,6 @@ import { filterGender, wajibLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fmtTanggalJam, fmtTanggalPendek, selisihManusiawi } from "@/lib/tanggal";
 import { cn } from "@/lib/utils";
-import { periksaTelatKembali } from "./aksi";
 
 export const metadata: Metadata = { title: "Perizinan" };
 export const dynamic = "force-dynamic";
@@ -43,8 +42,6 @@ export default async function HalamanIzin(props: {
   const { tab } = await props.searchParams;
   const { gender } = filterGender(sesi);
   const santri = sesi.role === ROLE.SANTRI;
-
-  if (!santri) await periksaTelatKembali();
 
   const aktif = TAB.find((t) => t.kunci === tab) ?? TAB[santri ? 4 : 0];
 
@@ -233,8 +230,10 @@ export default async function HalamanIzin(props: {
       {!santri ? (
         <Kartu className="mt-6 p-5">
           <p className="text-xs leading-relaxed text-emerald-100/45">
-            Sistem memeriksa otomatis izin yang batas waktunya sudah lewat namun santri
-            belum tercatat kembali, lalu menandainya pada halaman Pengawasan.
+            Izin yang batas waktunya sudah lewat namun kepulangannya belum
+            dikonfirmasi petugas gerbang muncul sebagai daftar tugas pada halaman
+            Pengawasan — bukan sebagai pelanggaran, karena belum tentu santrinya
+            yang terlambat.
           </p>
         </Kartu>
       ) : null}

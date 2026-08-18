@@ -25,6 +25,13 @@ export const ROLE = {
   SANTRI: "SANTRI",
   MUSYRIF: "MUSYRIF",
   ADMIN: "ADMIN",
+  /**
+   * Petugas keamanan yang berjaga di pintu dan parkiran. Hak aksesnya sengaja
+   * dibuat paling sempit: hanya memeriksa kartu izin dan mencatat kepulangan
+   * santri. Tidak dapat melihat data santri, rekap kehadiran, maupun
+   * menyetujui izin.
+   */
+  PETUGAS: "PETUGAS",
 } as const;
 export type Role = (typeof ROLE)[keyof typeof ROLE];
 
@@ -32,6 +39,7 @@ export const ROLE_LABEL: Record<Role, string> = {
   SANTRI: "Santri",
   MUSYRIF: "Musyrif / Musyrifah",
   ADMIN: "Admin / Pimpinan",
+  PETUGAS: "Petugas Keamanan",
 };
 
 export const GENDER = { PUTRA: "PUTRA", PUTRI: "PUTRI" } as const;

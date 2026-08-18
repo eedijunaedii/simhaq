@@ -20,6 +20,7 @@ const RUTE_TERLINDUNGI = [
   "/pengaturan",
   "/profil",
   "/scan",
+  "/gerbang",
 ];
 
 export async function proxy(request: NextRequest) {
