@@ -19,6 +19,7 @@ import {
   STATUS_IZIN_LABEL,
   STATUS_IZIN_STYLE,
 } from "@/lib/constants";
+import { redirect } from "next/navigation";
 import { filterGender, wajibLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fmtTanggalJam, fmtTanggalPendek, selisihManusiawi } from "@/lib/tanggal";
@@ -39,6 +40,9 @@ export default async function HalamanIzin(props: {
   searchParams: Promise<{ tab?: string }>;
 }) {
   const sesi = await wajibLogin();
+  // Petugas keamanan tidak berkepentingan dengan alasan izin santri; ia hanya
+  // perlu tahu siapa yang sedang di luar dan sampai kapan.
+  if (sesi.role === ROLE.PETUGAS) redirect("/gerbang");
   const { tab } = await props.searchParams;
   const { gender } = filterGender(sesi);
   const santri = sesi.role === ROLE.SANTRI;

@@ -41,6 +41,9 @@ export default async function HalamanDetailIzin(props: {
 }) {
   const { id } = await props.params;
   const sesi = await wajibLogin();
+  // Detail izin memuat alasan pribadi dan lampiran bukti (mis. surat dokter),
+  // di luar kebutuhan petugas gerbang. Ia memakai halaman verifikasi kartu.
+  if (sesi.role === ROLE.PETUGAS) redirect("/gerbang");
 
   const izin = await prisma.izin.findUnique({
     where: { id },
