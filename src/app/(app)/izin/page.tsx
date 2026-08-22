@@ -7,11 +7,12 @@ import {
   JudulHalaman,
   KartuStat,
   Lencana,
+  TautanBaris,
   TautanTombol,
   Tabel,
   Td,
   Th,
-  Tr,
+  TrTautan,
 } from "@/components/ui";
 import {
   JENIS_IZIN_LABEL,
@@ -176,34 +177,49 @@ export default async function HalamanIzin(props: {
             </thead>
             <tbody>
               {daftar.map((z) => (
-                <Tr key={z.id}>
+                <TrTautan key={z.id}>
+                  {/*
+                    Satu tautan per baris, direntangkan menutupi seluruh baris.
+                    Sebelumnya ada dua tautan menuju tujuan yang sama di baris
+                    yang sama — membingungkan bagi pembaca layar — dan sisa
+                    barisnya tidak dapat diklik sama sekali.
+                  */}
                   {!santri ? (
                     <Td>
-                      <Link
+                      <TautanBaris
                         href={`/izin/${z.id}`}
-                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                        aria-label={`Buka izin ${z.kode} atas nama ${z.santri.user.nama}`}
+                        className="inline-block -my-1 py-1"
                       >
                         {z.santri.user.nama}
-                      </Link>
+                      </TautanBaris>
                       <span className="block text-xs text-samar">
                         {z.santri.halaqah?.nama ?? "-"}
                       </span>
                     </Td>
                   ) : null}
                   <Td>
-                    <Link href={`/izin/${z.id}`} className="block">
+                    {santri ? (
+                      <TautanBaris
+                        href={`/izin/${z.id}`}
+                        aria-label={`Buka izin ${z.kode}`}
+                        className="block"
+                      >
+                        {JENIS_IZIN_LABEL[z.jenis]}
+                      </TautanBaris>
+                    ) : (
                       <span className="block font-medium text-white">
                         {JENIS_IZIN_LABEL[z.jenis]}
-                        {z._count.lampiran > 0 ? (
-                          <span className="ml-2 text-xs font-normal text-aksen">
-                            {z._count.lampiran} lampiran
-                          </span>
-                        ) : null}
                       </span>
-                      <span className="line-clamp-1 block max-w-md text-xs text-redup">
-                        {z.kode} · {z.alasan}
+                    )}
+                    {z._count.lampiran > 0 ? (
+                      <span className="text-xs font-normal text-aksen">
+                        {z._count.lampiran} lampiran
                       </span>
-                    </Link>
+                    ) : null}
+                    <span className="line-clamp-1 block max-w-md text-xs text-redup">
+                      {z.kode} · {z.alasan}
+                    </span>
                   </Td>
                   <Td className="hidden text-xs text-redup md:table-cell">
                     {fmtTanggalPendek(z.mulai)} – {fmtTanggalPendek(z.selesai)}
@@ -224,7 +240,7 @@ export default async function HalamanIzin(props: {
                       </span>
                     ) : null}
                   </Td>
-                </Tr>
+                </TrTautan>
               ))}
             </tbody>
           </Tabel>

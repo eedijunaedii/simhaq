@@ -359,6 +359,42 @@ export function Tr({ className, ...rest }: ComponentProps<"tr">) {
   return <tr className={cn("transition-colors duration-150 hover:bg-white/[0.05]", className)} {...rest} />;
 }
 
+/**
+ * Baris tabel yang seluruh permukaannya dapat diklik menuju satu tujuan.
+ *
+ * Dipasangkan dengan `TautanBaris` di salah satu selnya. Tetap satu tautan
+ * sungguhan di dalam DOM, jadi pembaca layar mengumumkan satu tujuan, papan
+ * ketik tetap dapat menjangkaunya, dan klik kanan "buka di tab baru" tetap
+ * bekerja pada teksnya.
+ */
+export function TrTautan({ className, ...rest }: ComponentProps<"tr">) {
+  return (
+    <Tr
+      className={cn("relative cursor-pointer hover:bg-white/[0.06]", className)}
+      {...rest}
+    />
+  );
+}
+
+/**
+ * Tautan yang area kliknya direntangkan menutupi seluruh baris induknya.
+ *
+ * Elemen lain di baris yang juga perlu diklik harus diberi `relative z-10`
+ * agar berada di atas rentangan ini.
+ */
+export function TautanBaris({ className, ...rest }: ComponentProps<typeof Link>) {
+  return (
+    <Link
+      className={cn(
+        "font-medium text-white transition-colors duration-150 hover:text-aksen",
+        "after:absolute after:inset-0 after:content-['']",
+        className
+      )}
+      {...rest}
+    />
+  );
+}
+
 // --- Avatar ---------------------------------------------------------------
 
 export function Avatar({ nama, ukuran = 36 }: { nama: string; ukuran?: number }) {
