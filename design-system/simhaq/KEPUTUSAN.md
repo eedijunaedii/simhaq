@@ -87,3 +87,23 @@ satu sama lain.
 Sebelum perubahan ini hanya kartu fitur di halaman depan yang merespons sorot,
 padahal justru kartu itulah yang tidak dapat diklik — memberi isyarat yang
 menyesatkan. Kini isyaratnya sesuai fungsinya.
+
+
+## Gulir halus untuk navigasi jangkar
+
+Tautan bagian di halaman depan (Fitur, Pengamanan, Pengguna) sebelumnya melompat
+seketika ke tujuan. Kini memakai `scroll-behavior: smooth` bawaan peramban pada
+`html`.
+
+Dipilih cara bawaan, bukan animasi JavaScript, karena tiga alasan: tanpa tambahan
+berkas skrip pada jaringan pesantren yang lemah, otomatis batal bila pengguna
+menekan gulir sendiri di tengah animasi, dan otomatis tunduk pada blok
+`prefers-reduced-motion` yang sudah ada — gerak gulir panjang adalah pemicu umum
+bagi pengguna yang sensitif terhadap gerak.
+
+Lama animasinya ditentukan peramban dan tidak dapat diatur lewat CSS. Bila
+nantinya terasa masih terlalu cepat, barulah perlu animasi JavaScript dengan
+durasi dan easing sendiri.
+
+`scroll-padding-top: 5rem` memastikan judul bagian tidak tertutup bilah atas yang
+lengket. Terukur: bilah atas 65 px, bagian mendarat di 80 px.

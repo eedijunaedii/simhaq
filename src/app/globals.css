@@ -127,10 +127,19 @@ table,
   outline: none;
 }
 
-/* Bilah atas yang lengket tidak boleh menutupi elemen yang sedang difokus. */
+/*
+  Bilah atas yang lengket tidak boleh menutupi elemen yang sedang difokus,
+  maupun judul bagian yang baru saja dituju lewat tautan jangkar.
+*/
 html {
   scroll-padding-top: 5rem;
   scroll-padding-bottom: 2rem;
+  /*
+    Gulir halus untuk navigasi jangkar di halaman depan. Dinonaktifkan pada
+    blok prefers-reduced-motion di bawah, karena gerak gulir panjang adalah
+    pemicu umum bagi pengguna yang sensitif terhadap gerak.
+  */
+  scroll-behavior: smooth;
 }
 
 /* --- Komponen dasar ------------------------------------------------------ */
