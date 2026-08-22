@@ -96,7 +96,7 @@ export default async function HalamanPresensi() {
                 <Link
                   key={s.id}
                   href={`/presensi/${s.id}`}
-                  className="rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.07] p-5 transition hover:bg-emerald-500/[0.12]"
+                  className="cursor-pointer rounded-2xl border border-aksen/30 bg-emerald-500/[0.07] p-5 transition-colors duration-200 hover:border-aksen/60 hover:bg-emerald-500/[0.13]"
                 >
                   <div className="flex items-center gap-2 text-xs text-emerald-300">
                     <span className="denyut inline-block size-1.5 rounded-full bg-emerald-400" />

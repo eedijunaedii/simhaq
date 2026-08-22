@@ -39,17 +39,21 @@ Halaman depan publik memang memakai pola tersebut dan tidak diubah.
 
 ## Nilai token dan rasio kontras terukur
 
-Diukur terhadap permukaan kartu `rgb(25,44,28)`, ambang WCAG AA 4.5:1 untuk
-teks normal.
+Diukur di peramban terhadap permukaan kartu yang benar-benar dirender,
+`rgb(19,38,21)`. Ambang WCAG AA 4.5:1 untuk teks normal.
 
 | Token | Nilai | Rasio | Status |
 | --- | --- | --- | --- |
-| `--color-teks` | `#F2F7F3` | 13.61:1 | AAA |
-| `--color-sekunder` | `#C6D9C9` | 9.95:1 | AAA |
-| `--color-redup` | `#9DB5A2` | 6.72:1 | AA |
-| `--color-samar` | `#8AA390` | 5.42:1 | AA |
-| `--color-aksen` | `#4ADE80` | 8.46:1 | AAA |
+| `--color-teks` | `#F2F7F3` | 14.71:1 | AAA |
+| `--color-sekunder` | `#C6D9C9` | 10.76:1 | AAA |
+| `--color-redup` | `#9DB5A2` | 7.26:1 | AAA |
+| `--color-samar` | `#8AA390` | 5.86:1 | AA |
+| `--color-aksen` | `#4ADE80` | 9.15:1 | AAA |
 | `--color-kendali` | `#65876E` | 3.68:1 | lolos 1.4.11 (batas kontrol) |
+
+Angka pada perancangan awal dihitung terhadap `rgb(25,44,28)` dan menghasilkan
+nilai lebih rendah. Permukaan sebenarnya ternyata lebih gelap, sehingga rasio
+nyatanya lebih longgar — perkiraan awal berada di sisi yang aman.
 
 Sebelum perombakan, teks memakai opasitas berjenjang dengan hasil:
 `emerald-100/50` 4.39:1, `/45` 3.84:1, `/40` 3.34:1, `/35` 2.89:1, `/30` 2.49:1 —
@@ -61,3 +65,25 @@ Jangan kembali memakai opasitas untuk meredupkan teks (`text-putih/40` dan
 sejenisnya). Pakai `text-sekunder`, `text-redup`, atau `text-samar`. Bila perlu
 tingkat baru, hitung dulu rasionya terhadap ketiga permukaan sebelum menambah
 token.
+
+
+## Umpan balik sorot (hover)
+
+Dua tingkat, dibedakan karena tampilan harus jujur mencerminkan fungsi.
+
+| Tingkat | Dipakai pada | Latar saat disorot | Tepi | Kursor |
+| --- | --- | --- | --- | --- |
+| `sorot` | Kartu tampilan dalam kisi: fitur & pengamanan & pengguna di halaman depan, kartu statistik, kartu kamar | `permukaan-naik/70` | `kendali/60` | tetap `auto` |
+| `dapatDiklik` | Kartu yang benar-benar menuju halaman lain: halaqah, sesi presensi terbuka | `permukaan-naik/95` | `aksen/50` | `pointer` |
+
+Panel besar berisi tabel atau formulir sengaja tidak diberi keduanya — menyalakan
+satu bagian halaman penuh saat kursor lewat hanya menjadi gangguan.
+
+Intensitasnya ditakar terhadap hover pada desain sebelumnya (delta luminans
+0.0069, satu-satunya kartu yang punya hover saat itu): `sorot` 1.07x dan
+`dapatDiklik` 1.92x, sehingga keduanya terlihat dan tetap dapat dibedakan
+satu sama lain.
+
+Sebelum perubahan ini hanya kartu fitur di halaman depan yang merespons sorot,
+padahal justru kartu itulah yang tidak dapat diklik — memberi isyarat yang
+menyesatkan. Kini isyaratnya sesuai fungsinya.

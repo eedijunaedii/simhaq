@@ -234,7 +234,7 @@ export default function Beranda() {
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FITUR.map((f) => (
-              <Kartu key={f.judul} className="p-6 transition hover:bg-white/[0.09]">
+              <Kartu key={f.judul} sorot className="p-6">
                 <span className="inline-flex size-11 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
                   <f.ikon size={20} />
                 </span>
@@ -267,7 +267,7 @@ export default function Beranda() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               {PENGAMANAN.map((p, i) => (
-                <Kartu key={p.judul} className="p-5">
+                <Kartu key={p.judul} sorot className="p-5">
                   <span className="text-xs font-semibold text-aksen">
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -296,7 +296,7 @@ export default function Beranda() {
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {PENGGUNA.map((p) => (
-              <Kartu key={p.peran} className="p-6">
+              <Kartu key={p.peran} sorot className="p-6">
                 <span className="inline-flex size-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
                   <Users size={18} />
                 </span>

@@ -266,7 +266,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                   <li key={z.id}>
                     <Link
                       href={`/izin/${z.id}`}
-                      className="flex items-center gap-3 px-5 py-3 transition hover:bg-white/[0.04]"
+                      className="flex items-center gap-3 px-5 py-3 transition-colors duration-200 hover:bg-white/[0.06]"
                     >
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm text-white">

@@ -39,7 +39,7 @@ export default async function HalamanHalaqah() {
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {daftar.map((h) => (
             <Link key={h.id} href={`/halaqah/${h.id}`}>
-              <Kartu className="h-full p-5 transition hover:bg-white/[0.09]">
+              <Kartu dapatDiklik className="h-full p-5">
                 <div className="flex items-start justify-between gap-3">
                   <span className="grid size-10 place-items-center rounded-xl bg-emerald-500/15 text-emerald-300">
                     <BookOpen size={18} />

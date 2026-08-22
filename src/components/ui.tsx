@@ -4,15 +4,35 @@ import { cn, warnaBatang } from "@/lib/utils";
 
 // --- Panel & kartu --------------------------------------------------------
 
+/**
+ * Panel dasar.
+ *
+ * Dua tingkat umpan balik yang sengaja dibedakan, karena tampilan harus jujur
+ * mencerminkan fungsi:
+ *
+ *   `sorot`       kartu tampilan di dalam kisi — merespons halus saat disorot
+ *                 agar kisi terasa hidup, tanpa mengubah kursor karena memang
+ *                 tidak ada yang terjadi bila diklik.
+ *   `dapatDiklik` kartu yang benar-benar menuju ke suatu halaman — angkatan
+ *                 lebih tegas, tepi menyala, dan kursor berubah.
+ *
+ * Panel besar berisi tabel atau formulir tidak memakai keduanya: menyalakan
+ * satu bagian halaman penuh saat kursor lewat hanya jadi gangguan.
+ */
 export function Kartu({
   className,
   children,
+  sorot,
+  dapatDiklik,
   ...rest
-}: ComponentProps<"div">) {
+}: ComponentProps<"div"> & { sorot?: boolean; dapatDiklik?: boolean }) {
   return (
     <div
       className={cn(
         "rounded-2xl border border-garis bg-permukaan/[0.55] backdrop-blur-sm",
+        sorot && "transition-colors duration-200 hover:border-kendali/60 hover:bg-permukaan-naik/70",
+        dapatDiklik &&
+          "cursor-pointer transition-colors duration-200 hover:border-aksen/50 hover:bg-permukaan-naik/95",
         className
       )}
       {...rest}
@@ -266,7 +286,7 @@ export function KartuStat({
   }[nada];
 
   return (
-    <Kartu className="p-5">
+    <Kartu sorot className="p-5">
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-wide text-redup">
           {label}
