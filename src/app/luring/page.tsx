@@ -19,7 +19,7 @@ export default function HalamanLuring() {
           <h1 className="mt-5 text-lg font-semibold text-white">
             Tidak ada koneksi
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-emerald-100/55">
+          <p className="mt-2 text-sm leading-relaxed text-redup">
             Halaman ini belum tersimpan di perangkat. Pemindaian presensi yang Anda
             lakukan saat luring tetap tersimpan dan akan dikirim otomatis setelah
             jaringan pulih.

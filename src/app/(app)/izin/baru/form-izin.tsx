@@ -90,7 +90,7 @@ export function FormIzin() {
         label="Lampiran bukti (opsional)"
         petunjuk="JPG, PNG, WebP, atau PDF. Maksimal 2 MB. Contoh: surat tugas, jadwal praktikum, surat dokter."
       >
-        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/[0.03] px-4 py-3.5 text-sm text-emerald-100/60 transition hover:border-emerald-400/40 hover:bg-white/[0.06]">
+        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/[0.03] px-4 py-3.5 text-sm text-sekunder transition hover:border-emerald-400/40 hover:bg-white/[0.06]">
           <Paperclip size={17} className="shrink-0 text-emerald-300" />
           <span className="truncate">{namaBerkas ?? "Pilih berkas..."}</span>
           <input
@@ -105,7 +105,7 @@ export function FormIzin() {
 
       <Kirim />
 
-      <p className="text-center text-xs leading-relaxed text-emerald-100/40">
+      <p className="text-center text-xs leading-relaxed text-samar">
         Izin yang disetujui otomatis menutup seluruh sesi presensi pada rentang waktu
         tersebut, sehingga tidak lagi terhitung sebagai ketidakhadiran tanpa keterangan.
       </p>

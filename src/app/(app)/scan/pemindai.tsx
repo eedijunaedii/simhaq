@@ -260,10 +260,10 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
         </span>
         <p className="mt-5 text-lg font-semibold text-white">{hasil.pesan}</p>
         {hasil.kegiatan ? (
-          <p className="mt-1 text-sm text-emerald-100/60">{hasil.kegiatan}</p>
+          <p className="mt-1 text-sm text-sekunder">{hasil.kegiatan}</p>
         ) : null}
         {hasil.detail ? (
-          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-emerald-100/50">
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-redup">
             {hasil.detail}
           </p>
         ) : null}
@@ -313,7 +313,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
                   <ScanLine size={30} />
                 </span>
                 <p className="mt-4 font-medium text-white">Siap memindai</p>
-                <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-emerald-100/50">
+                <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-redup">
                   Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti
                   setiap 40 detik, jadi pindai langsung dari layarnya.
                 </p>
@@ -329,7 +329,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
             <div className="absolute inset-0 grid place-items-center bg-[#0a1f0d]/85">
               <div className="text-center">
                 <Loader2 size={32} className="mx-auto animate-spin text-emerald-300" />
-                <p className="mt-3 text-sm text-emerald-100/70">Memeriksa kode...</p>
+                <p className="mt-3 text-sm text-sekunder">Memeriksa kode...</p>
               </div>
             </div>
           ) : null}
@@ -343,14 +343,14 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
       </Kartu>
 
       {fase === "memindai" ? (
-        <p className="flex items-center justify-center gap-2 text-center text-sm text-emerald-100/50">
+        <p className="flex items-center justify-center gap-2 text-center text-sm text-redup">
           <ScanLine size={15} className="text-emerald-400" />
           Mencari kode QR...
         </p>
       ) : null}
 
       {galatKamera ? (
-        <p className="flex items-center justify-center gap-2 text-center text-xs text-emerald-100/40">
+        <p className="flex items-center justify-center gap-2 text-center text-xs text-samar">
           <CameraOff size={14} />
           Bila kamera tetap tidak bisa dipakai, mintalah musyrif mencatat kehadiran Anda
           secara manual.

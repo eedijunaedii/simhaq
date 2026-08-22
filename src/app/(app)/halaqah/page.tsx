@@ -48,13 +48,13 @@ export default async function HalamanHalaqah() {
                 </div>
 
                 <h2 className="mt-3.5 font-semibold text-white">{h.nama}</h2>
-                <p className="mt-0.5 text-sm text-emerald-100/50">
+                <p className="mt-0.5 text-sm text-redup">
                   Musyrif {h.musyrif}
                 </p>
 
                 <div className="mt-4">
                   <div className="mb-1.5 flex items-baseline justify-between text-sm">
-                    <span className="flex items-center gap-1.5 text-emerald-100/55">
+                    <span className="flex items-center gap-1.5 text-redup">
                       <Users size={13} />
                       {h.jumlahSantri} santri
                     </span>
@@ -65,7 +65,7 @@ export default async function HalamanHalaqah() {
                   <BatangProgres nilai={h.persen} />
                 </div>
 
-                <div className="mt-3 flex gap-4 text-xs text-emerald-100/40">
+                <div className="mt-3 flex gap-4 text-xs text-samar">
                   <span>Hadir {h.hadir}</span>
                   <span>Izin {h.izin}</span>
                   <span>Alfa {h.alfa}</span>

@@ -103,11 +103,11 @@ export default async function HalamanPresensi() {
                     Sesi dibuka
                   </div>
                   <p className="mt-2.5 font-semibold text-white">{s.kegiatan.nama}</p>
-                  <p className="mt-0.5 text-xs text-emerald-100/50">
+                  <p className="mt-0.5 text-xs text-redup">
                     {GENDER_LABEL[s.gender]}
                     {s.halaqah ? ` · ${s.halaqah.nama}` : ""}
                   </p>
-                  <p className="mt-3 text-xs text-emerald-100/45">
+                  <p className="mt-3 text-xs text-redup">
                     Tutup {fmtJam(s.waktuTutup)} · {s._count.presensi} tercatat
                   </p>
                 </Link>
@@ -194,24 +194,24 @@ function BagianTabel({
                   <Td>
                     <Link
                       href={`/presensi/${s.id}`}
-                      className="font-medium text-white hover:text-emerald-300"
+                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                     >
                       {s.kegiatan.nama}
                     </Link>
                   </Td>
                   {tampilkanTanggal ? (
-                    <Td className="hidden text-emerald-100/55 sm:table-cell">
+                    <Td className="hidden text-redup sm:table-cell">
                       {fmtTanggalPendek(s.tanggal)}
                     </Td>
                   ) : null}
-                  <Td className="hidden text-emerald-100/55 md:table-cell">
+                  <Td className="hidden text-redup md:table-cell">
                     {fmtJam(s.waktuBuka)} – {fmtJam(s.waktuTutup)}
                   </Td>
-                  <Td className="hidden text-emerald-100/55 lg:table-cell">
+                  <Td className="hidden text-redup lg:table-cell">
                     {GENDER_LABEL[s.gender]}
                     {s.halaqah ? ` · ${s.halaqah.nama}` : ""}
                   </Td>
-                  <Td className="text-center text-emerald-100/70">
+                  <Td className="text-center text-sekunder">
                     {s._count.presensi}
                   </Td>
                   <Td className="text-right">
@@ -226,7 +226,7 @@ function BagianTabel({
                           ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
                           : s.status === "DIBATALKAN"
                             ? "bg-rose-500/15 text-rose-300 ring-rose-400/30"
-                            : "bg-white/10 text-emerald-100/60 ring-white/15"
+                            : "bg-white/10 text-sekunder ring-white/15"
                       }
                     >
                       {STATUS_SESI_LABEL[s.status]}

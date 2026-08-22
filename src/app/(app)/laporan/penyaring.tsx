@@ -88,14 +88,14 @@ export function Penyaring({
       <div className="flex flex-wrap gap-2 sm:col-span-2 lg:col-span-6">
         <a
           href={`/api/laporan/excel?${query}`}
-          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
+          className="inline-flex items-center gap-2 rounded-xl border border-kendali bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
         >
           <FileSpreadsheet size={15} />
           Unduh Excel
         </a>
         <a
           href={`/api/laporan/pdf?${query}`}
-          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
+          className="inline-flex items-center gap-2 rounded-xl border border-kendali bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
         >
           <FileText size={15} />
           Unduh PDF

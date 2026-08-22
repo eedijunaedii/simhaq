@@ -141,7 +141,7 @@ export function LayarQr({
         <p className={cn("font-bold text-white", penuh ? "text-4xl" : "text-lg")}>
           {namaKegiatan}
         </p>
-        <p className={cn("text-emerald-100/55", penuh ? "mt-2 text-lg" : "text-sm")}>
+        <p className={cn("text-redup", penuh ? "mt-2 text-lg" : "text-sm")}>
           {keterangan}
         </p>
       </div>
@@ -181,7 +181,7 @@ export function LayarQr({
         </div>
         <p
           className={cn(
-            "mt-2 text-center text-emerald-100/50",
+            "mt-2 text-center text-redup",
             penuh ? "text-base" : "text-xs"
           )}
         >
@@ -205,7 +205,7 @@ export function LayarQr({
         ].map((x) => (
           <div key={x.l} className="rounded-xl bg-white/[0.06] py-2.5">
             <p className={cn("font-bold", penuh ? "text-3xl" : "text-lg", x.w)}>{x.n}</p>
-            <p className={cn("text-emerald-100/45", penuh ? "text-sm" : "text-[11px]")}>
+            <p className={cn("text-redup", penuh ? "text-sm" : "text-[11px]")}>
               {x.l}
             </p>
           </div>

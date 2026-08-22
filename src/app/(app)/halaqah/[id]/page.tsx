@@ -55,7 +55,7 @@ export default async function HalamanDetailHalaqah(props: {
     <>
       <Link
         href="/halaqah"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-emerald-100/55 transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
       >
         <ArrowLeft size={16} />
         Halaqah
@@ -120,15 +120,15 @@ export default async function HalamanDetailHalaqah(props: {
                         className="group flex items-center gap-3"
                       >
                         <Avatar nama={a.nama} ukuran={32} />
-                        <span className="font-medium text-white group-hover:text-emerald-300">
+                        <span className="font-medium text-white group-hover:text-aksen">
                           {a.nama}
                         </span>
                       </Link>
                     </Td>
-                    <Td className="hidden text-emerald-100/60 md:table-cell">
+                    <Td className="hidden text-sekunder md:table-cell">
                       {a.kampus}
                     </Td>
-                    <Td className="text-center text-emerald-100/70">
+                    <Td className="text-center text-sekunder">
                       {a.hadir + a.terlambat}
                     </Td>
                     <Td className="text-center text-sky-300/80">{a.izin + a.sakit}</Td>

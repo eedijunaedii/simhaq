@@ -10,13 +10,13 @@ export default function TidakDitemukan() {
           <LogoTeks ukuran={38} />
         </div>
         <Kartu className="p-8">
-          <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/10 text-emerald-100/50">
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/10 text-redup">
             <FileQuestion size={28} />
           </span>
           <h1 className="mt-5 text-lg font-semibold text-white">
             Halaman tidak ditemukan
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-emerald-100/55">
+          <p className="mt-2 text-sm leading-relaxed text-redup">
             Tautan yang Anda buka tidak ada atau sudah dipindahkan.
           </p>
           <div className="mt-6 flex justify-center gap-3">

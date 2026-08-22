@@ -63,13 +63,13 @@ export default async function HalamanWali(props: {
     return (
       <div className="flex min-h-dvh items-center justify-center px-5">
         <Kartu className="max-w-md p-8 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/10 text-emerald-100/50">
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/10 text-redup">
             <ShieldQuestion size={28} />
           </span>
           <p className="mt-4 text-lg font-semibold text-white">
             Tautan tidak berlaku
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-emerald-100/55">
+          <p className="mt-2 text-sm leading-relaxed text-redup">
             Tautan ini sudah dicabut atau tidak dikenali. Silakan hubungi pengurus{" "}
             {APP.lembaga} di {APP.telepon}.
           </p>
@@ -117,7 +117,7 @@ export default async function HalamanWali(props: {
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <LogoTeks ukuran={36} />
-          <p className="text-sm text-emerald-100/50">
+          <p className="text-sm text-redup">
             Assalamu&apos;alaikum, {akses.namaWali}
           </p>
         </div>
@@ -126,10 +126,10 @@ export default async function HalamanWali(props: {
           <h1 className="text-2xl font-bold tracking-tight text-white">
             {santri.user.nama}
           </h1>
-          <p className="mt-1 text-sm text-emerald-100/55">
+          <p className="mt-1 text-sm text-redup">
             {santri.nim} · {santri.kampus} — {santri.jurusan}
           </p>
-          <p className="mt-0.5 text-sm text-emerald-100/45">
+          <p className="mt-0.5 text-sm text-redup">
             {santri.halaqah?.nama ?? "-"}
             {santri.halaqah?.musyrif ? ` · Musyrif ${santri.halaqah.musyrif.nama}` : ""}
             {santri.kamar ? ` · Kamar ${santri.kamar.nama}, ${santri.kamar.gedung}` : ""}
@@ -164,20 +164,20 @@ export default async function HalamanWali(props: {
             <KepalaKartu judul="Kehadiran per kegiatan" keterangan="30 hari terakhir" />
             <div className="space-y-3.5 p-5">
               {rekap.perKegiatan.length === 0 ? (
-                <p className="py-6 text-center text-sm text-emerald-100/40">
+                <p className="py-6 text-center text-sm text-samar">
                   Belum ada data.
                 </p>
               ) : (
                 rekap.perKegiatan.map((k) => (
                   <div key={k.id}>
                     <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                      <span className="truncate text-emerald-50/90">{k.nama}</span>
+                      <span className="truncate text-sekunder">{k.nama}</span>
                       <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
                         {k.persen}%
                       </span>
                     </div>
                     <BatangProgres nilai={k.persen} />
-                    <p className="mt-1 text-[11px] text-emerald-100/35">
+                    <p className="mt-1 text-[11px] text-samar">
                       {k.hadir} dari {k.total} kegiatan
                     </p>
                   </div>
@@ -199,10 +199,10 @@ export default async function HalamanWali(props: {
                       className="flex items-center gap-3 px-5 py-3 text-sm"
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-emerald-50/90">
+                        <span className="block truncate text-sekunder">
                           {p.sesi.kegiatan.nama}
                         </span>
-                        <span className="block text-xs text-emerald-100/35">
+                        <span className="block text-xs text-samar">
                           {fmtTanggalPendek(p.sesi.tanggal)}
                         </span>
                       </span>
@@ -227,10 +227,10 @@ export default async function HalamanWali(props: {
                       className="flex items-center gap-3 px-5 py-3 text-sm"
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="block text-emerald-50/90">
+                        <span className="block text-sekunder">
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
-                        <span className="block text-xs text-emerald-100/35">
+                        <span className="block text-xs text-samar">
                           {fmtTanggalPendek(z.mulai)} – {fmtTanggalPendek(z.selesai)}
                         </span>
                       </span>
@@ -245,7 +245,7 @@ export default async function HalamanWali(props: {
           </div>
         </div>
 
-        <p className="mt-8 text-center text-xs leading-relaxed text-emerald-100/35">
+        <p className="mt-8 text-center text-xs leading-relaxed text-samar">
           Halaman ini dibuat khusus untuk wali santri {APP.lembagaPanjang}. Data per{" "}
           {fmtTanggal(new Date())}. Untuk pertanyaan, hubungi pengurus di {APP.telepon}.
         </p>

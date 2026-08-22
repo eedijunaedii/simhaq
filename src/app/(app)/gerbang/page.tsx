@@ -119,7 +119,7 @@ export default async function HalamanGerbang() {
         )}
       </Kartu>
 
-      <p className="mt-6 flex items-center justify-center gap-2 text-center text-xs text-emerald-100/35">
+      <p className="mt-6 flex items-center justify-center gap-2 text-center text-xs text-samar">
         <ScanLine size={14} />
         Akun petugas hanya dapat memeriksa kartu izin dan mencatat kepulangan.
       </p>
@@ -150,19 +150,19 @@ function BarisIzin({ izin, lewat }: { izin: IzinGerbang; lewat?: boolean }) {
             </Lencana>
           ) : null}
         </div>
-        <p className="mt-1 text-xs text-emerald-100/50">
+        <p className="mt-1 text-xs text-redup">
           Batas kembali {fmtTanggalJam(izin.selesai)}
           {!lewat ? ` · ${selisihManusiawi(izin.selesai)}` : ""}
         </p>
         {izin.tujuan ? (
-          <p className="text-xs text-emerald-100/35">Tujuan: {izin.tujuan}</p>
+          <p className="text-xs text-samar">Tujuan: {izin.tujuan}</p>
         ) : null}
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
         <Link
           href={`/verifikasi/${izin.kode}`}
-          className="rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
+          className="rounded-xl border border-kendali bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
         >
           Lihat kartu
         </Link>

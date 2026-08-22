@@ -107,7 +107,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                 <p className="font-semibold text-white">
                   {belumPresensi.length} sesi presensi sedang dibuka
                 </p>
-                <p className="mt-0.5 text-sm text-emerald-100/65">
+                <p className="mt-0.5 text-sm text-sekunder">
                   {belumPresensi
                     .map(
                       (s) =>
@@ -190,20 +190,20 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
           <KepalaKartu judul="Kehadiran per kegiatan" />
           <div className="space-y-3.5 p-5">
             {rekap.perKegiatan.length === 0 ? (
-              <p className="py-8 text-center text-sm text-emerald-100/40">
+              <p className="py-8 text-center text-sm text-samar">
                 Belum ada data presensi.
               </p>
             ) : (
               rekap.perKegiatan.map((k) => (
                 <div key={k.id}>
                   <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                    <span className="truncate text-emerald-50/90">{k.nama}</span>
+                    <span className="truncate text-sekunder">{k.nama}</span>
                     <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
                       {k.persen}%
                     </span>
                   </div>
                   <BatangProgres nilai={k.persen} />
-                  <p className="mt-1 text-[11px] text-emerald-100/35">
+                  <p className="mt-1 text-[11px] text-samar">
                     {k.hadir} dari {k.total} kegiatan
                   </p>
                 </div>
@@ -232,7 +232,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                       <span className="block truncate text-sm text-white">
                         {p.sesi.kegiatan.nama}
                       </span>
-                      <span className="block text-xs text-emerald-100/40">
+                      <span className="block text-xs text-samar">
                         {fmtTanggalPendek(p.sesi.tanggal)}
                         {p.waktuScan ? ` · ${fmtJam(p.waktuScan)}` : ""}
                       </span>
@@ -272,7 +272,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                         <span className="block truncate text-sm text-white">
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
-                        <span className="block text-xs text-emerald-100/40">
+                        <span className="block text-xs text-samar">
                           {fmtTanggalPendek(z.mulai)} – {fmtTanggalPendek(z.selesai)}
                         </span>
                       </span>
@@ -325,8 +325,8 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
 function Info({ label, nilai }: { label: string; nilai: string }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-emerald-100/40">{label}</p>
-      <p className="mt-0.5 text-emerald-50/90">{nilai}</p>
+      <p className="text-xs uppercase tracking-wide text-samar">{label}</p>
+      <p className="mt-0.5 text-sekunder">{nilai}</p>
     </div>
   );
 }

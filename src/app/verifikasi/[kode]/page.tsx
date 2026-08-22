@@ -83,7 +83,7 @@ export default async function HalamanVerifikasi(props: {
             <span
               className={`mx-auto grid size-14 place-items-center rounded-full ${
                 !izin
-                  ? "bg-white/10 text-emerald-100/50"
+                  ? "bg-white/10 text-redup"
                   : sah
                     ? "bg-emerald-500/20 text-emerald-300"
                     : "bg-amber-500/20 text-amber-300"
@@ -104,7 +104,7 @@ export default async function HalamanVerifikasi(props: {
                   ? "Izin sah dan sedang berlaku"
                   : "Izin tidak sedang berlaku"}
             </p>
-            <p className="mt-1 text-sm text-emerald-100/55">
+            <p className="mt-1 text-sm text-redup">
               {!izin
                 ? "Kode pada kartu tidak terdaftar di sistem."
                 : sah
@@ -123,7 +123,7 @@ export default async function HalamanVerifikasi(props: {
               <Baris label="Mulai" nilai={fmtTanggalJam(izin.mulai)} />
               <Baris label="Selesai" nilai={fmtTanggalJam(izin.selesai)} />
               <div className="flex items-center justify-between gap-4 px-5 py-3.5">
-                <dt className="text-sm text-emerald-100/50">Status</dt>
+                <dt className="text-sm text-redup">Status</dt>
                 <dd>
                   <Lencana className={STATUS_IZIN_STYLE[izin.status]}>
                     {STATUS_IZIN_LABEL[izin.status]}
@@ -131,7 +131,7 @@ export default async function HalamanVerifikasi(props: {
                 </dd>
               </div>
               <div className="px-5 py-3.5">
-                <p className="text-center font-mono text-xs text-emerald-100/40">
+                <p className="text-center font-mono text-xs text-samar">
                   {izin.kode}
                 </p>
               </div>
@@ -142,7 +142,7 @@ export default async function HalamanVerifikasi(props: {
         {bolehCatat && izin ? (
           <Kartu className="mt-5 p-5">
             <p className="text-sm font-semibold text-white">Santri kembali sekarang?</p>
-            <p className="mt-1 text-xs leading-relaxed text-emerald-100/55">
+            <p className="mt-1 text-xs leading-relaxed text-redup">
               Tekan bila santri ini sudah masuk kembali ke area pesantren. Waktu
               kembali dicatat otomatis atas nama {pengguna.nama}.
             </p>
@@ -171,7 +171,7 @@ export default async function HalamanVerifikasi(props: {
         ) : null}
 
         {!pengguna && izin?.status === "DISETUJUI" ? (
-          <p className="mt-5 text-center text-xs text-emerald-100/40">
+          <p className="mt-5 text-center text-xs text-samar">
             Petugas gerbang:{" "}
             <Link href={`/login?lanjut=/verifikasi/${izin.kode}`} className="tautan-halus">
               masuk
@@ -180,7 +180,7 @@ export default async function HalamanVerifikasi(props: {
           </p>
         ) : null}
 
-        <p className="mt-6 text-center text-xs leading-relaxed text-emerald-100/35">
+        <p className="mt-6 text-center text-xs leading-relaxed text-samar">
           Halaman verifikasi resmi {APP.lembaga}. Data ditampilkan seperlunya untuk
           keperluan pemeriksaan di gerbang pesantren.
         </p>
@@ -192,8 +192,8 @@ export default async function HalamanVerifikasi(props: {
 function Baris({ label, nilai }: { label: string; nilai: string }) {
   return (
     <div className="flex items-start justify-between gap-4 px-5 py-3.5">
-      <dt className="text-sm text-emerald-100/50">{label}</dt>
-      <dd className="text-right text-sm text-emerald-50/90">{nilai}</dd>
+      <dt className="text-sm text-redup">{label}</dt>
+      <dd className="text-right text-sm text-sekunder">{nilai}</dd>
     </div>
   );
 }

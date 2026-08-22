@@ -131,16 +131,16 @@ export default async function HalamanIzin(props: {
       </div>
 
       <Kartu>
-        <div className="flex flex-wrap gap-1.5 border-b border-white/10 px-4 py-3">
+        <div className="flex flex-wrap gap-1.5 border-b border-garis px-4 py-3">
           {TAB.map((t) => (
             <Link
               key={t.kunci}
               href={`/izin?tab=${t.kunci}`}
               className={cn(
-                "rounded-lg px-3.5 py-1.5 text-sm transition",
+                "inline-flex min-h-11 cursor-pointer items-center rounded-lg px-3.5 text-sm transition-colors duration-200",
                 aktif.kunci === t.kunci
                   ? "bg-emerald-500/15 font-medium text-emerald-200"
-                  : "text-emerald-100/55 hover:bg-white/[0.06] hover:text-white"
+                  : "text-redup hover:bg-white/[0.06] hover:text-white"
               )}
             >
               {t.label}
@@ -181,11 +181,11 @@ export default async function HalamanIzin(props: {
                     <Td>
                       <Link
                         href={`/izin/${z.id}`}
-                        className="font-medium text-white hover:text-emerald-300"
+                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                       >
                         {z.santri.user.nama}
                       </Link>
-                      <span className="block text-xs text-emerald-100/40">
+                      <span className="block text-xs text-samar">
                         {z.santri.halaqah?.nama ?? "-"}
                       </span>
                     </Td>
@@ -195,19 +195,19 @@ export default async function HalamanIzin(props: {
                       <span className="block font-medium text-white">
                         {JENIS_IZIN_LABEL[z.jenis]}
                         {z._count.lampiran > 0 ? (
-                          <span className="ml-2 text-xs font-normal text-emerald-300/70">
+                          <span className="ml-2 text-xs font-normal text-aksen">
                             {z._count.lampiran} lampiran
                           </span>
                         ) : null}
                       </span>
-                      <span className="line-clamp-1 block max-w-md text-xs text-emerald-100/45">
+                      <span className="line-clamp-1 block max-w-md text-xs text-redup">
                         {z.kode} · {z.alasan}
                       </span>
                     </Link>
                   </Td>
-                  <Td className="hidden text-xs text-emerald-100/55 md:table-cell">
+                  <Td className="hidden text-xs text-redup md:table-cell">
                     {fmtTanggalPendek(z.mulai)} – {fmtTanggalPendek(z.selesai)}
-                    <span className="block text-[11px] text-emerald-100/35">
+                    <span className="block text-[11px] text-samar">
                       {z.status === "DISETUJUI"
                         ? `berakhir ${selisihManusiawi(z.selesai)}`
                         : fmtTanggalJam(z.mulai)}
@@ -233,7 +233,7 @@ export default async function HalamanIzin(props: {
 
       {!santri ? (
         <Kartu className="mt-6 p-5">
-          <p className="text-xs leading-relaxed text-emerald-100/45">
+          <p className="text-xs leading-relaxed text-redup">
             Izin yang batas waktunya sudah lewat namun kepulangannya belum
             dikonfirmasi petugas gerbang muncul sebagai daftar tugas pada halaman
             Pengawasan — bukan sebagai pelanggaran, karena belum tentu santrinya

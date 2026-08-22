@@ -1,77 +1,155 @@
 @import "tailwindcss";
 
 /*
-  Palet mengikuti situs resmi PPM Minhajul Haq (https://www.ppmmh.site):
-  latar hijau tua pekat, aksen hijau zamrud bertingkat, dan panel kaca
-  (glassmorphism) dengan garis tepi putih transparan.
+  Sistem visual SIMHAQ.
+
+  Identitas warna tetap mengikuti situs resmi PPM Minhajul Haq
+  (https://www.ppmmh.site), tetapi disusun ulang menjadi token semantik yang
+  setiap nilainya sudah diverifikasi memenuhi WCAG. Sebelumnya teks memakai
+  opasitas berjenjang (emerald-100/35 dan seterusnya) yang secara terukur
+  gagal: lima dari sepuluh kombinasi berada di bawah 4.5:1, yang terburuk
+  hanya 2.49:1.
+
+  Rasio terhadap permukaan kartu (diukur, bukan diperkirakan):
+    --teks        #F2F7F3  13.61:1  AAA
+    --sekunder    #C6D9C9   9.95:1  AAA
+    --redup       #9DB5A2   6.72:1  AA
+    --samar       #8AA390   5.42:1  AA
+    --aksen       #4ADE80   8.46:1  AAA
+    --tepi-kendali #65876E  3.68:1  lolos 1.4.11 untuk batas kontrol
 */
 
 @theme {
-  --color-ppm-bg: #0a1f0d;
+  /* Permukaan */
+  --color-dasar: #0a1f0d;
+  --color-permukaan: #192c1c;
+  --color-permukaan-naik: #233525;
+
+  /* Teks — semuanya lolos minimal AA pada ketiga permukaan di atas */
+  --color-teks: #f2f7f3;
+  --color-sekunder: #c6d9c9;
+  --color-redup: #9db5a2;
+  --color-samar: #8aa390;
+
+  /* Aksen jenama */
   --color-ppm-dark: #064e3b;
   --color-ppm: #047857;
-  --color-ppm-light: #10b981;
-  --color-ppm-accent: #34d399;
-  --color-ppm-ink: #f8fafc;
+  --color-aksen: #4ade80;
+  --color-aksen-lembut: #34d399;
+
+  /* Garis: pemisah halus, dan tepi kontrol yang wajib 3:1 */
+  --color-garis: #2d4433;
+  --color-kendali: #65876e;
 
   --font-sans: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
 }
 
 :root {
-  --ppm-bg: #0a1f0d;
-  --ppm-dark-green: #064e3b;
-  --ppm-green: #047857;
-  --ppm-light-green: #10b981;
-  --ppm-accent: #34d399;
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.14);
+  --dasar: #0a1f0d;
+  --permukaan: rgba(255, 255, 255, 0.05);
+  --permukaan-naik: rgba(255, 255, 255, 0.09);
+
+  /* Pemisah dekoratif — tidak wajib 3:1 karena tidak membawa makna sendiri */
+  --garis: rgba(255, 255, 255, 0.09);
+  /* Batas kontrol (input, tombol sekunder) — wajib 3:1 per WCAG 1.4.11 */
+  --tepi-kendali: #65876e;
+
+  /*
+    Warna cincin fokus. Sengaja variabel :root biasa, bukan token @theme:
+    Tailwind v4 mendaftarkan variabel @theme dengan `inherits: false`, sehingga
+    var(--color-aksen) gagal diwarisi elemen turunan dan properti singkat
+    `outline` diam-diam jatuh ke currentColor.
+  */
+  --fokus: #4ade80;
+
+  /* Skala spasi rapat, sesuai density 8/10 untuk alat operasional */
+  --sela-xs: 0.25rem;
+  --sela-sm: 0.5rem;
+  --sela-md: 0.75rem;
+  --sela-lg: 1rem;
+  --sela-xl: 1.5rem;
+  --sela-2xl: 2rem;
+
+  --lengkung: 0.75rem;
+  --lengkung-lg: 1rem;
+
   color-scheme: dark;
 }
 
 html,
 body {
-  background-color: var(--ppm-bg);
-  color: #f8fafc;
+  background-color: var(--dasar);
+  color: var(--color-teks);
 }
 
 body {
   font-family: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
   min-height: 100dvh;
+  /*
+    Gaya Minimalism/Swiss: latar dibuat jauh lebih tenang daripada sebelumnya
+    supaya data menjadi elemen paling menonjol, bukan hiasan gradasi.
+  */
   background-image:
-    radial-gradient(60rem 40rem at 12% -10%, rgba(6, 78, 59, 0.55), transparent 60%),
-    radial-gradient(50rem 35rem at 95% 0%, rgba(4, 120, 87, 0.35), transparent 55%),
-    radial-gradient(45rem 45rem at 50% 110%, rgba(16, 185, 129, 0.14), transparent 60%);
+    radial-gradient(48rem 32rem at 15% -8%, rgba(6, 78, 59, 0.32), transparent 62%),
+    radial-gradient(40rem 28rem at 92% 0%, rgba(4, 120, 87, 0.18), transparent 58%);
   background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Angka pada tabel dan statistik sejajar rapi antar baris. */
+table,
+.angka {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* --- Fokus keyboard ------------------------------------------------------ */
+
+/*
+  Sebelumnya tidak ada satu pun gaya fokus di seluruh aplikasi, sehingga
+  pengguna papan ketik tidak dapat melihat posisinya.
+*/
+:focus-visible {
+  outline-width: 2px;
+  outline-style: solid;
+  /*
+    Ditulis sebagai longhand, bukan properti singkat `outline`. Pada properti
+    singkat, komponen warnanya terbukti jatuh ke currentColor sehingga cincin
+    fokus mengambil warna teks elemen dan nyaris tak terbedakan pada tautan
+    yang warnanya redup.
+  */
+  outline-color: var(--fokus);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Bilah atas yang lengket tidak boleh menutupi elemen yang sedang difokus. */
+html {
+  scroll-padding-top: 5rem;
+  scroll-padding-bottom: 2rem;
 }
 
 /* --- Komponen dasar ------------------------------------------------------ */
 
 @layer components {
-  .kaca {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-  }
-
   .kartu {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 1rem;
-  }
-
-  .judul-bagian {
-    @apply text-lg font-semibold tracking-tight text-white;
-  }
-
-  .teks-redup {
-    @apply text-sm text-emerald-100/60;
+    background: var(--permukaan);
+    border: 1px solid var(--garis);
+    border-radius: var(--lengkung-lg);
   }
 
   .tautan-halus {
-    @apply text-emerald-300 underline-offset-4 transition hover:text-emerald-200 hover:underline;
+    color: var(--color-aksen);
+    text-underline-offset: 4px;
+    transition: color 160ms ease;
+  }
+  .tautan-halus:hover {
+    color: var(--color-aksen-lembut);
+    text-decoration: underline;
   }
 }
 
@@ -85,20 +163,19 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(209, 250, 229, 0.35);
+  color: var(--color-samar);
 }
 
-/* Pilihan dropdown agar terbaca di latar gelap (Windows/Chrome). */
 select option {
   background-color: #0f2a18;
-  color: #f8fafc;
+  color: var(--color-teks);
 }
 
 /* --- Scrollbar ----------------------------------------------------------- */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(52, 211, 153, 0.35) transparent;
+  scrollbar-color: rgba(74, 222, 128, 0.32) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -107,13 +184,13 @@ select option {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(52, 211, 153, 0.3);
+  background: rgba(74, 222, 128, 0.28);
   border-radius: 9999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 
-/* --- Animasi ------------------------------------------------------------- */
+/* --- Gerak --------------------------------------------------------------- */
 
 @keyframes denyut {
   0%,
@@ -132,7 +209,7 @@ select option {
 @keyframes munculHalus {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -141,7 +218,28 @@ select option {
 }
 
 .muncul {
-  animation: munculHalus 0.35s ease-out both;
+  animation: munculHalus 0.28s ease-out both;
+}
+
+/*
+  Hormati preferensi pengguna yang sensitif terhadap gerak. Denyut penanda
+  "sesi dibuka" tetap dipertahankan sebagai perubahan opasitas lambat karena
+  membawa makna status, bukan sekadar hiasan.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .denyut {
+    animation: none;
+    opacity: 0.85;
+  }
 }
 
 @media print {

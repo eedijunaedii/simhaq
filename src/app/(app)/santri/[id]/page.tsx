@@ -112,7 +112,7 @@ export default async function HalamanDetailSantri(props: {
     <>
       <Link
         href="/santri"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-emerald-100/55 transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
       >
         <ArrowLeft size={16} />
         Data santri
@@ -124,7 +124,7 @@ export default async function HalamanDetailSantri(props: {
           <h1 className="text-2xl font-bold tracking-tight text-white">
             {santri.user.nama}
           </h1>
-          <p className="mt-0.5 text-sm text-emerald-100/55">
+          <p className="mt-0.5 text-sm text-redup">
             {santri.nim} · {santri.kampus} — {santri.jurusan} · Angkatan{" "}
             {santri.angkatan}
           </p>
@@ -133,7 +133,7 @@ export default async function HalamanDetailSantri(props: {
           className={
             santri.status === "AKTIF"
               ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
-              : "bg-white/10 text-emerald-100/60 ring-white/15"
+              : "bg-white/10 text-sekunder ring-white/15"
           }
         >
           {santri.status}
@@ -185,16 +185,16 @@ export default async function HalamanDetailSantri(props: {
                 <tbody>
                   {presensi.map((p) => (
                     <Tr key={p.id}>
-                      <Td className="text-emerald-50/90">{p.sesi.kegiatan.nama}</Td>
-                      <Td className="hidden text-emerald-100/55 sm:table-cell">
+                      <Td className="text-sekunder">{p.sesi.kegiatan.nama}</Td>
+                      <Td className="hidden text-redup sm:table-cell">
                         {fmtTanggalPendek(p.sesi.tanggal)}
                         {p.waktuScan ? (
-                          <span className="block text-xs text-emerald-100/35">
+                          <span className="block text-xs text-samar">
                             {fmtJam(p.waktuScan)}
                           </span>
                         ) : null}
                       </Td>
-                      <Td className="hidden text-xs text-emerald-100/45 md:table-cell">
+                      <Td className="hidden text-xs text-redup md:table-cell">
                         {METODE_PRESENSI_LABEL[p.metode] ?? p.metode}
                       </Td>
                       <Td className="text-right">
@@ -225,7 +225,7 @@ export default async function HalamanDetailSantri(props: {
                         <span className="block text-sm font-medium text-white">
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
-                        <span className="block text-xs text-emerald-100/45">
+                        <span className="block text-xs text-redup">
                           {z.kode} · {fmtTanggalPendek(z.mulai)} –{" "}
                           {fmtTanggalPendek(z.selesai)}
                         </span>
@@ -246,8 +246,8 @@ export default async function HalamanDetailSantri(props: {
               <ul className="divide-y divide-white/5">
                 {flag.map((f) => (
                   <li key={f.id} className="px-5 py-3.5">
-                    <p className="text-sm text-emerald-50/90">{f.keterangan}</p>
-                    <p className="mt-0.5 text-xs text-emerald-100/40">
+                    <p className="text-sm text-sekunder">{f.keterangan}</p>
+                    <p className="mt-0.5 text-xs text-samar">
                       {fmtTanggalPendek(f.createdAt)} · {f.status}
                     </p>
                   </li>
@@ -292,18 +292,18 @@ export default async function HalamanDetailSantri(props: {
                 <div className="min-w-0 text-sm">
                   {santri.deviceId ? (
                     <>
-                      <p className="text-emerald-50/90">Terikat pada satu perangkat</p>
-                      <p className="mt-0.5 break-all font-mono text-[11px] text-emerald-100/35">
+                      <p className="text-sekunder">Terikat pada satu perangkat</p>
+                      <p className="mt-0.5 break-all font-mono text-[11px] text-samar">
                         {santri.deviceId.slice(0, 18)}…
                       </p>
                       {santri.deviceBoundAt ? (
-                        <p className="mt-1 text-xs text-emerald-100/40">
+                        <p className="mt-1 text-xs text-samar">
                           Sejak {fmtTanggal(santri.deviceBoundAt)}
                         </p>
                       ) : null}
                     </>
                   ) : (
-                    <p className="text-emerald-100/60">
+                    <p className="text-sekunder">
                       Belum ada perangkat terdaftar. Perangkat akan terikat otomatis pada
                       pemindaian pertama.
                     </p>
@@ -332,14 +332,14 @@ export default async function HalamanDetailSantri(props: {
             <KepalaKartu judul="Kehadiran per kegiatan" keterangan="30 hari terakhir" />
             <div className="space-y-3.5 p-5">
               {rekap.perKegiatan.length === 0 ? (
-                <p className="py-6 text-center text-sm text-emerald-100/40">
+                <p className="py-6 text-center text-sm text-samar">
                   Belum ada data.
                 </p>
               ) : (
                 rekap.perKegiatan.map((k) => (
                   <div key={k.id}>
                     <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                      <span className="truncate text-emerald-50/90">{k.nama}</span>
+                      <span className="truncate text-sekunder">{k.nama}</span>
                       <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
                         {k.persen}%
                       </span>
@@ -361,7 +361,7 @@ export default async function HalamanDetailSantri(props: {
                 <div className="rounded-2xl bg-white p-3">
                   <QrTautan path={`/wali/${wali.token}`} ukuran={150} />
                 </div>
-                <p className="text-center text-sm text-emerald-50/90">{wali.namaWali}</p>
+                <p className="text-center text-sm text-sekunder">{wali.namaWali}</p>
                 <code className="w-full break-all rounded-lg bg-white/10 px-3 py-2 text-center text-[11px] text-emerald-200">
                   /wali/{wali.token}
                 </code>
@@ -377,8 +377,8 @@ export default async function HalamanDetailSantri(props: {
 function Baris({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <dt className="text-emerald-100/50">{label}</dt>
-      <dd className="text-right text-emerald-50/90">{children}</dd>
+      <dt className="text-redup">{label}</dt>
+      <dd className="text-right text-sekunder">{children}</dd>
     </div>
   );
 }

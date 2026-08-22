@@ -110,23 +110,23 @@ export default async function HalamanPresensiSaya() {
                         {p.sesi.kegiatan.nama}
                       </span>
                       {p.sesi.halaqah ? (
-                        <span className="block text-xs text-emerald-100/40">
+                        <span className="block text-xs text-samar">
                           {p.sesi.halaqah.nama}
                         </span>
                       ) : null}
                     </Td>
-                    <Td className="hidden text-emerald-100/60 sm:table-cell">
+                    <Td className="hidden text-sekunder sm:table-cell">
                       {fmtTanggalPendek(p.sesi.tanggal)}
                       {p.waktuScan ? (
-                        <span className="block text-xs text-emerald-100/35">
+                        <span className="block text-xs text-samar">
                           {fmtJam(p.waktuScan)}
                         </span>
                       ) : null}
                     </Td>
-                    <Td className="hidden text-xs text-emerald-100/50 md:table-cell">
+                    <Td className="hidden text-xs text-redup md:table-cell">
                       {METODE_PRESENSI_LABEL[p.metode] ?? p.metode}
                       {p.izin ? (
-                        <span className="block text-[11px] text-emerald-100/35">
+                        <span className="block text-[11px] text-samar">
                           {p.izin.kode}
                         </span>
                       ) : null}
@@ -147,20 +147,20 @@ export default async function HalamanPresensiSaya() {
           <KepalaKartu judul="Per kegiatan" keterangan="30 hari terakhir" />
           <div className="space-y-3.5 p-5">
             {rekap.perKegiatan.length === 0 ? (
-              <p className="py-6 text-center text-sm text-emerald-100/40">
+              <p className="py-6 text-center text-sm text-samar">
                 Belum ada data.
               </p>
             ) : (
               rekap.perKegiatan.map((k) => (
                 <div key={k.id}>
                   <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                    <span className="truncate text-emerald-50/90">{k.nama}</span>
+                    <span className="truncate text-sekunder">{k.nama}</span>
                     <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
                       {k.persen}%
                     </span>
                   </div>
                   <BatangProgres nilai={k.persen} />
-                  <p className="mt-1 text-[11px] text-emerald-100/35">
+                  <p className="mt-1 text-[11px] text-samar">
                     {k.hadir} dari {k.total}
                   </p>
                 </div>

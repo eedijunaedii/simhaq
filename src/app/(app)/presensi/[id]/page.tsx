@@ -100,7 +100,7 @@ export default async function HalamanSesi(props: {
     <>
       <Link
         href="/presensi"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-emerald-100/55 transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
       >
         <ArrowLeft size={16} />
         Semua sesi
@@ -121,7 +121,7 @@ export default async function HalamanSesi(props: {
               className={
                 terbuka
                   ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
-                  : "bg-white/10 text-emerald-100/60 ring-white/15"
+                  : "bg-white/10 text-sekunder ring-white/15"
               }
             >
               {terbuka ? (
@@ -193,11 +193,11 @@ export default async function HalamanSesi(props: {
             />
           ) : (
             <Kartu className="p-6 text-center">
-              <Lock size={26} className="mx-auto text-emerald-100/30" />
+              <Lock size={26} className="mx-auto text-samar" />
               <p className="mt-3 font-medium text-white">
                 {STATUS_SESI_LABEL[sesi.status]}
               </p>
-              <p className="mt-1 text-sm text-emerald-100/50">
+              <p className="mt-1 text-sm text-redup">
                 {sesi.ditutupPada
                   ? `Ditutup ${fmtJam(sesi.ditutupPada)}${
                       sesi.ditutupOleh ? ` oleh ${sesi.ditutupOleh.nama}` : ""
@@ -229,12 +229,12 @@ export default async function HalamanSesi(props: {
             <ul className="space-y-2.5 p-5 text-sm">
               {["HADIR", "TERLAMBAT", "IZIN", "SAKIT", "ALFA"].map((s) => (
                 <li key={s} className="flex items-center justify-between">
-                  <span className="text-emerald-100/60">{STATUS_PRESENSI_LABEL[s]}</span>
+                  <span className="text-sekunder">{STATUS_PRESENSI_LABEL[s]}</span>
                   <span className="font-semibold text-white">{hitung[s] ?? 0}</span>
                 </li>
               ))}
-              <li className="flex items-center justify-between border-t border-white/10 pt-2.5">
-                <span className="text-emerald-100/60">Belum tercatat</span>
+              <li className="flex items-center justify-between border-t border-garis pt-2.5">
+                <span className="text-sekunder">Belum tercatat</span>
                 <span className="font-semibold text-white">{belum}</span>
               </li>
             </ul>
@@ -268,11 +268,11 @@ function Baris({
 }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <dt className="flex items-center gap-2 text-emerald-100/50">
+      <dt className="flex items-center gap-2 text-redup">
         {ikon}
         {label}
       </dt>
-      <dd className="text-right text-emerald-50/90">{children}</dd>
+      <dd className="text-right text-sekunder">{children}</dd>
     </div>
   );
 }

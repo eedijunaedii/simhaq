@@ -145,18 +145,18 @@ export default async function HalamanPengawasan(props: {
                 <div className="min-w-48 flex-1">
                   <Link
                     href={`/santri/${z.santri.id}`}
-                    className="font-medium text-white transition hover:text-emerald-300"
+                    className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                   >
                     {z.santri.user.nama}
                   </Link>
-                  <p className="text-xs text-emerald-100/50">
+                  <p className="text-xs text-redup">
                     {JENIS_IZIN_LABEL[z.jenis]} · batas {fmtTanggalJam(z.selesai)} (
                     {selisihManusiawi(z.selesai)})
                   </p>
                 </div>
                 <Link
                   href={`/izin/${z.id}`}
-                  className="rounded-xl border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
+                  className="rounded-xl border border-kendali bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
                 >
                   Buka izin
                 </Link>
@@ -167,16 +167,16 @@ export default async function HalamanPengawasan(props: {
       ) : null}
 
       <Kartu className="mb-6">
-        <div className="flex flex-wrap gap-1.5 border-b border-white/10 px-4 py-3">
+        <div className="flex flex-wrap gap-1.5 border-b border-garis px-4 py-3">
           {["BARU", "DITINJAU", "SELESAI", "SEMUA"].map((s) => (
             <Link
               key={s}
               href={`/pengawasan?status=${s}`}
               className={cn(
-                "rounded-lg px-3.5 py-1.5 text-sm transition",
+                "inline-flex min-h-11 cursor-pointer items-center rounded-lg px-3.5 text-sm transition-colors duration-200",
                 saring === s
                   ? "bg-emerald-500/15 font-medium text-emerald-200"
-                  : "text-emerald-100/55 hover:bg-white/[0.06] hover:text-white"
+                  : "text-redup hover:bg-white/[0.06] hover:text-white"
               )}
             >
               {STATUS_FLAG_LABEL[s] ?? "Semua"}
@@ -201,7 +201,7 @@ export default async function HalamanPengawasan(props: {
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       href={`/santri/${f.santri.id}`}
-                      className="font-medium text-white transition hover:text-emerald-300"
+                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                     >
                       {f.santri.user.nama}
                     </Link>
@@ -220,10 +220,10 @@ export default async function HalamanPengawasan(props: {
                       {STATUS_FLAG_LABEL[f.status]}
                     </Lencana>
                   </div>
-                  <p className="mt-1 text-sm leading-relaxed text-emerald-100/65">
+                  <p className="mt-1 text-sm leading-relaxed text-sekunder">
                     {f.keterangan}
                   </p>
-                  <p className="mt-1 text-xs text-emerald-100/35">
+                  <p className="mt-1 text-xs text-samar">
                     {fmtTanggalJam(f.createdAt)}
                     {f.santri.halaqah ? ` · ${f.santri.halaqah.nama}` : ""}
                     {f.sesi ? ` · ${f.sesi.kegiatan.nama}` : ""}
@@ -281,19 +281,19 @@ export default async function HalamanPengawasan(props: {
               >
                 <Link
                   href={`/santri/${p.santri.id}`}
-                  className="font-medium text-white transition hover:text-emerald-300"
+                  className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                 >
                   {p.santri.user.nama}
                 </Link>
-                <span className="text-emerald-100/45">·</span>
+                <span className="text-redup">·</span>
                 <Link
                   href={`/presensi/${p.sesi.id}`}
-                  className="text-emerald-100/60 transition hover:text-emerald-300"
+                  className="text-sekunder transition hover:text-aksen"
                 >
                   {p.sesi.kegiatan.nama}
                 </Link>
                 <Lencana>{p.status}</Lencana>
-                <span className="ml-auto text-xs text-emerald-100/35">
+                <span className="ml-auto text-xs text-samar">
                   {METODE_PRESENSI_LABEL.MANUAL} oleh {p.dicatatOleh?.nama ?? "-"} ·{" "}
                   {fmtTanggalJam(p.createdAt)}
                 </span>

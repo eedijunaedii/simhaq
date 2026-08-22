@@ -92,10 +92,10 @@ export default function Beranda() {
   return (
     <div className="min-h-dvh">
       {/* Navigasi */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a1f0d]/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-garis bg-[#0a1f0d]/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
           <LogoTeks />
-          <nav className="hidden items-center gap-7 text-sm text-emerald-100/70 md:flex">
+          <nav className="hidden items-center gap-7 text-sm text-sekunder md:flex">
             <a className="transition hover:text-white" href="#fitur">
               Fitur
             </a>
@@ -139,7 +139,7 @@ export default function Beranda() {
                 , perizinan tanpa kertas.
               </h1>
 
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-emerald-100/70">
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-sekunder">
                 SIMHAQ mencatat kehadiran santri pada kegiatan wajib pesantren melalui
                 pemindaian QR Code, sekaligus mengelola pengajuan izin secara digital.
                 Keduanya terhubung dalam satu basis data, sehingga izin yang disetujui
@@ -147,7 +147,7 @@ export default function Beranda() {
                 ketidakhadiran tanpa keterangan.
               </p>
 
-              <p className="mt-4 max-w-xl rounded-xl border-l-2 border-emerald-400/50 bg-white/[0.03] py-2.5 pl-4 text-sm italic leading-relaxed text-emerald-100/60">
+              <p className="mt-4 max-w-xl rounded-xl border-l-2 border-emerald-400/50 bg-white/[0.03] py-2.5 pl-4 text-sm italic leading-relaxed text-sekunder">
                 Di pesantren mahasiswa, ketidakhadiran belum tentu pelanggaran. Santri
                 yang praktikum sampai malam dan santri yang tidak disiplin sama-sama
                 tercatat &ldquo;tidak hadir&rdquo; pada buku absen manual. Sistem ini
@@ -173,7 +173,7 @@ export default function Beranda() {
                 ].map((s) => (
                   <div key={s.l}>
                     <dt className="text-2xl font-bold text-emerald-300">{s.n}</dt>
-                    <dd className="text-xs text-emerald-100/50">{s.l}</dd>
+                    <dd className="text-xs text-redup">{s.l}</dd>
                   </div>
                 ))}
               </dl>
@@ -183,7 +183,7 @@ export default function Beranda() {
             <div className="muncul relative mx-auto w-full max-w-sm">
               <div className="absolute -inset-6 rounded-[2.5rem] bg-emerald-500/10 blur-3xl" />
               <Kartu className="relative overflow-hidden p-6">
-                <div className="flex items-center justify-between text-xs text-emerald-100/60">
+                <div className="flex items-center justify-between text-xs text-sekunder">
                   <span>Kajian Ba&apos;da Subuh</span>
                   <span className="inline-flex items-center gap-1.5 text-emerald-300">
                     <span className="denyut inline-block size-1.5 rounded-full bg-emerald-400" />
@@ -199,7 +199,7 @@ export default function Beranda() {
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full w-2/3 rounded-full bg-emerald-400" />
                   </div>
-                  <p className="text-center text-xs text-emerald-100/50">
+                  <p className="text-center text-xs text-redup">
                     Kode berganti dalam 8 detik
                   </p>
                 </div>
@@ -212,7 +212,7 @@ export default function Beranda() {
                   ].map((x) => (
                     <div key={x.l} className="rounded-xl bg-white/[0.05] py-2.5">
                       <p className="text-lg font-bold text-white">{x.n}</p>
-                      <p className="text-[11px] text-emerald-100/50">{x.l}</p>
+                      <p className="text-[11px] text-redup">{x.l}</p>
                     </div>
                   ))}
                 </div>
@@ -228,7 +228,7 @@ export default function Beranda() {
           <h2 className="text-3xl font-bold tracking-tight text-white">
             Ruang lingkup fitur
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-emerald-100/60">
+          <p className="mt-2 max-w-2xl text-sm text-sekunder">
             Tiga modul utama yang saling terhubung dalam satu basis data.
           </p>
 
@@ -239,7 +239,7 @@ export default function Beranda() {
                   <f.ikon size={20} />
                 </span>
                 <h3 className="mt-4 font-semibold text-white">{f.judul}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-emerald-100/60">{f.isi}</p>
+                <p className="mt-2 text-sm leading-relaxed text-sekunder">{f.isi}</p>
               </Kartu>
             ))}
           </div>
@@ -258,7 +258,7 @@ export default function Beranda() {
               <h2 className="mt-5 text-3xl font-bold tracking-tight text-white">
                 QR tempel akan segera difoto lalu disebarkan
               </h2>
-              <p className="mt-4 text-sm leading-relaxed text-emerald-100/65">
+              <p className="mt-4 text-sm leading-relaxed text-sekunder">
                 Karena itu SIMHAQ tidak memakai QR statis. Sistem menerapkan pengamanan
                 berlapis agar catatan kehadiran benar-benar mencerminkan siapa yang
                 hadir.
@@ -268,11 +268,11 @@ export default function Beranda() {
             <div className="grid gap-4 sm:grid-cols-2">
               {PENGAMANAN.map((p, i) => (
                 <Kartu key={p.judul} className="p-5">
-                  <span className="text-xs font-semibold text-emerald-400/70">
+                  <span className="text-xs font-semibold text-aksen">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="mt-1.5 font-semibold text-white">{p.judul}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-emerald-100/60">
+                  <p className="mt-1.5 text-sm leading-relaxed text-sekunder">
                     {p.isi}
                   </p>
                 </Kartu>
@@ -288,7 +288,7 @@ export default function Beranda() {
           <h2 className="text-3xl font-bold tracking-tight text-white">
             Pengguna dan hak akses
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-emerald-100/60">
+          <p className="mt-2 max-w-2xl text-sm text-sekunder">
             Hak akses dipisahkan berdasarkan gender sesuai kebijakan hijab pesantren:
             pengurus putra hanya dapat mengakses data santri putra, demikian pula
             sebaliknya.
@@ -301,7 +301,7 @@ export default function Beranda() {
                   <Users size={18} />
                 </span>
                 <h3 className="mt-4 font-semibold text-white">{p.peran}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-emerald-100/60">{p.isi}</p>
+                <p className="mt-2 text-sm leading-relaxed text-sekunder">{p.isi}</p>
               </Kartu>
             ))}
           </div>
@@ -311,14 +311,14 @@ export default function Beranda() {
       {/* Kampus */}
       <section className="border-t border-white/5 py-14">
         <div className="mx-auto max-w-6xl px-5 text-center">
-          <p className="text-xs font-medium uppercase tracking-widest text-emerald-100/40">
+          <p className="text-xs font-medium uppercase tracking-widest text-samar">
             Santri berasal dari belasan perguruan tinggi di Bandung
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2.5">
             {KAMPUS.map((k) => (
               <span
                 key={k}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs text-emerald-100/70"
+                className="rounded-full border border-garis bg-white/[0.04] px-3.5 py-1.5 text-xs text-sekunder"
               >
                 {k}
               </span>
@@ -336,7 +336,7 @@ export default function Beranda() {
                 <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   Siap dipakai pengurus dan santri
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-emerald-100/65">
+                <p className="mt-3 text-sm leading-relaxed text-sekunder">
                   Masuk memakai akun yang dibuatkan pengurus. Santri cukup membuka
                   tautan dari peramban ponsel — tidak perlu mengunduh aplikasi apa pun.
                 </p>
@@ -356,7 +356,7 @@ export default function Beranda() {
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm text-emerald-100/65">
+              <div className="space-y-3 text-sm text-sekunder">
                 <p className="flex items-start gap-2.5">
                   <MapPin size={16} className="mt-0.5 shrink-0 text-emerald-400" />
                   {APP.alamat}
@@ -365,7 +365,7 @@ export default function Beranda() {
                   <Phone size={16} className="mt-0.5 shrink-0 text-emerald-400" />
                   {APP.telepon}
                 </p>
-                <p className="text-emerald-100/45">{APP.email}</p>
+                <p className="text-redup">{APP.email}</p>
               </div>
             </div>
           </Kartu>
@@ -373,16 +373,16 @@ export default function Beranda() {
       </section>
 
       {/* Kaki */}
-      <footer className="border-t border-white/10 py-9">
+      <footer className="border-t border-garis py-9">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <LogoTeks ukuran={30} />
-            <p className="mt-2.5 max-w-md text-xs leading-relaxed text-emerald-100/40">
+            <p className="mt-2.5 max-w-md text-xs leading-relaxed text-samar">
               {APP.namaPanjang} — aplikasi internal {APP.lembagaPanjang}. Terpisah dari
               situs profil pesantren.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-5 text-xs text-emerald-100/45">
+          <div className="flex flex-wrap items-center gap-5 text-xs text-redup">
             <Link href="/login" className="transition hover:text-emerald-200">
               Masuk
             </Link>

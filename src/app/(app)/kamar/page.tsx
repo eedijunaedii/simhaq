@@ -87,29 +87,29 @@ export default async function HalamanKamar() {
                 {daftar.map((k) => (
                   <div
                     key={k.id}
-                    className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                    className="rounded-xl border border-garis bg-white/[0.03] p-4"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="flex items-center gap-2 font-medium text-white">
                         <DoorOpen size={15} className="text-emerald-300" />
                         {k.nama}
                       </span>
-                      <span className="text-xs text-emerald-100/45">
+                      <span className="text-xs text-redup">
                         {k.santri.length}/{k.kapasitas}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-[11px] text-emerald-100/35">
+                    <p className="mt-0.5 text-[11px] text-samar">
                       Lantai {k.lantai}
                     </p>
                     {k.santri.length === 0 ? (
-                      <p className="mt-3 text-xs text-emerald-100/35">Kosong</p>
+                      <p className="mt-3 text-xs text-samar">Kosong</p>
                     ) : (
                       <ul className="mt-3 space-y-1">
                         {k.santri.map((s) => (
                           <li key={s.id}>
                             <Link
                               href={`/santri/${s.id}`}
-                              className="text-xs text-emerald-100/65 transition hover:text-emerald-300"
+                              className="inline-block -my-1 py-1 text-xs text-sekunder transition-colors duration-150 hover:text-aksen"
                             >
                               {s.user.nama}
                             </Link>

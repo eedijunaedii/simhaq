@@ -108,7 +108,7 @@ export default async function HalamanDetailIzin(props: {
     <>
       <Link
         href="/izin"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-emerald-100/55 transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
       >
         <ArrowLeft size={16} />
         Perizinan
@@ -146,13 +146,13 @@ export default async function HalamanDetailIzin(props: {
                 >
                   {izin.santri.user.nama}
                 </Link>
-                <span className="block text-xs text-emerald-100/40">
+                <span className="block text-xs text-samar">
                   {izin.santri.nim} · {izin.santri.kampus}
                 </span>
               </Info>
               <Info label="Halaqah">
                 {izin.santri.halaqah?.nama ?? "-"}
-                <span className="block text-xs text-emerald-100/40">
+                <span className="block text-xs text-samar">
                   Musyrif {izin.santri.halaqah?.musyrif?.nama ?? "-"}
                 </span>
               </Info>
@@ -172,10 +172,10 @@ export default async function HalamanDetailIzin(props: {
                   : "-"}
               </Info>
               <div className="sm:col-span-2">
-                <dt className="text-xs uppercase tracking-wide text-emerald-100/40">
+                <dt className="text-xs uppercase tracking-wide text-samar">
                   Alasan
                 </dt>
-                <dd className="mt-1 leading-relaxed text-emerald-50/90">{izin.alasan}</dd>
+                <dd className="mt-1 leading-relaxed text-sekunder">{izin.alasan}</dd>
               </div>
             </dl>
           </Kartu>
@@ -187,7 +187,7 @@ export default async function HalamanDetailIzin(props: {
                 {izin.lampiran.map((l) => (
                   <div
                     key={l.id}
-                    className="overflow-hidden rounded-xl border border-white/10"
+                    className="overflow-hidden rounded-xl border border-garis"
                   >
                     {l.mimeType.startsWith("image/") ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -197,14 +197,14 @@ export default async function HalamanDetailIzin(props: {
                         className="max-h-64 w-full bg-black/30 object-contain"
                       />
                     ) : (
-                      <div className="grid h-32 place-items-center bg-white/[0.04] text-emerald-100/50">
+                      <div className="grid h-32 place-items-center bg-white/[0.04] text-redup">
                         <Paperclip size={22} />
                       </div>
                     )}
                     <div className="flex items-center justify-between gap-3 px-3.5 py-2.5">
-                      <span className="min-w-0 truncate text-xs text-emerald-100/60">
+                      <span className="min-w-0 truncate text-xs text-sekunder">
                         {l.namaFile}
-                        <span className="block text-[11px] text-emerald-100/35">
+                        <span className="block text-[11px] text-samar">
                           {(l.ukuran / 1024).toFixed(0)} KB
                         </span>
                       </span>
@@ -257,14 +257,14 @@ export default async function HalamanDetailIzin(props: {
               <KepalaKartu judul="Catatan pengurus" />
               <div className="space-y-2 p-5 text-sm">
                 {izin.catatanPengurus ? (
-                  <p className="leading-relaxed text-emerald-50/90">
+                  <p className="leading-relaxed text-sekunder">
                     {izin.catatanPengurus}
                   </p>
                 ) : (
-                  <p className="text-emerald-100/40">Tanpa catatan tambahan.</p>
+                  <p className="text-samar">Tanpa catatan tambahan.</p>
                 )}
                 {izin.waktuProses ? (
-                  <p className="text-xs text-emerald-100/40">
+                  <p className="text-xs text-samar">
                     Diproses {fmtTanggalJam(izin.waktuProses)}
                     {izin.diprosesOleh ? ` oleh ${izin.diprosesOleh.nama}` : ""}
                   </p>
@@ -286,10 +286,10 @@ export default async function HalamanDetailIzin(props: {
                     className="flex items-center justify-between gap-3 px-5 py-3 text-sm"
                   >
                     <span className="min-w-0">
-                      <span className="block truncate text-emerald-50/90">
+                      <span className="block truncate text-sekunder">
                         {p.sesi.kegiatan.nama}
                       </span>
-                      <span className="block text-xs text-emerald-100/40">
+                      <span className="block text-xs text-samar">
                         {p.sesi.tanggal.toLocaleDateString("id-ID", {
                           day: "2-digit",
                           month: "short",
@@ -310,9 +310,9 @@ export default async function HalamanDetailIzin(props: {
         <div className="space-y-6">
           {izin.status === "DISETUJUI" || izin.status === "SELESAI" ? (
             <Kartu className="overflow-hidden">
-              <div className="border-b border-white/10 bg-emerald-500/[0.07] px-5 py-4 text-center">
+              <div className="border-b border-garis bg-emerald-500/[0.07] px-5 py-4 text-center">
                 <p className="text-sm font-semibold text-white">Kartu Izin Digital</p>
-                <p className="mt-0.5 text-xs text-emerald-100/50">
+                <p className="mt-0.5 text-xs text-redup">
                   Tunjukkan saat keluar area pesantren
                 </p>
               </div>
@@ -325,10 +325,10 @@ export default async function HalamanDetailIzin(props: {
                   <p className="mt-1 text-sm font-medium text-white">
                     {izin.santri.user.nama}
                   </p>
-                  <p className="mt-0.5 text-xs text-emerald-100/50">
+                  <p className="mt-0.5 text-xs text-redup">
                     {JENIS_IZIN_LABEL[izin.jenis]}
                   </p>
-                  <p className="mt-2 text-xs leading-relaxed text-emerald-100/45">
+                  <p className="mt-2 text-xs leading-relaxed text-redup">
                     {fmtTanggalJam(izin.mulai)}
                     <br />
                     s.d. {fmtTanggalJam(izin.selesai)}
@@ -341,7 +341,7 @@ export default async function HalamanDetailIzin(props: {
           {bisaDitandaiKembali ? (
             <Kartu className="p-5">
               <p className="text-sm font-semibold text-white">Konfirmasi kepulangan</p>
-              <p className="mt-1 text-xs leading-relaxed text-emerald-100/50">
+              <p className="mt-1 text-xs leading-relaxed text-redup">
                 Tandai bila santri sudah kembali ke pesantren. Kembali melewati batas
                 waktu akan tercatat pada halaman Pengawasan.
               </p>
@@ -397,7 +397,7 @@ export default async function HalamanDetailIzin(props: {
                           : "size-2 rounded-full bg-white/20"
                       }
                     />
-                    <span className={lewat ? "text-emerald-100" : "text-emerald-100/35"}>
+                    <span className={lewat ? "text-emerald-100" : "text-samar"}>
                       {STATUS_IZIN_LABEL[s]}
                     </span>
                   </li>
@@ -419,8 +419,8 @@ export default async function HalamanDetailIzin(props: {
 function Info({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-emerald-100/40">{label}</dt>
-      <dd className="mt-1 text-sm text-emerald-50/90">{children}</dd>
+      <dt className="text-xs uppercase tracking-wide text-samar">{label}</dt>
+      <dd className="mt-1 text-sm text-sekunder">{children}</dd>
     </div>
   );
 }

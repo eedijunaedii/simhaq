@@ -68,11 +68,11 @@ export function DaftarPeserta({
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-3 border-b border-white/10 px-5 py-4">
+      <div className="flex flex-wrap items-center gap-3 border-b border-garis px-5 py-4">
         <div className="relative min-w-52 flex-1">
           <Search
             size={16}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-100/35"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-samar"
           />
           <Input
             value={cari}
@@ -94,7 +94,7 @@ export function DaftarPeserta({
             </option>
           ))}
         </Select>
-        <span className="text-sm text-emerald-100/45">
+        <span className="text-sm text-redup">
           {tampil.length} dari {peserta.length}
         </span>
       </div>
@@ -114,18 +114,18 @@ export function DaftarPeserta({
             <Tr key={p.santriId} className={cn(sedang === p.santriId && "opacity-50")}>
               <Td>
                 <span className="block font-medium text-white">{p.nama}</span>
-                <span className="block text-xs text-emerald-100/40">
+                <span className="block text-xs text-samar">
                   {p.nim} · {p.kampus}
                 </span>
               </Td>
-              <Td className="hidden text-xs text-emerald-100/55 md:table-cell">
+              <Td className="hidden text-xs text-redup md:table-cell">
                 {p.halaqah ?? "-"}
                 {p.kamar ? ` · ${p.kamar}` : ""}
               </Td>
-              <Td className="hidden text-xs text-emerald-100/45 sm:table-cell">
+              <Td className="hidden text-xs text-redup sm:table-cell">
                 {p.metode ? METODE_PRESENSI_LABEL[p.metode] : "—"}
                 {p.waktuScan ? (
-                  <span className="block text-[11px] text-emerald-100/30">
+                  <span className="block text-[11px] text-samar">
                     {p.waktuScan}
                   </span>
                 ) : null}
@@ -136,7 +136,7 @@ export function DaftarPeserta({
                     {STATUS_PRESENSI_LABEL[p.status]}
                   </Lencana>
                 ) : (
-                  <Lencana className="bg-white/5 text-emerald-100/40 ring-white/10">
+                  <Lencana className="bg-white/5 text-samar ring-white/10">
                     Belum tercatat
                   </Lencana>
                 )}
@@ -166,7 +166,7 @@ export function DaftarPeserta({
             <tr>
               <td
                 colSpan={bolehUbah ? 5 : 4}
-                className="px-5 py-12 text-center text-sm text-emerald-100/40"
+                className="px-5 py-12 text-center text-sm text-samar"
               >
                 Tidak ada santri yang cocok dengan penyaringan.
               </td>

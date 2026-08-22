@@ -133,7 +133,7 @@ export function Shell({
         </Link>
         <button
           onClick={() => setBuka(false)}
-          className="text-emerald-100/60 lg:hidden"
+          className="-mr-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-white/[0.08] hover:text-teks lg:hidden"
           aria-label="Tutup menu"
         >
           <X size={20} />
@@ -143,7 +143,7 @@ export function Shell({
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-6">
         {grupTampil.map((g) => (
           <div key={g.grup}>
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-emerald-100/30">
+            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-samar">
               {g.grup}
             </p>
             <ul className="space-y-0.5">
@@ -156,7 +156,7 @@ export function Shell({
                       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition",
                       aktif(i.href)
                         ? "bg-emerald-500/15 font-medium text-emerald-200 ring-1 ring-inset ring-emerald-400/25"
-                        : "text-emerald-100/65 hover:bg-white/[0.06] hover:text-white"
+                        : "text-sekunder hover:bg-white/[0.06] hover:text-white"
                     )}
                   >
                     <i.ikon size={17} />
@@ -169,7 +169,7 @@ export function Shell({
         ))}
       </nav>
 
-      <div className="border-t border-white/10 p-3">
+      <div className="border-t border-garis p-3">
         <Link
           href="/profil"
           onClick={() => setBuka(false)}
@@ -180,16 +180,16 @@ export function Shell({
             <span className="block truncate text-sm font-medium text-white">
               {sesi.nama}
             </span>
-            <span className="block truncate text-xs text-emerald-100/45">
+            <span className="block truncate text-xs text-redup">
               {ROLE_LABEL[sesi.role]}
             </span>
           </span>
-          <UserCircle size={16} className="shrink-0 text-emerald-100/40" />
+          <UserCircle size={16} className="shrink-0 text-samar" />
         </Link>
         <form action={keluar}>
           <button
             type="submit"
-            className="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-emerald-100/55 transition hover:bg-rose-500/10 hover:text-rose-200"
+            className="mt-1 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-redup transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
           >
             <LogOut size={17} />
             Keluar
@@ -202,7 +202,7 @@ export function Shell({
   return (
     <div className="flex min-h-dvh">
       {/* Sidebar tetap (desktop) */}
-      <aside className="hidden w-64 shrink-0 border-r border-white/10 bg-white/[0.03] backdrop-blur-md lg:block">
+      <aside className="hidden w-64 shrink-0 border-r border-garis bg-white/[0.03] backdrop-blur-md lg:block">
         <div className="sticky top-0 h-dvh">{isiSidebar}</div>
       </aside>
 
@@ -214,7 +214,7 @@ export function Shell({
             onClick={() => setBuka(false)}
             aria-label="Tutup menu"
           />
-          <div className="absolute inset-y-0 left-0 w-72 border-r border-white/10 bg-[#0c2412]">
+          <div className="absolute inset-y-0 left-0 w-72 border-r border-garis bg-[#0c2412]">
             {isiSidebar}
           </div>
         </div>
@@ -222,16 +222,20 @@ export function Shell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Bilah atas (mobile) */}
-        <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-white/10 bg-[#0a1f0d]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-garis bg-[#0a1f0d]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
           <button
             onClick={() => setBuka(true)}
-            className="text-emerald-100/70"
+            className="-ml-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-white/[0.08] hover:text-teks"
             aria-label="Buka menu"
           >
             <Menu size={22} />
           </button>
           <LogoTeks ukuran={30} ringkas />
-          <Link href="/profil">
+          <Link
+            href="/profil"
+            aria-label="Profil saya"
+            className="-mr-2 inline-grid size-11 place-items-center rounded-xl transition-colors duration-200 hover:bg-white/[0.08]"
+          >
             <Avatar nama={sesi.nama} ukuran={32} />
           </Link>
         </header>

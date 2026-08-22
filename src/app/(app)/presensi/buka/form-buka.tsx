@@ -132,7 +132,7 @@ export function FormBukaSesi({
         </Bidang>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <div className="rounded-xl border border-garis bg-white/[0.03] p-4">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
@@ -145,7 +145,7 @@ export function FormBukaSesi({
             <span className="block text-sm font-medium text-white">
               Batasi pemindaian pada radius pesantren
             </span>
-            <span className="mt-0.5 block text-xs leading-relaxed text-emerald-100/50">
+            <span className="mt-0.5 block text-xs leading-relaxed text-redup">
               Akurasi GPS di dalam bangunan tidak selalu stabil, jadi opsi ini dimatikan
               secara bawaan dan dapat diaktifkan per sesi.
             </span>

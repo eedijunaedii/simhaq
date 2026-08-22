@@ -59,7 +59,7 @@ export default async function HalamanProfil() {
         <Avatar nama={user.nama} ukuran={64} />
         <div className="min-w-0 flex-1">
           <h2 className="text-xl font-bold text-white">{user.nama}</h2>
-          <p className="mt-0.5 text-sm text-emerald-100/55">
+          <p className="mt-0.5 text-sm text-redup">
             {user.username} · {ROLE_LABEL[user.role as keyof typeof ROLE_LABEL]}
             {user.pengajar ? ` · ${user.pengajar.jabatan}` : ""}
           </p>
@@ -107,7 +107,7 @@ export default async function HalamanProfil() {
                       : "-"}
                   </Baris>
                 </dl>
-                <p className="border-t border-white/10 px-5 py-3 text-xs text-emerald-100/35">
+                <p className="border-t border-garis px-5 py-3 text-xs text-samar">
                   Perubahan data kesantrian dilakukan oleh admin pesantren.
                 </p>
               </Kartu>
@@ -119,7 +119,7 @@ export default async function HalamanProfil() {
                     <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-emerald-300">
                       <Smartphone size={17} />
                     </span>
-                    <p className="text-sm leading-relaxed text-emerald-100/65">
+                    <p className="text-sm leading-relaxed text-sekunder">
                       {user.santri.deviceId
                         ? `Akun terikat pada satu perangkat sejak ${
                             user.santri.deviceBoundAt
@@ -158,7 +158,7 @@ export default async function HalamanProfil() {
           ) : null}
 
           <Kartu className="p-5">
-            <p className="text-xs leading-relaxed text-emerald-100/40">
+            <p className="text-xs leading-relaxed text-samar">
               Akun dibuat {fmtTanggal(user.createdAt)}. Seluruh aktivitas penting
               (pembukaan sesi, presensi manual, keputusan izin) tercatat pada log audit
               sistem.
@@ -173,8 +173,8 @@ export default async function HalamanProfil() {
 function Baris({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <dt className="text-emerald-100/50">{label}</dt>
-      <dd className="text-right text-emerald-50/90">{children}</dd>
+      <dt className="text-redup">{label}</dt>
+      <dd className="text-right text-sekunder">{children}</dd>
     </div>
   );
 }

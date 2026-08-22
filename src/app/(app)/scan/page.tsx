@@ -56,9 +56,9 @@ export default async function HalamanScan(props: {
 
         <div className="space-y-5">
           <Kartu>
-            <div className="border-b border-white/10 px-5 py-4">
+            <div className="border-b border-garis px-5 py-4">
               <h2 className="text-base font-semibold text-white">Sesi yang tersedia</h2>
-              <p className="mt-0.5 text-sm text-emerald-100/50">
+              <p className="mt-0.5 text-sm text-redup">
                 {GENDER_LABEL[sesi.gender]}
               </p>
             </div>
@@ -79,7 +79,7 @@ export default async function HalamanScan(props: {
                             {s.kegiatan.nama}
                           </p>
                           {s.halaqah ? (
-                            <p className="text-xs text-emerald-100/45">
+                            <p className="text-xs text-redup">
                               {s.halaqah.nama}
                             </p>
                           ) : null}
@@ -94,7 +94,7 @@ export default async function HalamanScan(props: {
                           </Lencana>
                         )}
                       </div>
-                      <p className="mt-2 text-xs text-emerald-100/45">
+                      <p className="mt-2 text-xs text-redup">
                         Batas tidak terlambat {fmtJam(s.batasTerlambat)} · sesi tutup{" "}
                         {selisihManusiawi(s.waktuTutup)}
                       </p>
@@ -107,7 +107,7 @@ export default async function HalamanScan(props: {
 
           <Kartu className="p-5">
             <h3 className="text-sm font-semibold text-white">Perangkat Anda</h3>
-            <p className="mt-1.5 text-xs leading-relaxed text-emerald-100/55">
+            <p className="mt-1.5 text-xs leading-relaxed text-redup">
               {santri?.deviceId
                 ? "Akun ini sudah terikat pada satu perangkat. Bila Anda berganti ponsel, mintalah musyrif melepas keterikatan perangkat."
                 : "Perangkat belum terdaftar. Perangkat yang Anda pakai pada pemindaian pertama akan terikat otomatis dengan akun ini."}

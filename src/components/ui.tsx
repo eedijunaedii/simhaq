@@ -12,7 +12,7 @@ export function Kartu({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-md",
+        "rounded-2xl border border-garis bg-permukaan/[0.55] backdrop-blur-sm",
         className
       )}
       {...rest}
@@ -32,11 +32,11 @@ export function KepalaKartu({
   aksi?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 px-5 py-4">
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-garis px-5 py-4">
       <div className="min-w-0">
         <h2 className="text-base font-semibold tracking-tight text-white">{judul}</h2>
         {keterangan ? (
-          <p className="mt-0.5 text-sm text-emerald-100/55">{keterangan}</p>
+          <p className="mt-0.5 text-sm text-redup">{keterangan}</p>
         ) : null}
       </div>
       {aksi ? <div className="flex shrink-0 items-center gap-2">{aksi}</div> : null}
@@ -60,7 +60,7 @@ export function JudulHalaman({
           {judul}
         </h1>
         {keterangan ? (
-          <p className="mt-1 max-w-2xl text-sm text-emerald-100/60">{keterangan}</p>
+          <p className="mt-1 max-w-2xl text-sm text-sekunder">{keterangan}</p>
         ) : null}
       </div>
       {aksi ? <div className="flex flex-wrap items-center gap-2">{aksi}</div> : null}
@@ -71,17 +71,16 @@ export function JudulHalaman({
 // --- Tombol ---------------------------------------------------------------
 
 const GAYA_TOMBOL = {
-  utama:
-    "bg-emerald-500 text-emerald-950 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20",
-  kedua: "bg-white/10 text-white hover:bg-white/15 border border-white/15",
-  bahaya: "bg-rose-500/90 text-white hover:bg-rose-500",
-  hantu: "text-emerald-100/80 hover:bg-white/10 hover:text-white",
+  utama: "bg-aksen text-[#06240f] hover:bg-aksen-lembut",
+  kedua: "bg-white/[0.07] text-teks hover:bg-white/[0.12] border border-kendali",
+  bahaya: "bg-rose-500 text-white hover:bg-rose-400",
+  hantu: "text-sekunder hover:bg-white/[0.08] hover:text-teks",
 } as const;
 
 const UKURAN_TOMBOL = {
-  sm: "px-3 py-1.5 text-xs",
-  md: "px-4 py-2 text-sm",
-  lg: "px-5 py-2.5 text-sm",
+  sm: "min-h-9 px-3 py-1.5 text-xs",
+  md: "min-h-11 px-4 py-2 text-sm",
+  lg: "min-h-12 px-5 py-2.5 text-sm",
 } as const;
 
 type PropsTombol = {
@@ -98,7 +97,7 @@ export function Tombol({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-medium transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50",
         GAYA_TOMBOL[gaya],
         UKURAN_TOMBOL[ukuran],
         className
@@ -117,7 +116,7 @@ export function TautanTombol({
   return (
     <Link
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition",
+        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-medium transition-colors duration-200",
         GAYA_TOMBOL[gaya],
         UKURAN_TOMBOL[ukuran],
         className
@@ -140,7 +139,7 @@ export function Lencana({
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
-        className ?? "bg-white/10 text-emerald-100/80 ring-white/15"
+        className ?? "bg-white/[0.08] text-sekunder ring-white/15"
       )}
     >
       {children}
@@ -153,14 +152,14 @@ export function Lencana({
 export function Label({ className, ...rest }: ComponentProps<"label">) {
   return (
     <label
-      className={cn("mb-1.5 block text-sm font-medium text-emerald-50/90", className)}
+      className={cn("mb-1.5 block text-sm font-medium text-teks", className)}
       {...rest}
     />
   );
 }
 
 const KELAS_KENDALI =
-  "w-full rounded-xl border border-white/15 bg-white/[0.06] px-3.5 py-2.5 text-sm text-white outline-none transition placeholder:text-emerald-100/30 focus:border-emerald-400/60 focus:bg-white/10 focus:ring-2 focus:ring-emerald-400/20 disabled:opacity-50";
+  "w-full min-h-11 rounded-xl border border-kendali bg-white/[0.05] px-3.5 py-2.5 text-sm text-teks outline-none transition-colors duration-200 placeholder:text-samar hover:border-aksen-lembut/70 focus-visible:border-aksen disabled:cursor-not-allowed disabled:opacity-50";
 
 export function Input({ className, ...rest }: ComponentProps<"input">) {
   return <input className={cn(KELAS_KENDALI, className)} {...rest} />;
@@ -190,7 +189,7 @@ export function Bidang({
       <Label>{label}</Label>
       {children}
       {petunjuk ? (
-        <p className="mt-1.5 text-xs text-emerald-100/45">{petunjuk}</p>
+        <p className="mt-1.5 text-xs text-redup">{petunjuk}</p>
       ) : null}
     </div>
   );
@@ -235,7 +234,7 @@ export function Kosong({
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
       <p className="text-sm font-medium text-white">{judul}</p>
       {keterangan ? (
-        <p className="max-w-sm text-sm text-emerald-100/50">{keterangan}</p>
+        <p className="max-w-sm text-sm text-redup">{keterangan}</p>
       ) : null}
       {aksi ? <div className="mt-3">{aksi}</div> : null}
     </div>
@@ -260,8 +259,8 @@ export function KartuStat({
   nada?: "netral" | "baik" | "waspada" | "buruk";
 }) {
   const warna = {
-    netral: "text-white",
-    baik: "text-emerald-300",
+    netral: "text-teks",
+    baik: "text-aksen",
     waspada: "text-amber-300",
     buruk: "text-rose-300",
   }[nada];
@@ -269,19 +268,19 @@ export function KartuStat({
   return (
     <Kartu className="p-5">
       <div className="flex items-start justify-between gap-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-emerald-100/50">
+        <p className="text-xs font-medium uppercase tracking-wide text-redup">
           {label}
         </p>
-        {ikon ? <span className="text-emerald-300/70">{ikon}</span> : null}
+        {ikon ? <span className="text-aksen">{ikon}</span> : null}
       </div>
-      <p className={cn("mt-2 text-3xl font-bold tracking-tight", warna)}>
+      <p className={cn("angka mt-2 text-3xl font-bold tracking-tight", warna)}>
         {nilai}
         {satuan ? (
           <span className="ml-1 text-base font-medium opacity-60">{satuan}</span>
         ) : null}
       </p>
       {keterangan ? (
-        <p className="mt-1 text-xs text-emerald-100/50">{keterangan}</p>
+        <p className="mt-1 text-xs text-redup">{keterangan}</p>
       ) : null}
     </Kartu>
   );
@@ -319,7 +318,7 @@ export function Th({ className, ...rest }: ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "border-b border-white/10 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-emerald-100/50",
+        "border-b border-garis px-4 py-3 text-xs font-semibold uppercase tracking-wide text-redup",
         className
       )}
       {...rest}
@@ -330,14 +329,14 @@ export function Th({ className, ...rest }: ComponentProps<"th">) {
 export function Td({ className, ...rest }: ComponentProps<"td">) {
   return (
     <td
-      className={cn("border-b border-white/5 px-4 py-3 align-middle text-emerald-50/90", className)}
+      className={cn("border-b border-white/[0.06] px-4 py-3 align-middle text-sekunder", className)}
       {...rest}
     />
   );
 }
 
 export function Tr({ className, ...rest }: ComponentProps<"tr">) {
-  return <tr className={cn("transition hover:bg-white/[0.04]", className)} {...rest} />;
+  return <tr className={cn("transition-colors duration-150 hover:bg-white/[0.05]", className)} {...rest} />;
 }
 
 // --- Avatar ---------------------------------------------------------------
@@ -351,7 +350,7 @@ export function Avatar({ nama, ukuran = 36 }: { nama: string; ukuran?: number })
     .join("");
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/80 to-emerald-700/80 font-semibold text-emerald-950"
+      className="inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-aksen to-emerald-500 font-semibold text-[#06240f]"
       style={{ width: ukuran, height: ukuran, fontSize: ukuran * 0.36 }}
     >
       {huruf || "?"}

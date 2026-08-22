@@ -114,11 +114,11 @@ export default async function HalamanSantri(props: {
       <Kartu>
         <KepalaKartu judul="Daftar santri" keterangan={`${daftar.length} santri`} />
 
-        <form className="flex flex-wrap gap-3 border-b border-white/10 px-5 py-4">
+        <form className="flex flex-wrap gap-3 border-b border-garis px-5 py-4">
           <div className="relative min-w-52 flex-1">
             <Search
               size={16}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-100/35"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-samar"
             />
             <Input
               name="q"
@@ -179,28 +179,28 @@ export default async function HalamanSantri(props: {
                       >
                         <Avatar nama={s.user.nama} ukuran={34} />
                         <span className="min-w-0">
-                          <span className="block truncate font-medium text-white group-hover:text-emerald-300">
+                          <span className="block truncate font-medium text-white group-hover:text-aksen">
                             {s.user.nama}
                           </span>
-                          <span className="block text-xs text-emerald-100/40">
+                          <span className="block text-xs text-samar">
                             {s.nim} · {s.user.username}
                           </span>
                         </span>
                       </Link>
                     </Td>
-                    <Td className="hidden text-emerald-100/60 md:table-cell">
+                    <Td className="hidden text-sekunder md:table-cell">
                       <span className="block">{s.kampus}</span>
-                      <span className="block text-xs text-emerald-100/35">
+                      <span className="block text-xs text-samar">
                         {s.jurusan} · {s.angkatan}
                       </span>
                     </Td>
-                    <Td className="hidden text-emerald-100/60 lg:table-cell">
+                    <Td className="hidden text-sekunder lg:table-cell">
                       {s.halaqah?.nama ?? "-"}
                     </Td>
-                    <Td className="hidden text-emerald-100/60 xl:table-cell">
+                    <Td className="hidden text-sekunder xl:table-cell">
                       {s.kamar ? `${s.kamar.nama}` : "-"}
                       {s.kamar ? (
-                        <span className="block text-xs text-emerald-100/35">
+                        <span className="block text-xs text-samar">
                           {s.kamar.gedung}
                         </span>
                       ) : null}
@@ -211,7 +211,7 @@ export default async function HalamanSantri(props: {
                           {r.persen}%
                         </span>
                       ) : (
-                        <Lencana className="bg-white/5 text-emerald-100/40 ring-white/10">
+                        <Lencana className="bg-white/5 text-samar ring-white/10">
                           Belum ada data
                         </Lencana>
                       )}

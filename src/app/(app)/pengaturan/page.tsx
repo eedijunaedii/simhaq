@@ -110,19 +110,19 @@ export default async function HalamanPengaturan() {
                 <Tr key={u.id}>
                   <Td>
                     <span className="block font-medium text-white">{u.nama}</span>
-                    <span className="block text-xs text-emerald-100/40">
+                    <span className="block text-xs text-samar">
                       {u.username} · {GENDER_LABEL[u.gender]}
                     </span>
                   </Td>
-                  <Td className="hidden text-emerald-100/60 sm:table-cell">
+                  <Td className="hidden text-sekunder sm:table-cell">
                     {ROLE_LABEL[u.role as Role]}
                     {u.pengajar ? (
-                      <span className="block text-xs text-emerald-100/35">
+                      <span className="block text-xs text-samar">
                         {u.pengajar.jabatan}
                       </span>
                     ) : null}
                   </Td>
-                  <Td className="hidden text-center text-emerald-100/60 lg:table-cell">
+                  <Td className="hidden text-center text-sekunder lg:table-cell">
                     {u._count.halaqahDiampu}
                   </Td>
                   <Td className="text-center">
@@ -141,7 +141,7 @@ export default async function HalamanPengaturan() {
                       <form action={resetKataSandi.bind(null, u.id)}>
                         <button
                           type="submit"
-                          className="rounded-lg p-2 text-emerald-100/50 transition hover:bg-white/10 hover:text-white"
+                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
                           title="Atur ulang kata sandi (nilai baru tercatat pada log audit)"
                         >
                           <KeyRound size={15} />
@@ -151,7 +151,7 @@ export default async function HalamanPengaturan() {
                         <form action={ubahStatusAkun.bind(null, u.id, !u.aktif)}>
                           <button
                             type="submit"
-                            className="rounded-lg p-2 text-emerald-100/50 transition hover:bg-white/10 hover:text-white"
+                            className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
                             title={u.aktif ? "Nonaktifkan akun" : "Aktifkan akun"}
                           >
                             <Power size={15} />
@@ -164,7 +164,7 @@ export default async function HalamanPengaturan() {
               ))}
             </tbody>
           </Tabel>
-          <p className="border-t border-white/10 px-5 py-3 text-xs text-emerald-100/35">
+          <p className="border-t border-garis px-5 py-3 text-xs text-samar">
             Kata sandi sementara hasil pengaturan ulang dapat dilihat pada log audit di
             bawah halaman ini, lalu sampaikan langsung kepada yang bersangkutan.
           </p>
@@ -196,23 +196,23 @@ export default async function HalamanPengaturan() {
                     <Td>
                       <Link
                         href={`/santri/${w.santri.id}`}
-                        className="font-medium text-white hover:text-emerald-300"
+                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                       >
                         {w.santri.user.nama}
                       </Link>
                     </Td>
-                    <Td className="text-emerald-100/70">
+                    <Td className="text-sekunder">
                       {w.namaWali}
-                      <span className="block text-xs text-emerald-100/35">
+                      <span className="block text-xs text-samar">
                         {w.hubungan}
                       </span>
                     </Td>
                     <Td className="hidden md:table-cell">
-                      <code className="break-all text-[11px] text-emerald-200/70">
+                      <code className="break-all text-[11px] text-aksen">
                         /wali/{w.token}
                       </code>
                       {w.terakhirDibuka ? (
-                        <span className="block text-[11px] text-emerald-100/30">
+                        <span className="block text-[11px] text-samar">
                           dibuka {fmtTanggalJam(w.terakhirDibuka)}
                         </span>
                       ) : null}
@@ -221,7 +221,7 @@ export default async function HalamanPengaturan() {
                       <form action={cabutTokenWali.bind(null, w.id)}>
                         <button
                           type="submit"
-                          className="rounded-lg p-2 text-rose-300/60 transition hover:bg-rose-500/10 hover:text-rose-300"
+                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-rose-300 transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
                           title="Cabut tautan"
                         >
                           <Trash2 size={15} />
@@ -246,9 +246,9 @@ export default async function HalamanPengaturan() {
                 <code className="rounded bg-white/[0.07] px-2 py-0.5 text-[11px] text-emerald-200">
                   {a.aksi}
                 </code>
-                <span className="text-emerald-100/60">{a.entitas}</span>
-                <span className="text-emerald-100/35">{a.user?.nama ?? "sistem"}</span>
-                <span className="ml-auto text-xs text-emerald-100/30">
+                <span className="text-sekunder">{a.entitas}</span>
+                <span className="text-samar">{a.user?.nama ?? "sistem"}</span>
+                <span className="ml-auto text-xs text-samar">
                   {fmtTanggalJam(a.createdAt)}
                 </span>
               </li>

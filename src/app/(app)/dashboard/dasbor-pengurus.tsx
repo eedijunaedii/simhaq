@@ -214,10 +214,10 @@ export async function DasborPengurus({
                       <span className="block truncate text-sm font-medium text-white">
                         {s.kegiatan.nama}
                         {s.halaqah ? (
-                          <span className="text-emerald-100/45"> · {s.halaqah.nama}</span>
+                          <span className="text-redup"> · {s.halaqah.nama}</span>
                         ) : null}
                       </span>
-                      <span className="block text-xs text-emerald-100/45">
+                      <span className="block text-xs text-redup">
                         {fmtJam(s.waktuBuka)} – {fmtJam(s.waktuTutup)} ·{" "}
                         {GENDER_LABEL[s.gender]}
                       </span>
@@ -226,7 +226,7 @@ export async function DasborPengurus({
                       <span className="block text-sm font-semibold text-white">
                         {s._count.presensi}
                       </span>
-                      <span className="block text-[11px] text-emerald-100/40">
+                      <span className="block text-[11px] text-samar">
                         tercatat
                       </span>
                     </span>
@@ -264,7 +264,7 @@ export async function DasborPengurus({
                       <span className="block truncate text-sm font-medium text-white">
                         {z.santri.user.nama}
                       </span>
-                      <span className="block truncate text-xs text-emerald-100/45">
+                      <span className="block truncate text-xs text-redup">
                         {JENIS_IZIN_LABEL[z.jenis]} · {fmtTanggalPendek(z.mulai)} –{" "}
                         {fmtTanggalPendek(z.selesai)}
                       </span>
@@ -307,7 +307,7 @@ export async function DasborPengurus({
           />
           <div className="space-y-3.5 p-5">
             {perHalaqah.filter((h) => h.total > 0).length === 0 ? (
-              <p className="py-8 text-center text-sm text-emerald-100/40">
+              <p className="py-8 text-center text-sm text-samar">
                 Belum ada data.
               </p>
             ) : (
@@ -316,13 +316,13 @@ export async function DasborPengurus({
                 .map((h) => (
                   <div key={h.id}>
                     <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-                      <span className="truncate text-emerald-50/90">{h.nama}</span>
+                      <span className="truncate text-sekunder">{h.nama}</span>
                       <span className={cn("font-semibold", warnaKehadiran(h.persen))}>
                         {h.persen}%
                       </span>
                     </div>
                     <BatangProgres nilai={h.persen} />
-                    <p className="mt-1 text-[11px] text-emerald-100/35">
+                    <p className="mt-1 text-[11px] text-samar">
                       {h.jumlahSantri} santri · musyrif {h.musyrif}
                     </p>
                   </div>
@@ -365,13 +365,13 @@ export async function DasborPengurus({
                     <Td>
                       <Link
                         href={`/santri/${s.santriId}`}
-                        className="font-medium text-white hover:text-emerald-300"
+                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                       >
                         {s.nama}
                       </Link>
-                      <span className="block text-xs text-emerald-100/40">{s.kampus}</span>
+                      <span className="block text-xs text-samar">{s.kampus}</span>
                     </Td>
-                    <Td className="hidden text-emerald-100/60 sm:table-cell">
+                    <Td className="hidden text-sekunder sm:table-cell">
                       {s.halaqah ?? "-"}
                     </Td>
                     <Td className="text-center text-rose-300">{s.alfa}</Td>
@@ -411,10 +411,10 @@ export async function DasborPengurus({
                     <p className="text-sm font-medium text-white">
                       {f.santri.user.nama}
                     </p>
-                    <p className="text-xs text-emerald-100/50">
+                    <p className="text-xs text-redup">
                       {JENIS_FLAG_LABEL[f.jenis]}
                     </p>
-                    <p className="mt-0.5 text-[11px] text-emerald-100/35">
+                    <p className="mt-0.5 text-[11px] text-samar">
                       {fmtTanggalPendek(f.createdAt)}
                     </p>
                   </div>
@@ -425,7 +425,7 @@ export async function DasborPengurus({
         </Kartu>
       </div>
 
-      <p className="text-center text-xs text-emerald-100/30">
+      <p className="text-center text-xs text-samar">
         Masuk sebagai {sesi.nama} · {GENDER_LABEL[sesi.gender]}
         {gender ? " · akses dibatasi sesuai kebijakan hijab pesantren" : ""}
       </p>

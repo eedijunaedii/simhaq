@@ -25,7 +25,7 @@ export default async function HalamanLogin(props: {
       <header className="px-5 py-5">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-emerald-100/60 transition hover:text-white"
+          className="inline-flex items-center gap-2 text-sm text-sekunder transition hover:text-white"
         >
           <ArrowLeft size={16} />
           Kembali
@@ -36,7 +36,7 @@ export default async function HalamanLogin(props: {
         <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center text-center">
             <LogoTeks ukuran={44} />
-            <p className="mt-4 text-sm text-emerald-100/55">
+            <p className="mt-4 text-sm text-redup">
               Masuk dengan akun yang dibuatkan pengurus {APP.lembaga}.
             </p>
           </div>
@@ -46,27 +46,27 @@ export default async function HalamanLogin(props: {
           </Kartu>
 
           <Kartu className="mt-5 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-100/45">
+            <p className="text-xs font-semibold uppercase tracking-wide text-redup">
               Akun uji coba
             </p>
             <ul className="mt-3 space-y-2 text-sm">
               {AKUN_UJI.map((a) => (
                 <li key={a.u} className="flex items-center justify-between gap-3">
-                  <span className="text-emerald-100/60">{a.peran}</span>
+                  <span className="text-sekunder">{a.peran}</span>
                   <code className="rounded-lg bg-white/10 px-2 py-1 text-xs text-emerald-200">
                     {a.u} / {a.s}
                   </code>
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs leading-relaxed text-emerald-100/40">
+            <p className="mt-3 text-xs leading-relaxed text-samar">
               Akun santri memakai pola <code>namaXXX</code> dengan kata sandi{" "}
               <code>santri123</code>. Daftar lengkap ada pada menu Santri setelah masuk
               sebagai pengurus.
             </p>
           </Kartu>
 
-          <p className="mt-6 text-center text-xs text-emerald-100/35">
+          <p className="mt-6 text-center text-xs text-samar">
             Lupa kata sandi? Hubungi pengurus di {APP.telepon}
           </p>
         </div>

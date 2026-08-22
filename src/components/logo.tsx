@@ -66,7 +66,7 @@ export function LogoTeks({
           SIMHAQ
         </span>
         {!ringkas ? (
-          <span className="block text-[11px] text-emerald-100/55">
+          <span className="block text-[11px] text-redup">
             Presensi &amp; Perizinan Santri
           </span>
         ) : null}

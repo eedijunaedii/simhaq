@@ -58,7 +58,7 @@ export function FormLogin({ lanjut }: { lanjut: string }) {
           <button
             type="button"
             onClick={() => setLihat((v) => !v)}
-            className="absolute inset-y-0 right-0 grid w-11 place-items-center text-emerald-100/50 transition hover:text-emerald-200"
+            className="absolute inset-y-0 right-0 grid w-11 place-items-center text-redup transition hover:text-emerald-200"
             aria-label={lihat ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
           >
             {lihat ? <EyeOff size={17} /> : <Eye size={17} />}

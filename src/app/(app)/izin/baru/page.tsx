@@ -18,7 +18,7 @@ export default async function HalamanIzinBaru() {
     <>
       <Link
         href="/izin"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-emerald-100/55 transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
       >
         <ArrowLeft size={16} />
         Perizinan

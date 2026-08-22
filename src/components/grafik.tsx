@@ -117,7 +117,7 @@ export function GrafikStatus({
 
   if (data.length === 0) {
     return (
-      <p className="py-16 text-center text-sm text-emerald-100/40">
+      <p className="py-16 text-center text-sm text-samar">
         Belum ada data presensi.
       </p>
     );

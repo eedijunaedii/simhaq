@@ -91,7 +91,7 @@ export default async function HalamanLaporan(props: {
           judul="Penyaringan & unduhan"
           keterangan="Atur periode lalu unduh rekap untuk kebutuhan rapat dan arsip pesantren."
         />
-        <Suspense fallback={<div className="p-5 text-sm text-emerald-100/40">Memuat...</div>}>
+        <Suspense fallback={<div className="p-5 text-sm text-samar">Memuat...</div>}>
           <Penyaring halaqah={daftarHalaqah} kegiatan={daftarKegiatan} />
         </Suspense>
       </Kartu>
@@ -151,7 +151,7 @@ export default async function HalamanLaporan(props: {
               {perKegiatan.map((k) => (
                 <Tr key={k.id}>
                   <Td className="font-medium text-white">{k.nama}</Td>
-                  <Td className="text-center text-emerald-100/70">{k.hadir}</Td>
+                  <Td className="text-center text-sekunder">{k.hadir}</Td>
                   <Td className="text-center text-rose-300/80">{k.alfa}</Td>
                   <Td className="text-right">
                     <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
@@ -168,7 +168,7 @@ export default async function HalamanLaporan(props: {
           <KepalaKartu judul="Kehadiran per halaqah" />
           <div className="space-y-3.5 p-5">
             {perHalaqah.length === 0 ? (
-              <p className="py-8 text-center text-sm text-emerald-100/40">
+              <p className="py-8 text-center text-sm text-samar">
                 Belum ada data.
               </p>
             ) : (
@@ -177,7 +177,7 @@ export default async function HalamanLaporan(props: {
                   <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
                     <Link
                       href={`/halaqah/${h.id}`}
-                      className="truncate text-emerald-50/90 hover:text-emerald-300"
+                      className="inline-block -my-1 truncate py-1 text-sekunder transition-colors duration-150 hover:text-aksen"
                     >
                       {h.nama}
                     </Link>
@@ -186,7 +186,7 @@ export default async function HalamanLaporan(props: {
                     </span>
                   </div>
                   <BatangProgres nilai={h.persen} />
-                  <p className="mt-1 text-[11px] text-emerald-100/35">
+                  <p className="mt-1 text-[11px] text-samar">
                     {h.jumlahSantri} santri · musyrif {h.musyrif}
                   </p>
                 </div>
@@ -218,13 +218,13 @@ export default async function HalamanLaporan(props: {
                   <Td>
                     <Link
                       href={`/santri/${s.santriId}`}
-                      className="font-medium text-white hover:text-emerald-300"
+                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                     >
                       {s.nama}
                     </Link>
-                    <span className="block text-xs text-emerald-100/40">{s.kampus}</span>
+                    <span className="block text-xs text-samar">{s.kampus}</span>
                   </Td>
-                  <Td className="hidden text-emerald-100/60 sm:table-cell">
+                  <Td className="hidden text-sekunder sm:table-cell">
                     {s.halaqah ?? "-"}
                   </Td>
                   <Td className="text-center text-rose-300">{s.alfa}</Td>
@@ -266,20 +266,20 @@ export default async function HalamanLaporan(props: {
             <tbody>
               {urut.map((s, i) => (
                 <Tr key={s.santriId}>
-                  <Td className="text-emerald-100/35">{i + 1}</Td>
+                  <Td className="text-samar">{i + 1}</Td>
                   <Td>
                     <Link
                       href={`/santri/${s.santriId}`}
-                      className="font-medium text-white hover:text-emerald-300"
+                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
                     >
                       {s.nama}
                     </Link>
-                    <span className="block text-xs text-emerald-100/40">{s.kampus}</span>
+                    <span className="block text-xs text-samar">{s.kampus}</span>
                   </Td>
-                  <Td className="hidden text-emerald-100/60 lg:table-cell">
+                  <Td className="hidden text-sekunder lg:table-cell">
                     {s.halaqah ?? "-"}
                   </Td>
-                  <Td className="text-center text-emerald-100/70">{s.hadir}</Td>
+                  <Td className="text-center text-sekunder">{s.hadir}</Td>
                   <Td className="text-center text-amber-300/80">{s.terlambat}</Td>
                   <Td className="text-center text-sky-300/80">{s.izin}</Td>
                   <Td className="text-center text-violet-300/80">{s.sakit}</Td>
@@ -294,7 +294,7 @@ export default async function HalamanLaporan(props: {
             </tbody>
           </Tabel>
         )}
-        <p className="border-t border-white/10 px-5 py-3 text-xs text-emerald-100/35">
+        <p className="border-t border-garis px-5 py-3 text-xs text-samar">
           H = Hadir · T = Terlambat · I = Izin · S = Sakit · A = Tanpa keterangan
         </p>
       </Kartu>

@@ -46,7 +46,7 @@ export function FormPengaturan({
         />
       </Bidang>
 
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <div className="rounded-xl border border-garis bg-white/[0.03] p-4">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
@@ -59,7 +59,7 @@ export function FormPengaturan({
             <span className="block text-sm font-medium text-white">
               Aktifkan pembatasan lokasi secara bawaan
             </span>
-            <span className="mt-0.5 block text-xs leading-relaxed text-emerald-100/50">
+            <span className="mt-0.5 block text-xs leading-relaxed text-redup">
               Musyrif tetap dapat mematikannya per sesi. Akurasi GPS di dalam bangunan
               tidak selalu stabil, jadi disarankan dibiarkan mati.
             </span>

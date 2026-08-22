@@ -106,17 +106,17 @@ export function PengelolaKegiatan({
       <div className="grid gap-5 lg:grid-cols-2">
         {kegiatan.map((k) => (
           <Kartu key={k.id} className="flex flex-col">
-            <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4">
+            <div className="flex items-start justify-between gap-3 border-b border-garis px-5 py-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-semibold text-white">{k.nama}</h3>
                   {!k.aktif ? (
-                    <Lencana className="bg-white/10 text-emerald-100/50 ring-white/15">
+                    <Lencana className="bg-white/10 text-redup ring-white/15">
                       Nonaktif
                     </Lencana>
                   ) : null}
                 </div>
-                <p className="mt-0.5 text-xs text-emerald-100/45">
+                <p className="mt-0.5 text-xs text-redup">
                   {k.kode} · {KATEGORI_KEGIATAN_LABEL[k.kategori]} ·{" "}
                   {GENDER_LABEL[k.gender]}
                 </p>
@@ -127,7 +127,7 @@ export function PengelolaKegiatan({
                     setSunting(k);
                     setFormBaru(false);
                   }}
-                  className="rounded-lg p-2 text-emerald-100/50 transition hover:bg-white/10 hover:text-white"
+                  className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
                   aria-label="Ubah kegiatan"
                 >
                   <Pencil size={15} />
@@ -135,7 +135,7 @@ export function PengelolaKegiatan({
                 <form action={hapusKegiatan.bind(null, k.id)}>
                   <button
                     type="submit"
-                    className="rounded-lg p-2 text-rose-300/60 transition hover:bg-rose-500/10 hover:text-rose-300"
+                    className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-rose-300 transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
                     aria-label="Hapus kegiatan"
                     title={
                       k._count.sesi > 0
@@ -151,22 +151,22 @@ export function PengelolaKegiatan({
 
             <div className="flex-1 px-5 py-4">
               {k.deskripsi ? (
-                <p className="text-sm leading-relaxed text-emerald-100/60">
+                <p className="text-sm leading-relaxed text-sekunder">
                   {k.deskripsi}
                 </p>
               ) : null}
-              <p className="mt-2.5 text-xs text-emerald-100/40">
+              <p className="mt-2.5 text-xs text-samar">
                 Toleransi terlambat {k.toleransiTerlambatMenit} menit
                 {k.pengampu ? ` · pengampu ${k.pengampu.user.nama}` : ""} ·{" "}
                 {k._count.sesi} sesi tercatat
               </p>
 
               <div className="mt-4">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-100/40">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-samar">
                   Jadwal
                 </p>
                 {k.jadwal.length === 0 ? (
-                  <p className="text-sm text-emerald-100/40">Belum ada jadwal rutin.</p>
+                  <p className="text-sm text-samar">Belum ada jadwal rutin.</p>
                 ) : (
                   <ul className="space-y-1.5">
                     {[...k.jadwal]
@@ -177,18 +177,18 @@ export function PengelolaKegiatan({
                           className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.04] px-3 py-2 text-sm"
                         >
                           <span className="min-w-0">
-                            <span className="text-emerald-50/90">{HARI[j.hari]}</span>
-                            <span className="ml-2 text-emerald-100/55">
+                            <span className="text-sekunder">{HARI[j.hari]}</span>
+                            <span className="ml-2 text-redup">
                               {j.jamMulai}–{j.jamSelesai}
                             </span>
-                            <span className="block truncate text-xs text-emerald-100/35">
+                            <span className="block truncate text-xs text-samar">
                               {j.lokasi}
                             </span>
                           </span>
                           <form action={hapusJadwal.bind(null, j.id)}>
                             <button
                               type="submit"
-                              className="shrink-0 rounded p-1 text-rose-300/50 transition hover:text-rose-300"
+                              className="inline-grid size-9 shrink-0 cursor-pointer place-items-center rounded text-rose-300 transition-colors duration-200 hover:bg-rose-500/10"
                               aria-label="Hapus jadwal"
                             >
                               <Trash2 size={13} />
@@ -294,7 +294,7 @@ function FormKegiatan({
         <Textarea name="deskripsi" rows={3} defaultValue={awal?.deskripsi ?? ""} />
       </Bidang>
 
-      <label className="flex items-center gap-2.5 text-sm text-emerald-50/90">
+      <label className="flex items-center gap-2.5 text-sm text-sekunder">
         <input
           type="checkbox"
           name="aktif"
