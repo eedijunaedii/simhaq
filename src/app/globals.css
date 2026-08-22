@@ -180,6 +180,21 @@ select option {
   color: var(--color-teks);
 }
 
+/*
+  Peramban berbasis Chromium menyisipkan tombol "perlihatkan kata sandi" dan
+  "bersihkan" miliknya sendiri ke dalam kolom input. Karena setiap kolom sandi
+  di aplikasi ini sudah memakai komponen InputSandi yang menyediakan tombolnya
+  sendiri, kontrol bawaan itu muncul sebagai ikon mata kedua yang berdampingan.
+  Dimatikan agar tidak membingungkan.
+
+  Konsekuensinya: kolom sandi baru WAJIB memakai InputSandi, bukan Input biasa
+  bertipe password — kalau tidak, penggunanya kehilangan cara melihat sandinya.
+*/
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 /* --- Scrollbar ----------------------------------------------------------- */
 
 * {
