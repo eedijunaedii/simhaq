@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { randomBytes } from "node:crypto";
 import {
   catatAudit,
   genderYangBolehDiakses,
@@ -18,12 +19,54 @@ export type Hasil = { ok?: string; galat?: string };
 const JENIS_SAH = Object.values(JENIS_IZIN) as string[];
 const TIPE_LAMPIRAN = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
+/**
+ * Kode izin acak (48 bit, huruf besar). Kode dipakai pada halaman publik
+ * /verifikasi/[kode], sehingga tidak boleh bisa ditebak/di-enumerasi.
+ */
 async function kodeIzinBaru() {
-  const tahun = new Date().getFullYear();
-  const jumlah = await prisma.izin.count({
-    where: { kode: { startsWith: `IZN-${tahun}` } },
-  });
-  return `IZN-${tahun}${String(jumlah + 1).padStart(4, "0")}`;
+  for (let coba = 0; coba < 5; coba++) {
+    const kode = `IZN-${randomBytes(6).toString("hex").toUpperCase()}`;
+    const ada = await prisma.izin.findUnique({
+      where: { kode },
+      select: { id: true },
+    });
+    if (!ada) return kode;
+  }
+  throw new Error("Gagal membuat kode izin unik.");
+}
+
+/**
+ * Deteksi jenis berkas dari isinya (magic bytes), bukan dari klaim MIME yang
+ * dikirim peramban (yang bisa dipalsukan).
+ */
+function deteksiMime(buf: Buffer): string | null {
+  if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (
+    buf.length >= 8 &&
+    buf[0] === 0x89 &&
+    buf[1] === 0x50 &&
+    buf[2] === 0x4e &&
+    buf[3] === 0x47 &&
+    buf[4] === 0x0d &&
+    buf[5] === 0x0a &&
+    buf[6] === 0x1a &&
+    buf[7] === 0x0a
+  ) {
+    return "image/png";
+  }
+  if (
+    buf.length >= 12 &&
+    buf.toString("latin1", 0, 4) === "RIFF" &&
+    buf.toString("latin1", 8, 12) === "WEBP"
+  ) {
+    return "image/webp";
+  }
+  if (buf.length >= 5 && buf.toString("latin1", 0, 5) === "%PDF-") {
+    return "application/pdf";
+  }
+  return null;
 }
 
 // --- Pengajuan oleh santri ------------------------------------------------
@@ -82,15 +125,17 @@ export async function ajukanIzin(_sebelum: Hasil, data: FormData): Promise<Hasil
     if (berkas.size > MAKS_LAMPIRAN) {
       return { galat: "Ukuran lampiran melebihi 2 MB." };
     }
-    if (!TIPE_LAMPIRAN.includes(berkas.type)) {
+    const buf = Buffer.from(await berkas.arrayBuffer());
+    // Jenis ditentukan dari isi berkas, bukan klaim MIME peramban.
+    const mimeTerdeteksi = deteksiMime(buf);
+    if (!mimeTerdeteksi || !TIPE_LAMPIRAN.includes(mimeTerdeteksi)) {
       return { galat: "Lampiran harus berupa gambar (JPG/PNG/WebP) atau PDF." };
     }
-    const buf = Buffer.from(await berkas.arrayBuffer());
     lampiran = {
       namaFile: berkas.name,
-      mimeType: berkas.type,
+      mimeType: mimeTerdeteksi,
       ukuran: berkas.size,
-      data: `data:${berkas.type};base64,${buf.toString("base64")}`,
+      data: `data:${mimeTerdeteksi};base64,${buf.toString("base64")}`,
     };
   }
 

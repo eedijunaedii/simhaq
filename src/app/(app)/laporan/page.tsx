@@ -150,9 +150,9 @@ export default async function HalamanLaporan(props: {
             <tbody>
               {perKegiatan.map((k) => (
                 <Tr key={k.id}>
-                  <Td className="font-medium text-white">{k.nama}</Td>
+                  <Td className="font-medium text-teks">{k.nama}</Td>
                   <Td className="text-center text-sekunder">{k.hadir}</Td>
-                  <Td className="text-center text-rose-300/80">{k.alfa}</Td>
+                  <Td className="text-center text-bahaya/80">{k.alfa}</Td>
                   <Td className="text-right">
                     <span className={cn("font-semibold", warnaKehadiran(k.persen))}>
                       {k.total > 0 ? `${k.persen}%` : "—"}
@@ -218,7 +218,7 @@ export default async function HalamanLaporan(props: {
                   <Td>
                     <Link
                       href={`/santri/${s.santriId}`}
-                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                      className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                     >
                       {s.nama}
                     </Link>
@@ -227,8 +227,8 @@ export default async function HalamanLaporan(props: {
                   <Td className="hidden text-sekunder sm:table-cell">
                     {s.halaqah ?? "-"}
                   </Td>
-                  <Td className="text-center text-rose-300">{s.alfa}</Td>
-                  <Td className="text-center text-sky-300/80">{s.izin + s.sakit}</Td>
+                  <Td className="text-center text-bahaya">{s.alfa}</Td>
+                  <Td className="text-center text-info/80">{s.izin + s.sakit}</Td>
                   <Td className="text-right">
                     <span className={cn("font-semibold", warnaKehadiran(s.persen))}>
                       {s.persen}%
@@ -270,7 +270,7 @@ export default async function HalamanLaporan(props: {
                   <Td>
                     <Link
                       href={`/santri/${s.santriId}`}
-                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                      className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                     >
                       {s.nama}
                     </Link>
@@ -280,10 +280,10 @@ export default async function HalamanLaporan(props: {
                     {s.halaqah ?? "-"}
                   </Td>
                   <Td className="text-center text-sekunder">{s.hadir}</Td>
-                  <Td className="text-center text-amber-300/80">{s.terlambat}</Td>
-                  <Td className="text-center text-sky-300/80">{s.izin}</Td>
-                  <Td className="text-center text-violet-300/80">{s.sakit}</Td>
-                  <Td className="text-center text-rose-300/80">{s.alfa}</Td>
+                  <Td className="text-center text-waspada/80">{s.terlambat}</Td>
+                  <Td className="text-center text-info/80">{s.izin}</Td>
+                  <Td className="text-center text-ungu/80">{s.sakit}</Td>
+                  <Td className="text-center text-bahaya/80">{s.alfa}</Td>
                   <Td className="text-right">
                     <span className={cn("font-semibold", warnaKehadiran(s.persen))}>
                       {s.total > 0 ? `${s.persen}%` : "—"}

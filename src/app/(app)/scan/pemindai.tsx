@@ -45,6 +45,39 @@ function tulisAntrean(a: Antrean[]) {
   localStorage.setItem(KUNCI_ANTREAN, JSON.stringify(a));
 }
 
+let ctxAudio: AudioContext | null = null;
+
+/**
+ * Umpan balik saat pemindaian berhasil: getar halus (Android) dan nada
+ * singkat konfirmasi (Web Audio). Keduanya opsional — tidak gagal bila
+ * peramban memblokir audio atau getar.
+ */
+function beriFeedbackBerhasil() {
+  try {
+    navigator.vibrate?.(60);
+  } catch {
+    /* getar tidak tersedia */
+  }
+  try {
+    if (!ctxAudio) ctxAudio = new AudioContext();
+    const ctx = ctxAudio;
+    if (ctx.state === "suspended") void ctx.resume();
+    const osilator = ctx.createOscillator();
+    const penguat = ctx.createGain();
+    osilator.type = "sine";
+    osilator.frequency.setValueAtTime(880, ctx.currentTime);
+    penguat.gain.setValueAtTime(0.0001, ctx.currentTime);
+    penguat.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.012);
+    penguat.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+    osilator.connect(penguat);
+    penguat.connect(ctx.destination);
+    osilator.start();
+    osilator.stop(ctx.currentTime + 0.22);
+  } catch {
+    /* audio tidak tersedia */
+  }
+}
+
 export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
   const router = useRouter();
   const wadah = useRef<HTMLDivElement>(null);
@@ -93,7 +126,10 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
         const r = await pindaiQr({ token, deviceId, lat, lng });
         setHasil(r);
         setFase("hasil");
-        if (r.status === "sukses") router.refresh();
+        if (r.status === "sukses") {
+          beriFeedbackBerhasil();
+          router.refresh();
+        }
       } catch {
         // Jaringan bermasalah: simpan untuk disinkronkan setelah pulih.
         const antrean = bacaAntrean();
@@ -242,10 +278,10 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
     const berganti = hasil.status === "berganti";
 
     const gayaIkon = sukses
-      ? "bg-emerald-500/15 text-emerald-300"
+      ? "bg-sukses/15 text-sukses"
       : berganti
-        ? "bg-amber-500/15 text-amber-300"
-        : "bg-rose-500/15 text-rose-300";
+        ? "bg-waspada/15 text-waspada"
+        : "bg-bahaya/15 text-bahaya";
 
     return (
       <Kartu className="p-8 text-center">
@@ -258,7 +294,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
             <XCircle size={34} />
           )}
         </span>
-        <p className="mt-5 text-lg font-semibold text-white">{hasil.pesan}</p>
+        <p className="mt-5 text-lg font-semibold text-teks">{hasil.pesan}</p>
         {hasil.kegiatan ? (
           <p className="mt-1 text-sm text-sekunder">{hasil.kegiatan}</p>
         ) : null}
@@ -269,7 +305,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
         ) : null}
 
         {berganti ? (
-          <p className="mt-5 text-sm text-emerald-300">Menyalakan kamera kembali...</p>
+          <p className="mt-5 text-sm text-sukses">Menyalakan kamera kembali...</p>
         ) : (
           <div className="mt-7 flex justify-center gap-3">
             <Tombol onClick={ulangi} gaya={sukses ? "kedua" : "utama"}>
@@ -309,10 +345,10 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
           {fase === "siap" ? (
             <div className="absolute inset-0 grid place-items-center p-8 text-center">
               <div>
-                <span className="mx-auto grid size-16 place-items-center rounded-2xl bg-emerald-500/15 text-emerald-300">
+                <span className="mx-auto grid size-16 place-items-center rounded-2xl bg-sukses/15 text-sukses">
                   <ScanLine size={30} />
                 </span>
-                <p className="mt-4 font-medium text-white">Siap memindai</p>
+                <p className="mt-4 font-medium text-teks">Siap memindai</p>
                 <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-redup">
                   Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti
                   setiap 40 detik, jadi pindai langsung dari layarnya.
@@ -326,9 +362,9 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
           ) : null}
 
           {fase === "memproses" ? (
-            <div className="absolute inset-0 grid place-items-center bg-[#0a1f0d]/85">
+            <div className="absolute inset-0 grid place-items-center bg-dasar/85">
               <div className="text-center">
-                <Loader2 size={32} className="mx-auto animate-spin text-emerald-300" />
+                <Loader2 size={32} className="mx-auto animate-spin text-sukses" />
                 <p className="mt-3 text-sm text-sekunder">Memeriksa kode...</p>
               </div>
             </div>
@@ -336,7 +372,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
 
           {fase === "memindai" ? (
             <div className="pointer-events-none absolute inset-0 grid place-items-center">
-              <div className="size-56 rounded-3xl border-2 border-emerald-400/70 shadow-[0_0_0_9999px_rgba(10,31,13,0.45)]" />
+              <div className="size-56 rounded-3xl border-2 border-sukses/70 shadow-[0_0_0_9999px_rgba(10,31,13,0.45)]" />
             </div>
           ) : null}
         </div>
@@ -344,7 +380,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
 
       {fase === "memindai" ? (
         <p className="flex items-center justify-center gap-2 text-center text-sm text-redup">
-          <ScanLine size={15} className="text-emerald-400" />
+          <ScanLine size={15} className="text-sukses" />
           Mencari kode QR...
         </p>
       ) : null}
@@ -358,7 +394,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
       ) : null}
 
       {luring ? (
-        <p className="flex items-center justify-center gap-2 text-xs text-amber-200/60">
+        <p className="flex items-center justify-center gap-2 text-xs text-waspada/60">
           <WifiOff size={14} />
           Mode luring aktif
         </p>

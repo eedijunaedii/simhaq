@@ -42,11 +42,6 @@ export function Logo({ ukuran = 40, className }: { ukuran?: number; className?: 
         <rect x="27" y="27" width="3" height="3" rx="0.8" />
         <rect x="31" y="31" width="3" height="3" rx="0.8" />
       </g>
-      <g fill="#0a1f0d">
-        <rect x="16.4" y="16.4" width="2.2" height="2.2" rx="0.6" />
-        <rect x="29.4" y="16.4" width="2.2" height="2.2" rx="0.6" />
-        <rect x="16.4" y="29.4" width="2.2" height="2.2" rx="0.6" />
-      </g>
     </svg>
   );
 }
@@ -62,7 +57,7 @@ export function LogoTeks({
     <span className="flex items-center gap-2.5">
       <Logo ukuran={ukuran} />
       <span className="leading-tight">
-        <span className="block text-[15px] font-bold tracking-tight text-white">
+        <span className="block text-[15px] font-bold tracking-tight text-teks">
           SIMHAQ
         </span>
         {!ringkas ? (

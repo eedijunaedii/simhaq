@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BadgeCheck,
   BookOpen,
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { LogoTeks } from "@/components/logo";
 import { Avatar } from "@/components/ui";
+import { TombolTema } from "@/components/tombol-tema";
 import { ROLE_LABEL, type Role } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -107,15 +108,27 @@ const MENU: { grup: string; item: Menu[] }[] = [
 
 export function Shell({
   sesi,
+  badge = {},
   keluar,
   children,
 }: {
   sesi: { nama: string; role: Role; gender: string; username: string };
+  badge?: { izin?: number; presensi?: number };
   keluar: () => Promise<void>;
   children: React.ReactNode;
 }) {
   const [buka, setBuka] = useState(false);
   const path = usePathname();
+
+  // Tutup laci menu dengan tombol Escape.
+  useEffect(() => {
+    if (!buka) return;
+    const saatTekan = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setBuka(false);
+    };
+    window.addEventListener("keydown", saatTekan);
+    return () => window.removeEventListener("keydown", saatTekan);
+  }, [buka]);
 
   const grupTampil = MENU.map((g) => ({
     ...g,
@@ -133,7 +146,7 @@ export function Shell({
         </Link>
         <button
           onClick={() => setBuka(false)}
-          className="-mr-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-white/[0.08] hover:text-teks lg:hidden"
+          className="-mr-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-lapis hover:text-teks lg:hidden"
           aria-label="Tutup menu"
         >
           <X size={20} />
@@ -147,49 +160,65 @@ export function Shell({
               {g.grup}
             </p>
             <ul className="space-y-0.5">
-              {g.item.map((i) => (
-                <li key={i.href}>
-                  <Link
-                    href={i.href}
-                    onClick={() => setBuka(false)}
-                    className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition",
-                      aktif(i.href)
-                        ? "bg-emerald-500/15 font-medium text-emerald-200 ring-1 ring-inset ring-emerald-400/25"
-                        : "text-sekunder hover:bg-white/[0.06] hover:text-white"
-                    )}
-                  >
-                    <i.ikon size={17} />
-                    {i.label}
-                  </Link>
-                </li>
-              ))}
+              {g.item.map((i) => {
+                const jumlah =
+                  i.href === "/izin"
+                    ? badge.izin
+                    : i.href === "/presensi"
+                      ? badge.presensi
+                      : 0;
+                return (
+                  <li key={i.href}>
+                    <Link
+                      href={i.href}
+                      onClick={() => setBuka(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition",
+                        aktif(i.href)
+                          ? "bg-aksen/10 font-medium text-aksen ring-1 ring-inset ring-aksen/25"
+                          : "text-sekunder hover:bg-lapis hover:text-teks"
+                      )}
+                    >
+                      <i.ikon size={17} />
+                      <span className="flex-1">{i.label}</span>
+                      {jumlah ? (
+                        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-aksen/15 px-1.5 py-0.5 text-[11px] font-semibold leading-none text-aksen ring-1 ring-inset ring-aksen/25">
+                          {jumlah}
+                        </span>
+                      ) : null}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
       </nav>
 
       <div className="border-t border-garis p-3">
-        <Link
-          href="/profil"
-          onClick={() => setBuka(false)}
-          className="flex items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-white/[0.06]"
-        >
-          <Avatar nama={sesi.nama} ukuran={36} />
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium text-white">
-              {sesi.nama}
+        <div className="flex items-center gap-1">
+          <Link
+            href="/profil"
+            onClick={() => setBuka(false)}
+            className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-lapis"
+          >
+            <Avatar nama={sesi.nama} ukuran={36} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-medium text-teks">
+                {sesi.nama}
+              </span>
+              <span className="block truncate text-xs text-redup">
+                {ROLE_LABEL[sesi.role]}
+              </span>
             </span>
-            <span className="block truncate text-xs text-redup">
-              {ROLE_LABEL[sesi.role]}
-            </span>
-          </span>
-          <UserCircle size={16} className="shrink-0 text-samar" />
-        </Link>
+            <UserCircle size={16} className="shrink-0 text-samar" />
+          </Link>
+          <TombolTema className="inline-grid size-10 shrink-0 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-lapis hover:text-teks" />
+        </div>
         <form action={keluar}>
           <button
             type="submit"
-            className="mt-1 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-redup transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
+            className="mt-1 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-redup transition-colors duration-200 hover:bg-bahaya/10 hover:text-bahaya"
           >
             <LogOut size={17} />
             Keluar
@@ -202,7 +231,7 @@ export function Shell({
   return (
     <div className="flex min-h-dvh">
       {/* Sidebar tetap (desktop) */}
-      <aside className="hidden w-64 shrink-0 border-r border-garis bg-white/[0.03] backdrop-blur-md lg:block">
+      <aside className="hidden w-64 shrink-0 border-r border-garis bg-dasar-naik/60 backdrop-blur-md lg:block">
         <div className="sticky top-0 h-dvh">{isiSidebar}</div>
       </aside>
 
@@ -210,11 +239,11 @@ export function Shell({
       {buka ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-[var(--tirai)] backdrop-blur-sm"
             onClick={() => setBuka(false)}
             aria-label="Tutup menu"
           />
-          <div className="absolute inset-y-0 left-0 w-72 border-r border-garis bg-[#0c2412]">
+          <div className="absolute inset-y-0 left-0 w-72 border-r border-garis bg-dasar-naik">
             {isiSidebar}
           </div>
         </div>
@@ -222,25 +251,28 @@ export function Shell({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Bilah atas (mobile) */}
-        <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-garis bg-[#0a1f0d]/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-garis bg-dasar/85 px-4 py-3 backdrop-blur-xl lg:hidden">
           <button
             onClick={() => setBuka(true)}
-            className="-ml-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-white/[0.08] hover:text-teks"
+            className="-ml-2 inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-lapis hover:text-teks"
             aria-label="Buka menu"
           >
             <Menu size={22} />
           </button>
           <LogoTeks ukuran={30} ringkas />
-          <Link
-            href="/profil"
-            aria-label="Profil saya"
-            className="-mr-2 inline-grid size-11 place-items-center rounded-xl transition-colors duration-200 hover:bg-white/[0.08]"
-          >
-            <Avatar nama={sesi.nama} ukuran={32} />
-          </Link>
+          <div className="-mr-2 flex items-center gap-1">
+            <TombolTema className="inline-grid size-11 cursor-pointer place-items-center rounded-xl text-sekunder transition-colors duration-200 hover:bg-lapis hover:text-teks" />
+            <Link
+              href="/profil"
+              aria-label="Profil saya"
+              className="inline-grid size-11 place-items-center rounded-xl p-2 transition-colors duration-200 hover:bg-lapis"
+            >
+              <Avatar nama={sesi.nama} ukuran={32} />
+            </Link>
+          </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main id="konten" className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </div>

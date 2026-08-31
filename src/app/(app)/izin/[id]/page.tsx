@@ -108,7 +108,7 @@ export default async function HalamanDetailIzin(props: {
     <>
       <Link
         href="/izin"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-teks"
       >
         <ArrowLeft size={16} />
         Perizinan
@@ -160,7 +160,7 @@ export default async function HalamanDetailIzin(props: {
               <Info label="Selesai">
                 {fmtTanggalJam(izin.selesai)}
                 {berlaku ? (
-                  <span className="block text-xs text-emerald-300">
+                  <span className="block text-xs text-sukses">
                     berakhir {selisihManusiawi(izin.selesai)}
                   </span>
                 ) : null}
@@ -194,10 +194,10 @@ export default async function HalamanDetailIzin(props: {
                       <img
                         src={l.data}
                         alt={l.namaFile}
-                        className="max-h-64 w-full bg-black/30 object-contain"
+                        className="max-h-64 w-full bg-[var(--tirai)] object-contain"
                       />
                     ) : (
-                      <div className="grid h-32 place-items-center bg-white/[0.04] text-redup">
+                      <div className="grid h-32 place-items-center bg-lapis text-redup">
                         <Paperclip size={22} />
                       </div>
                     )}
@@ -211,7 +211,7 @@ export default async function HalamanDetailIzin(props: {
                       <a
                         href={l.data}
                         download={l.namaFile}
-                        className="shrink-0 text-emerald-300 transition hover:text-emerald-200"
+                        className="shrink-0 text-sukses transition hover:text-sukses"
                         aria-label={`Unduh ${l.namaFile}`}
                       >
                         <Download size={16} />
@@ -279,7 +279,7 @@ export default async function HalamanDetailIzin(props: {
                 judul="Sesi presensi yang tercakup"
                 keterangan={`${izin.presensi.length} sesi tercatat otomatis karena izin ini`}
               />
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {izin.presensi.map((p, i) => (
                   <li
                     key={i}
@@ -297,7 +297,7 @@ export default async function HalamanDetailIzin(props: {
                         })}
                       </span>
                     </span>
-                    <Lencana className="bg-sky-500/15 text-sky-300 ring-sky-400/30">
+                    <Lencana className="bg-info/15 text-info ring-info/30">
                       {STATUS_PRESENSI_LABEL[p.status]}
                     </Lencana>
                   </li>
@@ -310,8 +310,8 @@ export default async function HalamanDetailIzin(props: {
         <div className="space-y-6">
           {izin.status === "DISETUJUI" || izin.status === "SELESAI" ? (
             <Kartu className="overflow-hidden">
-              <div className="border-b border-garis bg-emerald-500/[0.07] px-5 py-4 text-center">
-                <p className="text-sm font-semibold text-white">Kartu Izin Digital</p>
+              <div className="border-b border-garis bg-sukses/[0.07] px-5 py-4 text-center">
+                <p className="text-sm font-semibold text-teks">Kartu Izin Digital</p>
                 <p className="mt-0.5 text-xs text-redup">
                   Tunjukkan saat keluar area pesantren
                 </p>
@@ -321,8 +321,8 @@ export default async function HalamanDetailIzin(props: {
                   <QrTautan path={`/verifikasi/${izin.kode}`} ukuran={180} />
                 </div>
                 <div className="text-center">
-                  <p className="font-mono text-sm text-emerald-200">{izin.kode}</p>
-                  <p className="mt-1 text-sm font-medium text-white">
+                  <p className="font-mono text-sm text-sukses">{izin.kode}</p>
+                  <p className="mt-1 text-sm font-medium text-teks">
                     {izin.santri.user.nama}
                   </p>
                   <p className="mt-0.5 text-xs text-redup">
@@ -340,7 +340,7 @@ export default async function HalamanDetailIzin(props: {
 
           {bisaDitandaiKembali ? (
             <Kartu className="p-5">
-              <p className="text-sm font-semibold text-white">Konfirmasi kepulangan</p>
+              <p className="text-sm font-semibold text-teks">Konfirmasi kepulangan</p>
               <p className="mt-1 text-xs leading-relaxed text-redup">
                 Tandai bila santri sudah kembali ke pesantren. Kembali melewati batas
                 waktu akan tercatat pada halaman Pengawasan.
@@ -358,7 +358,7 @@ export default async function HalamanDetailIzin(props: {
                 </Tombol>
               </form>
               {izin.selesai < new Date() ? (
-                <p className="mt-3 flex items-start gap-1.5 text-xs text-amber-300">
+                <p className="mt-3 flex items-start gap-1.5 text-xs text-waspada">
                   <AlertTriangle size={13} className="mt-0.5 shrink-0" />
                   Batas waktu izin sudah lewat.
                 </p>
@@ -381,7 +381,7 @@ export default async function HalamanDetailIzin(props: {
           ) : null}
 
           <Kartu className="p-5">
-            <p className="text-sm font-semibold text-white">Alur status</p>
+            <p className="text-sm font-semibold text-teks">Alur status</p>
             <ol className="mt-3 space-y-2.5 text-sm">
               {["DIAJUKAN", "DIPROSES", "DISETUJUI", "SELESAI"].map((s) => {
                 const urutan = ["DIAJUKAN", "DIPROSES", "DISETUJUI", "SELESAI"];
@@ -393,11 +393,11 @@ export default async function HalamanDetailIzin(props: {
                     <span
                       className={
                         lewat
-                          ? "size-2 rounded-full bg-emerald-400"
-                          : "size-2 rounded-full bg-white/20"
+                          ? "size-2 rounded-full bg-sukses"
+                          : "size-2 rounded-full bg-lapis-naik"
                       }
                     />
-                    <span className={lewat ? "text-emerald-100" : "text-samar"}>
+                    <span className={lewat ? "text-sukses" : "text-samar"}>
                       {STATUS_IZIN_LABEL[s]}
                     </span>
                   </li>
@@ -405,7 +405,7 @@ export default async function HalamanDetailIzin(props: {
               })}
             </ol>
             {["DITOLAK", "DIBATALKAN"].includes(izin.status) ? (
-              <p className="mt-3 rounded-lg bg-rose-500/10 px-3 py-2 text-xs text-rose-200">
+              <p className="mt-3 rounded-lg bg-bahaya/10 px-3 py-2 text-xs text-bahaya">
                 Pengajuan {STATUS_IZIN_LABEL[izin.status].toLowerCase()}.
               </p>
             ) : null}

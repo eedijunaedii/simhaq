@@ -96,13 +96,13 @@ export default async function HalamanPresensi() {
                 <Link
                   key={s.id}
                   href={`/presensi/${s.id}`}
-                  className="cursor-pointer rounded-2xl border border-aksen/30 bg-emerald-500/[0.07] p-5 transition-colors duration-200 hover:border-aksen/60 hover:bg-emerald-500/[0.13]"
+                  className="cursor-pointer rounded-2xl border border-aksen/30 bg-sukses/[0.07] p-5 transition-colors duration-200 hover:border-aksen/60 hover:bg-sukses/[0.13]"
                 >
-                  <div className="flex items-center gap-2 text-xs text-emerald-300">
-                    <span className="denyut inline-block size-1.5 rounded-full bg-emerald-400" />
+                  <div className="flex items-center gap-2 text-xs text-sukses">
+                    <span className="denyut inline-block size-1.5 rounded-full bg-sukses" />
                     Sesi dibuka
                   </div>
-                  <p className="mt-2.5 font-semibold text-white">{s.kegiatan.nama}</p>
+                  <p className="mt-2.5 font-semibold text-teks">{s.kegiatan.nama}</p>
                   <p className="mt-0.5 text-xs text-redup">
                     {GENDER_LABEL[s.gender]}
                     {s.halaqah ? ` · ${s.halaqah.nama}` : ""}
@@ -194,7 +194,7 @@ function BagianTabel({
                   <Td>
                     <Link
                       href={`/presensi/${s.id}`}
-                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                      className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                     >
                       {s.kegiatan.nama}
                     </Link>
@@ -223,10 +223,10 @@ function BagianTabel({
                     <Lencana
                       className={
                         s.status === "DIBUKA"
-                          ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
+                          ? "bg-sukses/15 text-sukses ring-sukses/30"
                           : s.status === "DIBATALKAN"
-                            ? "bg-rose-500/15 text-rose-300 ring-rose-400/30"
-                            : "bg-white/10 text-sekunder ring-white/15"
+                            ? "bg-bahaya/15 text-bahaya ring-bahaya/30"
+                            : "bg-lapis-naik text-sekunder ring-garis"
                       }
                     >
                       {STATUS_SESI_LABEL[s.status]}

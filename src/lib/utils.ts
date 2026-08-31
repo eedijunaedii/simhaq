@@ -22,15 +22,15 @@ export function angkaRingkas(n: number) {
 
 /** Warna batang/teks berdasarkan persentase kehadiran. */
 export function warnaKehadiran(p: number) {
-  if (p >= 90) return "text-emerald-300";
-  if (p >= 75) return "text-lime-300";
-  if (p >= 60) return "text-amber-300";
-  return "text-rose-300";
+  if (p >= 90) return "text-sukses";
+  if (p >= 75) return "text-limau";
+  if (p >= 60) return "text-waspada";
+  return "text-bahaya";
 }
 
 export function warnaBatang(p: number) {
-  if (p >= 90) return "bg-emerald-400";
-  if (p >= 75) return "bg-lime-400";
-  if (p >= 60) return "bg-amber-400";
-  return "bg-rose-400";
+  if (p >= 90) return "bg-sukses";
+  if (p >= 75) return "bg-limau";
+  if (p >= 60) return "bg-waspada";
+  return "bg-bahaya";
 }

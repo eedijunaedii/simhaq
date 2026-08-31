@@ -383,3 +383,18 @@ model PengaturanSistem {
   nilai String
   updatedAt DateTime @updatedAt
 }
+
+// ---------------------------------------------------------------------------
+// Pembatas percobaan login (anti brute-force)
+// ---------------------------------------------------------------------------
+
+model PercobaanLogin {
+  id        String   @id @default(cuid())
+  username  String
+  ip        String?
+  berhasil  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([username, createdAt])
+  @@index([ip, createdAt])
+}

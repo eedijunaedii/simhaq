@@ -41,13 +41,13 @@ export default async function HalamanHalaqah() {
             <Link key={h.id} href={`/halaqah/${h.id}`}>
               <Kartu dapatDiklik className="h-full p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <span className="grid size-10 place-items-center rounded-xl bg-emerald-500/15 text-emerald-300">
+                  <span className="grid size-10 place-items-center rounded-xl bg-sukses/15 text-sukses">
                     <BookOpen size={18} />
                   </span>
                   <Lencana>{GENDER_LABEL[h.gender]}</Lencana>
                 </div>
 
-                <h2 className="mt-3.5 font-semibold text-white">{h.nama}</h2>
+                <h2 className="mt-3.5 font-semibold text-teks">{h.nama}</h2>
                 <p className="mt-0.5 text-sm text-redup">
                   Musyrif {h.musyrif}
                 </p>

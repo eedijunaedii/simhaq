@@ -197,21 +197,21 @@ export async function DasborPengurus({
               }
             />
           ) : (
-            <ul className="divide-y divide-white/5">
+            <ul className="divide-y divide-garis">
               {sesiHariIni.map((s) => (
                 <li key={s.id}>
                   <Link
                     href={`/presensi/${s.id}`}
-                    className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                    className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-lapis"
                   >
                     <span
                       className={cn(
                         "size-2 shrink-0 rounded-full",
-                        s.status === "DIBUKA" ? "bg-emerald-400 denyut" : "bg-white/25"
+                        s.status === "DIBUKA" ? "bg-sukses denyut" : "bg-lapis-naik"
                       )}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-white">
+                      <span className="block truncate text-sm font-medium text-teks">
                         {s.kegiatan.nama}
                         {s.halaqah ? (
                           <span className="text-redup"> · {s.halaqah.nama}</span>
@@ -223,7 +223,7 @@ export async function DasborPengurus({
                       </span>
                     </span>
                     <span className="shrink-0 text-right">
-                      <span className="block text-sm font-semibold text-white">
+                      <span className="block text-sm font-semibold text-teks">
                         {s._count.presensi}
                       </span>
                       <span className="block text-[11px] text-samar">
@@ -253,15 +253,15 @@ export async function DasborPengurus({
               keterangan="Semua pengajuan izin sudah diproses."
             />
           ) : (
-            <ul className="divide-y divide-white/5">
+            <ul className="divide-y divide-garis">
               {izinMenunggu.map((z) => (
                 <li key={z.id}>
                   <Link
                     href={`/izin/${z.id}`}
-                    className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                    className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-lapis"
                   >
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-white">
+                      <span className="block truncate text-sm font-medium text-teks">
                         {z.santri.user.nama}
                       </span>
                       <span className="block truncate text-xs text-redup">
@@ -365,7 +365,7 @@ export async function DasborPengurus({
                     <Td>
                       <Link
                         href={`/santri/${s.santriId}`}
-                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                        className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                       >
                         {s.nama}
                       </Link>
@@ -374,7 +374,7 @@ export async function DasborPengurus({
                     <Td className="hidden text-sekunder sm:table-cell">
                       {s.halaqah ?? "-"}
                     </Td>
-                    <Td className="text-center text-rose-300">{s.alfa}</Td>
+                    <Td className="text-center text-bahaya">{s.alfa}</Td>
                     <Td className="text-right">
                       <span className={cn("font-semibold", warnaKehadiran(s.persen))}>
                         {s.persen}%
@@ -403,12 +403,12 @@ export async function DasborPengurus({
               keterangan="Belum ada indikasi titip absen atau keterlambatan kembali."
             />
           ) : (
-            <ul className="divide-y divide-white/5">
+            <ul className="divide-y divide-garis">
               {flag.map((f) => (
                 <li key={f.id} className="flex gap-3 px-5 py-3.5">
-                  <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-400" />
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0 text-waspada" />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-teks">
                       {f.santri.user.nama}
                     </p>
                     <p className="text-xs text-redup">

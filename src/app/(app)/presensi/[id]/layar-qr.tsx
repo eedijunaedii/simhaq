@@ -138,7 +138,7 @@ export function LayarQr({
   const isi = (
     <div className={cn("flex flex-col items-center", penuh ? "gap-6" : "gap-4")}>
       <div className="text-center">
-        <p className={cn("font-bold text-white", penuh ? "text-4xl" : "text-lg")}>
+        <p className={cn("font-bold text-teks", penuh ? "text-4xl" : "text-lg")}>
           {namaKegiatan}
         </p>
         <p className={cn("text-redup", penuh ? "mt-2 text-lg" : "text-sm")}>
@@ -149,7 +149,7 @@ export function LayarQr({
       {/* Kartu putih: kotak QR ditambah zona hening yang lega di keempat sisi. */}
       <div
         className={cn(
-          "relative w-full bg-white shadow-2xl shadow-emerald-900/40",
+          "relative w-full bg-white shadow-2xl shadow-emerald-950/30",
           penuh
             ? "max-w-[min(64vh,32rem)] rounded-[2rem] p-7"
             : "max-w-[17.5rem] rounded-[1.5rem] p-5"
@@ -161,7 +161,7 @@ export function LayarQr({
         {muatan?.status !== "DIBUKA" && muatan ? (
           <div
             className={cn(
-              "absolute inset-0 grid place-items-center bg-[#0a1f0d]/92 text-center",
+              "absolute inset-0 grid place-items-center bg-[#16241a]/92 text-center",
               penuh ? "rounded-[2rem]" : "rounded-[1.5rem]"
             )}
           >
@@ -173,9 +173,9 @@ export function LayarQr({
       </div>
 
       <div className={cn("w-full", penuh ? "max-w-[min(64vh,32rem)]" : "max-w-[17.5rem]")}>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-lapis-naik">
           <div
-            className="h-full rounded-full bg-emerald-400 transition-[width] duration-100 ease-linear"
+            className="h-full rounded-full bg-sukses transition-[width] duration-100 ease-linear"
             style={{ width: `${sisaPersen}%` }}
           />
         </div>
@@ -198,12 +198,12 @@ export function LayarQr({
         )}
       >
         {[
-          { l: "Hadir", n: hadir, w: "text-emerald-300" },
-          { l: "Terlambat", n: hitungan.TERLAMBAT ?? 0, w: "text-amber-300" },
-          { l: "Izin", n: (hitungan.IZIN ?? 0) + (hitungan.SAKIT ?? 0), w: "text-sky-300" },
-          { l: "Alfa", n: hitungan.ALFA ?? 0, w: "text-rose-300" },
+          { l: "Hadir", n: hadir, w: "text-sukses" },
+          { l: "Terlambat", n: hitungan.TERLAMBAT ?? 0, w: "text-waspada" },
+          { l: "Izin", n: (hitungan.IZIN ?? 0) + (hitungan.SAKIT ?? 0), w: "text-info" },
+          { l: "Alfa", n: hitungan.ALFA ?? 0, w: "text-bahaya" },
         ].map((x) => (
-          <div key={x.l} className="rounded-xl bg-white/[0.06] py-2.5">
+          <div key={x.l} className="rounded-xl bg-lapis py-2.5">
             <p className={cn("font-bold", penuh ? "text-3xl" : "text-lg", x.w)}>{x.n}</p>
             <p className={cn("text-redup", penuh ? "text-sm" : "text-[11px]")}>
               {x.l}
@@ -216,10 +216,10 @@ export function LayarQr({
 
   if (penuh) {
     return (
-      <div className="fixed inset-0 z-50 grid place-items-center overflow-auto bg-[#0a1f0d] p-8">
+      <div className="fixed inset-0 z-50 grid place-items-center overflow-auto bg-dasar p-8">
         <button
           onClick={() => setPenuh(false)}
-          className="absolute right-6 top-6 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/15"
+          className="absolute right-6 top-6 inline-flex items-center gap-2 rounded-xl bg-lapis-naik px-4 py-2 text-sm text-teks transition hover:bg-lapis-naik"
         >
           <Minimize2 size={16} />
           Keluar layar penuh

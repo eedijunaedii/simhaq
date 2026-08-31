@@ -112,7 +112,7 @@ export default async function HalamanDetailSantri(props: {
     <>
       <Link
         href="/santri"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-teks"
       >
         <ArrowLeft size={16} />
         Data santri
@@ -121,7 +121,7 @@ export default async function HalamanDetailSantri(props: {
       <div className="mb-6 flex flex-wrap items-center gap-4">
         <Avatar nama={santri.user.nama} ukuran={64} />
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-teks">
             {santri.user.nama}
           </h1>
           <p className="mt-0.5 text-sm text-redup">
@@ -132,8 +132,8 @@ export default async function HalamanDetailSantri(props: {
         <Lencana
           className={
             santri.status === "AKTIF"
-              ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
-              : "bg-white/10 text-sekunder ring-white/15"
+              ? "bg-sukses/15 text-sukses ring-sukses/30"
+              : "bg-lapis-naik text-sekunder ring-garis"
           }
         >
           {santri.status}
@@ -214,15 +214,15 @@ export default async function HalamanDetailSantri(props: {
             {izin.length === 0 ? (
               <Kosong judul="Belum pernah mengajukan izin" />
             ) : (
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {izin.map((z) => (
                   <li key={z.id}>
                     <Link
                       href={`/izin/${z.id}`}
-                      className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                      className="flex items-center gap-3 px-5 py-3.5 transition-colors duration-200 hover:bg-lapis"
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-white">
+                        <span className="block text-sm font-medium text-teks">
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
                         <span className="block text-xs text-redup">
@@ -243,7 +243,7 @@ export default async function HalamanDetailSantri(props: {
           {flag.length > 0 ? (
             <Kartu>
               <KepalaKartu judul="Catatan pengawasan" />
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {flag.map((f) => (
                   <li key={f.id} className="px-5 py-3.5">
                     <p className="text-sm text-sekunder">{f.keterangan}</p>
@@ -286,7 +286,7 @@ export default async function HalamanDetailSantri(props: {
             <KepalaKartu judul="Keterikatan perangkat" />
             <div className="p-5">
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-emerald-300">
+                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-lapis text-sukses">
                   <Smartphone size={17} />
                 </span>
                 <div className="min-w-0 text-sm">
@@ -362,7 +362,7 @@ export default async function HalamanDetailSantri(props: {
                   <QrTautan path={`/wali/${wali.token}`} ukuran={150} />
                 </div>
                 <p className="text-center text-sm text-sekunder">{wali.namaWali}</p>
-                <code className="w-full break-all rounded-lg bg-white/10 px-3 py-2 text-center text-[11px] text-emerald-200">
+                <code className="w-full break-all rounded-lg bg-lapis-naik px-3 py-2 text-center text-[11px] text-sukses">
                   /wali/{wali.token}
                 </code>
               </div>

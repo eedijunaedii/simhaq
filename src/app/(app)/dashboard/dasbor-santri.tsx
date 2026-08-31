@@ -97,14 +97,14 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
   return (
     <div className="space-y-6">
       {belumPresensi.length > 0 ? (
-        <Kartu className="border-emerald-400/30 bg-emerald-500/[0.08] p-5">
+        <Kartu className="border-sukses/30 bg-sukses/[0.08] p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
-              <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-500/20 text-emerald-300">
+              <span className="mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-sukses/20 text-sukses">
                 <ScanLine size={20} />
               </span>
               <div>
-                <p className="font-semibold text-white">
+                <p className="font-semibold text-teks">
                   {belumPresensi.length} sesi presensi sedang dibuka
                 </p>
                 <p className="mt-0.5 text-sm text-sekunder">
@@ -225,11 +225,11 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
             {presensiTerakhir.length === 0 ? (
               <Kosong judul="Belum ada riwayat presensi" />
             ) : (
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {presensiTerakhir.map((p) => (
                   <li key={p.id} className="flex items-center gap-3 px-5 py-3">
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm text-white">
+                      <span className="block truncate text-sm text-teks">
                         {p.sesi.kegiatan.nama}
                       </span>
                       <span className="block text-xs text-samar">
@@ -261,15 +261,15 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                 keterangan="Ajukan izin bila berhalangan mengikuti kegiatan wajib."
               />
             ) : (
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {izinTerakhir.map((z) => (
                   <li key={z.id}>
                     <Link
                       href={`/izin/${z.id}`}
-                      className="flex items-center gap-3 px-5 py-3 transition-colors duration-200 hover:bg-white/[0.06]"
+                      className="flex items-center gap-3 px-5 py-3 transition-colors duration-200 hover:bg-lapis"
                     >
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm text-white">
+                        <span className="block truncate text-sm text-teks">
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
                         <span className="block text-xs text-samar">
@@ -311,7 +311,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
             />
           </div>
           {!profil.deviceId ? (
-            <p className="mt-4 rounded-xl border border-amber-400/20 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-100">
+            <p className="mt-4 rounded-xl border border-waspada/20 bg-waspada/10 px-4 py-2.5 text-xs text-waspada">
               Perangkat belum terdaftar. Perangkat akan terikat otomatis pada pemindaian
               QR pertama Anda.
             </p>

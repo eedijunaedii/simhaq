@@ -61,12 +61,12 @@ export default async function HalamanWali(props: {
 
   if (!akses || !sah) {
     return (
-      <div className="flex min-h-dvh items-center justify-center px-5">
+      <div id="konten" className="flex min-h-dvh items-center justify-center px-5">
         <Kartu className="max-w-md p-8 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-full bg-white/10 text-redup">
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-lapis-naik text-redup">
             <ShieldQuestion size={28} />
           </span>
-          <p className="mt-4 text-lg font-semibold text-white">
+          <p className="mt-4 text-lg font-semibold text-teks">
             Tautan tidak berlaku
           </p>
           <p className="mt-2 text-sm leading-relaxed text-redup">
@@ -113,7 +113,7 @@ export default async function HalamanWali(props: {
   ]);
 
   return (
-    <div className="min-h-dvh px-5 py-10">
+    <div id="konten" className="min-h-dvh px-5 py-10">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <LogoTeks ukuran={36} />
@@ -123,7 +123,7 @@ export default async function HalamanWali(props: {
         </div>
 
         <Kartu className="mb-6 p-6">
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-teks">
             {santri.user.nama}
           </h1>
           <p className="mt-1 text-sm text-redup">
@@ -192,7 +192,7 @@ export default async function HalamanWali(props: {
               {presensi.length === 0 ? (
                 <Kosong judul="Belum ada catatan" />
               ) : (
-                <ul className="divide-y divide-white/5">
+                <ul className="divide-y divide-garis">
                   {presensi.map((p) => (
                     <li
                       key={p.id}
@@ -220,7 +220,7 @@ export default async function HalamanWali(props: {
               {izin.length === 0 ? (
                 <Kosong judul="Belum ada izin" />
               ) : (
-                <ul className="divide-y divide-white/5">
+                <ul className="divide-y divide-garis">
                   {izin.map((z) => (
                     <li
                       key={z.id}

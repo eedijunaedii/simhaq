@@ -145,7 +145,7 @@ export default async function HalamanSantri(props: {
           </Select>
           <button
             type="submit"
-            className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-emerald-950 transition hover:bg-emerald-400"
+            className="rounded-xl bg-sukses px-4 py-2 text-sm font-medium text-sukses transition hover:bg-sukses"
           >
             Cari
           </button>
@@ -179,7 +179,7 @@ export default async function HalamanSantri(props: {
                       >
                         <Avatar nama={s.user.nama} ukuran={34} />
                         <span className="min-w-0">
-                          <span className="block truncate font-medium text-white group-hover:text-aksen">
+                          <span className="block truncate font-medium text-teks group-hover:text-aksen">
                             {s.user.nama}
                           </span>
                           <span className="block text-xs text-samar">
@@ -211,7 +211,7 @@ export default async function HalamanSantri(props: {
                           {r.persen}%
                         </span>
                       ) : (
-                        <Lencana className="bg-white/5 text-samar ring-white/10">
+                        <Lencana className="bg-lapis text-samar ring-garis">
                           Belum ada data
                         </Lencana>
                       )}

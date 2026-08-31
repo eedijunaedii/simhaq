@@ -87,12 +87,12 @@ export default async function HalamanGerbang() {
       </div>
 
       {lewatBatas.length > 0 ? (
-        <Kartu className="mb-6 border-rose-400/25 bg-rose-500/[0.06]">
+        <Kartu className="mb-6 border-bahaya/25 bg-bahaya/[0.06]">
           <KepalaKartu
             judul="Lewat batas waktu"
             keterangan="Perlu diperiksa: sudah kembali tetapi belum ditandai, atau memang belum pulang."
           />
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {lewatBatas.map((z) => (
               <BarisIzin key={z.id} izin={z} lewat />
             ))}
@@ -111,7 +111,7 @@ export default async function HalamanGerbang() {
             keterangan="Semua santri berizin sudah tercatat kembali."
           />
         ) : (
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {masihBerlaku.map((z) => (
               <BarisIzin key={z.id} izin={z} />
             ))}
@@ -142,10 +142,10 @@ function BarisIzin({ izin, lewat }: { izin: IzinGerbang; lewat?: boolean }) {
     <li className="flex flex-wrap items-center gap-4 px-5 py-4">
       <div className="min-w-52 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium text-white">{izin.santri.user.nama}</span>
+          <span className="font-medium text-teks">{izin.santri.user.nama}</span>
           <Lencana>{JENIS_IZIN_LABEL[izin.jenis]}</Lencana>
           {lewat ? (
-            <Lencana className="bg-rose-500/15 text-rose-300 ring-rose-400/30">
+            <Lencana className="bg-bahaya/15 text-bahaya ring-bahaya/30">
               Lewat {selisihManusiawi(izin.selesai).replace(" lalu", "")}
             </Lencana>
           ) : null}
@@ -162,7 +162,7 @@ function BarisIzin({ izin, lewat }: { izin: IzinGerbang; lewat?: boolean }) {
       <div className="flex shrink-0 items-center gap-2">
         <Link
           href={`/verifikasi/${izin.kode}`}
-          className="rounded-xl border border-kendali bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
+          className="rounded-xl border border-kendali bg-lapis-naik px-3.5 py-2 text-xs font-medium text-teks transition hover:bg-lapis-naik"
         >
           Lihat kartu
         </Link>

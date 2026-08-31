@@ -7,16 +7,16 @@ export const metadata: Metadata = { title: "Luring" };
 
 export default function HalamanLuring() {
   return (
-    <div className="flex min-h-dvh items-center justify-center px-5">
+    <div id="konten" className="flex min-h-dvh items-center justify-center px-5">
       <div className="w-full max-w-md text-center">
         <div className="mb-8 flex justify-center">
           <LogoTeks ukuran={38} />
         </div>
         <Kartu className="p-8">
-          <span className="mx-auto grid size-14 place-items-center rounded-full bg-amber-500/15 text-amber-300">
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-waspada/15 text-waspada">
             <WifiOff size={28} />
           </span>
-          <h1 className="mt-5 text-lg font-semibold text-white">
+          <h1 className="mt-5 text-lg font-semibold text-teks">
             Tidak ada koneksi
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-redup">

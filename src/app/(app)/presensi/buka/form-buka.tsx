@@ -132,17 +132,17 @@ export function FormBukaSesi({
         </Bidang>
       </div>
 
-      <div className="rounded-xl border border-garis bg-white/[0.03] p-4">
+      <div className="rounded-xl border border-garis bg-lapis p-4">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
             name="wajibLokasi"
             checked={pakaiLokasi}
             onChange={(e) => setPakaiLokasi(e.target.checked)}
-            className="mt-0.5 size-4 accent-emerald-500"
+            className="mt-0.5 size-4 accent-sukses"
           />
           <span>
-            <span className="block text-sm font-medium text-white">
+            <span className="block text-sm font-medium text-teks">
               Batasi pemindaian pada radius pesantren
             </span>
             <span className="mt-0.5 block text-xs leading-relaxed text-redup">

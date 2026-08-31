@@ -1,7 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Poppins } from "next/font/google";
 import { DaftarServiceWorker } from "@/components/daftar-sw";
 import { APP } from "@/lib/constants";
 import "./globals.css";
+
+/*
+  Tipografi jenama: Inter untuk teks isi, Poppins untuk judul. Dimuat lewat
+  next/font sehingga di-self-host (tanpa permintaan eksternal, cocok dengan
+  CSP font-src 'self') dan konsisten di semua perangkat.
+*/
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -30,18 +49,37 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a1f0d",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f2f6f2" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1f0d" },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
 };
 
+/*
+  Dijalankan sebelum cat pertama supaya tidak ada kedipan tema yang salah:
+  preferensi tersimpan menang, kalau belum ada ikuti preferensi sistem.
+*/
+const SKRIP_TEMA = `(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("tema-simhaq");var g=t?t==="gelap":window.matchMedia("(prefers-color-scheme: dark)").matches;if(g)d.dataset.tema="gelap";}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id">
-      <body className="antialiased">
+    <html lang="id" suppressHydrationWarning data-scroll-behavior="smooth">
+      <head>
+        <meta
+          name="strix-verification"
+          content="strix-verify-6205d270c586fd041c0a0ec0fcd50402"
+        />
+        <script dangerouslySetInnerHTML={{ __html: SKRIP_TEMA }} />
+      </head>
+      <body className={`${inter.variable} ${poppins.variable} antialiased`}>
+        <a href="#konten" className="skip-link">
+          Lewati ke konten
+        </a>
         {children}
         <DaftarServiceWorker />
       </body>

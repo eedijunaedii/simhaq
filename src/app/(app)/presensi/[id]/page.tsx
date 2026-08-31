@@ -100,7 +100,7 @@ export default async function HalamanSesi(props: {
     <>
       <Link
         href="/presensi"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-teks"
       >
         <ArrowLeft size={16} />
         Semua sesi
@@ -120,12 +120,12 @@ export default async function HalamanSesi(props: {
             <Lencana
               className={
                 terbuka
-                  ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
-                  : "bg-white/10 text-sekunder ring-white/15"
+                  ? "bg-sukses/15 text-sukses ring-sukses/30"
+                  : "bg-lapis-naik text-sekunder ring-garis"
               }
             >
               {terbuka ? (
-                <span className="denyut inline-block size-1.5 rounded-full bg-emerald-400" />
+                <span className="denyut inline-block size-1.5 rounded-full bg-sukses" />
               ) : null}
               {STATUS_SESI_LABEL[sesi.status]}
             </Lencana>
@@ -194,7 +194,7 @@ export default async function HalamanSesi(props: {
           ) : (
             <Kartu className="p-6 text-center">
               <Lock size={26} className="mx-auto text-samar" />
-              <p className="mt-3 font-medium text-white">
+              <p className="mt-3 font-medium text-teks">
                 {STATUS_SESI_LABEL[sesi.status]}
               </p>
               <p className="mt-1 text-sm text-redup">
@@ -230,12 +230,12 @@ export default async function HalamanSesi(props: {
               {["HADIR", "TERLAMBAT", "IZIN", "SAKIT", "ALFA"].map((s) => (
                 <li key={s} className="flex items-center justify-between">
                   <span className="text-sekunder">{STATUS_PRESENSI_LABEL[s]}</span>
-                  <span className="font-semibold text-white">{hitung[s] ?? 0}</span>
+                  <span className="font-semibold text-teks">{hitung[s] ?? 0}</span>
                 </li>
               ))}
               <li className="flex items-center justify-between border-t border-garis pt-2.5">
                 <span className="text-sekunder">Belum tercatat</span>
-                <span className="font-semibold text-white">{belum}</span>
+                <span className="font-semibold text-teks">{belum}</span>
               </li>
             </ul>
           </Kartu>

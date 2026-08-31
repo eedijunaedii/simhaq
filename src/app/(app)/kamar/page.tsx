@@ -87,11 +87,11 @@ export default async function HalamanKamar() {
                 {daftar.map((k) => (
                   <div
                     key={k.id}
-                    className="rounded-xl border border-garis bg-white/[0.03] p-4 transition-colors duration-200 hover:border-kendali/60 hover:bg-white/[0.06]"
+                    className="rounded-xl border border-garis bg-lapis p-4 transition-colors duration-200 hover:border-kendali/60 hover:bg-lapis"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-2 font-medium text-white">
-                        <DoorOpen size={15} className="text-emerald-300" />
+                      <span className="flex items-center gap-2 font-medium text-teks">
+                        <DoorOpen size={15} className="text-sukses" />
                         {k.nama}
                       </span>
                       <span className="text-xs text-redup">

@@ -113,7 +113,7 @@ export function DaftarPeserta({
           {tampil.map((p) => (
             <Tr key={p.santriId} className={cn(sedang === p.santriId && "opacity-50")}>
               <Td>
-                <span className="block font-medium text-white">{p.nama}</span>
+                <span className="block font-medium text-teks">{p.nama}</span>
                 <span className="block text-xs text-samar">
                   {p.nim} · {p.kampus}
                 </span>
@@ -136,7 +136,7 @@ export function DaftarPeserta({
                     {STATUS_PRESENSI_LABEL[p.status]}
                   </Lencana>
                 ) : (
-                  <Lencana className="bg-white/5 text-samar ring-white/10">
+                  <Lencana className="bg-lapis text-samar ring-garis">
                     Belum tercatat
                   </Lencana>
                 )}

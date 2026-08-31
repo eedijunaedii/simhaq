@@ -46,17 +46,17 @@ export function FormPengaturan({
         />
       </Bidang>
 
-      <div className="rounded-xl border border-garis bg-white/[0.03] p-4">
+      <div className="rounded-xl border border-garis bg-lapis p-4">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
             name="wajibLokasi"
             checked={wajibLokasi}
             onChange={(e) => setWajibLokasi(e.target.checked)}
-            className="mt-0.5 size-4 accent-emerald-500"
+            className="mt-0.5 size-4 accent-sukses"
           />
           <span>
-            <span className="block text-sm font-medium text-white">
+            <span className="block text-sm font-medium text-teks">
               Aktifkan pembatasan lokasi secara bawaan
             </span>
             <span className="mt-0.5 block text-xs leading-relaxed text-redup">

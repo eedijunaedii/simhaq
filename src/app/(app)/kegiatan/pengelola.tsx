@@ -109,9 +109,9 @@ export function PengelolaKegiatan({
             <div className="flex items-start justify-between gap-3 border-b border-garis px-5 py-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-semibold text-white">{k.nama}</h3>
+                  <h3 className="font-semibold text-teks">{k.nama}</h3>
                   {!k.aktif ? (
-                    <Lencana className="bg-white/10 text-redup ring-white/15">
+                    <Lencana className="bg-lapis-naik text-redup ring-garis">
                       Nonaktif
                     </Lencana>
                   ) : null}
@@ -127,7 +127,7 @@ export function PengelolaKegiatan({
                     setSunting(k);
                     setFormBaru(false);
                   }}
-                  className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
+                  className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-lapis-naik hover:text-teks"
                   aria-label="Ubah kegiatan"
                 >
                   <Pencil size={15} />
@@ -135,7 +135,7 @@ export function PengelolaKegiatan({
                 <form action={hapusKegiatan.bind(null, k.id)}>
                   <button
                     type="submit"
-                    className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-rose-300 transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
+                    className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-bahaya transition-colors duration-200 hover:bg-bahaya/10 hover:text-bahaya"
                     aria-label="Hapus kegiatan"
                     title={
                       k._count.sesi > 0
@@ -174,7 +174,7 @@ export function PengelolaKegiatan({
                       .map((j) => (
                         <li
                           key={j.id}
-                          className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.04] px-3 py-2 text-sm"
+                          className="flex items-center justify-between gap-3 rounded-lg bg-lapis px-3 py-2 text-sm"
                         >
                           <span className="min-w-0">
                             <span className="text-sekunder">{HARI[j.hari]}</span>
@@ -188,7 +188,7 @@ export function PengelolaKegiatan({
                           <form action={hapusJadwal.bind(null, j.id)}>
                             <button
                               type="submit"
-                              className="inline-grid size-9 shrink-0 cursor-pointer place-items-center rounded text-rose-300 transition-colors duration-200 hover:bg-rose-500/10"
+                              className="inline-grid size-9 shrink-0 cursor-pointer place-items-center rounded text-bahaya transition-colors duration-200 hover:bg-bahaya/10"
                               aria-label="Hapus jadwal"
                             >
                               <Trash2 size={13} />
@@ -207,7 +207,7 @@ export function PengelolaKegiatan({
                 ) : (
                   <button
                     onClick={() => setJadwalUntuk(k.id)}
-                    className="mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-300 transition hover:text-emerald-200"
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs text-sukses transition hover:text-sukses"
                   >
                     <CalendarPlus size={13} />
                     Tambah jadwal
@@ -299,7 +299,7 @@ function FormKegiatan({
           type="checkbox"
           name="aktif"
           defaultChecked={awal?.aktif ?? true}
-          className="size-4 accent-emerald-500"
+          className="size-4 accent-sukses"
         />
         Kegiatan aktif dan dapat dibuka sesinya
       </label>
@@ -328,7 +328,7 @@ function FormJadwal({
   }, AWAL);
 
   return (
-    <form action={aksi} className="mt-3 space-y-3 rounded-xl bg-white/[0.04] p-3.5">
+    <form action={aksi} className="mt-3 space-y-3 rounded-xl bg-lapis p-3.5">
       {status.galat ? <Peringatan nada="galat">{status.galat}</Peringatan> : null}
       <input type="hidden" name="kegiatanId" value={kegiatanId} />
 

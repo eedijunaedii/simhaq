@@ -133,19 +133,19 @@ export default async function HalamanPengawasan(props: {
       </div>
 
       {belumDikonfirmasi.length > 0 ? (
-        <Kartu className="mb-6 border-amber-400/25 bg-amber-500/[0.05]">
+        <Kartu className="mb-6 border-waspada/25 bg-waspada/[0.05]">
           <KepalaKartu
             judul="Belum dikonfirmasi kembali"
             keterangan="Batas izin sudah lewat dan belum ada petugas yang menandai kepulangannya. Ini daftar tugas, bukan pelanggaran — santrinya bisa saja sudah pulang tepat waktu."
           />
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {belumDikonfirmasi.map((z) => (
               <li key={z.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
-                <Clock size={16} className="shrink-0 text-amber-400" />
+                <Clock size={16} className="shrink-0 text-waspada" />
                 <div className="min-w-48 flex-1">
                   <Link
                     href={`/santri/${z.santri.id}`}
-                    className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                    className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                   >
                     {z.santri.user.nama}
                   </Link>
@@ -156,7 +156,7 @@ export default async function HalamanPengawasan(props: {
                 </div>
                 <Link
                   href={`/izin/${z.id}`}
-                  className="rounded-xl border border-kendali bg-white/10 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white/15"
+                  className="rounded-xl border border-kendali bg-lapis-naik px-3.5 py-2 text-xs font-medium text-teks transition hover:bg-lapis-naik"
                 >
                   Buka izin
                 </Link>
@@ -175,8 +175,8 @@ export default async function HalamanPengawasan(props: {
               className={cn(
                 "inline-flex min-h-11 cursor-pointer items-center rounded-lg px-3.5 text-sm transition-colors duration-200",
                 saring === s
-                  ? "bg-emerald-500/15 font-medium text-emerald-200"
-                  : "text-redup hover:bg-white/[0.06] hover:text-white"
+                  ? "bg-sukses/15 font-medium text-sukses"
+                  : "text-redup hover:bg-lapis hover:text-teks"
               )}
             >
               {STATUS_FLAG_LABEL[s] ?? "Semua"}
@@ -190,10 +190,10 @@ export default async function HalamanPengawasan(props: {
             keterangan="Belum ada indikasi pelanggaran pada kategori ini."
           />
         ) : (
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {flag.map((f) => (
               <li key={f.id} className="flex flex-wrap items-start gap-4 px-5 py-4">
-                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-amber-500/15 text-amber-300">
+                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-waspada/15 text-waspada">
                   <AlertTriangle size={17} />
                 </span>
 
@@ -201,20 +201,20 @@ export default async function HalamanPengawasan(props: {
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       href={`/santri/${f.santri.id}`}
-                      className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                      className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                     >
                       {f.santri.user.nama}
                     </Link>
-                    <Lencana className="bg-amber-500/10 text-amber-200 ring-amber-400/25">
+                    <Lencana className="bg-waspada/10 text-waspada ring-waspada/25">
                       {JENIS_FLAG_LABEL[f.jenis]}
                     </Lencana>
                     <Lencana
                       className={
                         f.status === "BARU"
-                          ? "bg-rose-500/15 text-rose-300 ring-rose-400/30"
+                          ? "bg-bahaya/15 text-bahaya ring-bahaya/30"
                           : f.status === "DITINJAU"
-                            ? "bg-sky-500/15 text-sky-300 ring-sky-400/30"
-                            : "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
+                            ? "bg-info/15 text-info ring-info/30"
+                            : "bg-sukses/15 text-sukses ring-sukses/30"
                       }
                     >
                       {STATUS_FLAG_LABEL[f.status]}
@@ -273,7 +273,7 @@ export default async function HalamanPengawasan(props: {
         {presensiManual.length === 0 ? (
           <Kosong judul="Belum ada presensi manual" />
         ) : (
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {presensiManual.map((p) => (
               <li
                 key={p.id}
@@ -281,7 +281,7 @@ export default async function HalamanPengawasan(props: {
               >
                 <Link
                   href={`/santri/${p.santri.id}`}
-                  className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                  className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                 >
                   {p.santri.user.nama}
                 </Link>

@@ -64,7 +64,7 @@ export default async function HalamanVerifikasi(props: {
     izin.selesai >= sekarang;
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-5 py-12">
+    <div id="konten" className="flex min-h-dvh flex-col items-center justify-center px-5 py-12">
       <div className="w-full max-w-md">
         <div className="mb-7 flex justify-center">
           <LogoTeks ukuran={38} />
@@ -74,19 +74,19 @@ export default async function HalamanVerifikasi(props: {
           <div
             className={`px-6 py-7 text-center ${
               !izin
-                ? "bg-white/[0.04]"
+                ? "bg-lapis"
                 : sah
-                  ? "bg-emerald-500/10"
-                  : "bg-amber-500/10"
+                  ? "bg-sukses/10"
+                  : "bg-waspada/10"
             }`}
           >
             <span
               className={`mx-auto grid size-14 place-items-center rounded-full ${
                 !izin
-                  ? "bg-white/10 text-redup"
+                  ? "bg-lapis-naik text-redup"
                   : sah
-                    ? "bg-emerald-500/20 text-emerald-300"
-                    : "bg-amber-500/20 text-amber-300"
+                    ? "bg-sukses/20 text-sukses"
+                    : "bg-waspada/20 text-waspada"
               }`}
             >
               {!izin ? (
@@ -97,7 +97,7 @@ export default async function HalamanVerifikasi(props: {
                 <XCircle size={28} />
               )}
             </span>
-            <p className="mt-4 text-lg font-semibold text-white">
+            <p className="mt-4 text-lg font-semibold text-teks">
               {!izin
                 ? "Kartu izin tidak ditemukan"
                 : sah
@@ -114,7 +114,7 @@ export default async function HalamanVerifikasi(props: {
           </div>
 
           {izin ? (
-            <dl className="divide-y divide-white/5">
+            <dl className="divide-y divide-garis">
               <Baris label="Nama santri" nilai={izin.santri.user.nama} />
               <Baris label="NIM" nilai={izin.santri.nim} />
               <Baris label="Halaqah" nilai={izin.santri.halaqah?.nama ?? "-"} />
@@ -141,7 +141,7 @@ export default async function HalamanVerifikasi(props: {
 
         {bolehCatat && izin ? (
           <Kartu className="mt-5 p-5">
-            <p className="text-sm font-semibold text-white">Santri kembali sekarang?</p>
+            <p className="text-sm font-semibold text-teks">Santri kembali sekarang?</p>
             <p className="mt-1 text-xs leading-relaxed text-redup">
               Tekan bila santri ini sudah masuk kembali ke area pesantren. Waktu
               kembali dicatat otomatis atas nama {pengguna.nama}.

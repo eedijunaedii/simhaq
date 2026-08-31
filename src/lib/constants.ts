@@ -72,11 +72,11 @@ export const STATUS_PRESENSI_LABEL: Record<string, string> = {
 
 /** Warna badge per status presensi (kelas Tailwind). */
 export const STATUS_PRESENSI_STYLE: Record<string, string> = {
-  HADIR: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
-  TERLAMBAT: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-  IZIN: "bg-sky-500/15 text-sky-300 ring-sky-500/30",
-  SAKIT: "bg-violet-500/15 text-violet-300 ring-violet-500/30",
-  ALFA: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
+  HADIR: "bg-sukses/15 text-sukses ring-sukses/30",
+  TERLAMBAT: "bg-waspada/15 text-waspada ring-waspada/30",
+  IZIN: "bg-info/15 text-info ring-info/30",
+  SAKIT: "bg-ungu/15 text-ungu ring-ungu/30",
+  ALFA: "bg-bahaya/15 text-bahaya ring-bahaya/30",
 };
 
 /** Status yang dihitung sebagai "hadir" pada rekap persentase. */
@@ -170,12 +170,12 @@ export const STATUS_IZIN_LABEL: Record<string, string> = {
 };
 
 export const STATUS_IZIN_STYLE: Record<string, string> = {
-  DIAJUKAN: "bg-amber-500/15 text-amber-300 ring-amber-500/30",
-  DIPROSES: "bg-sky-500/15 text-sky-300 ring-sky-500/30",
-  DISETUJUI: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
-  DITOLAK: "bg-rose-500/15 text-rose-300 ring-rose-500/30",
-  SELESAI: "bg-slate-500/15 text-slate-300 ring-slate-500/30",
-  DIBATALKAN: "bg-slate-500/15 text-slate-400 ring-slate-500/30",
+  DIAJUKAN: "bg-waspada/15 text-waspada ring-waspada/30",
+  DIPROSES: "bg-info/15 text-info ring-info/30",
+  DISETUJUI: "bg-sukses/15 text-sukses ring-sukses/30",
+  DITOLAK: "bg-bahaya/15 text-bahaya ring-bahaya/30",
+  SELESAI: "bg-lapis/15 text-redup ring-garis/30",
+  DIBATALKAN: "bg-lapis/15 text-redup ring-garis/30",
 };
 
 // --- Pengawasan -----------------------------------------------------------
@@ -210,19 +210,52 @@ export const AMBANG_PEMBINAAN = 75;
 /** Batas ukuran lampiran izin (byte). */
 export const MAKS_LAMPIRAN = 2 * 1024 * 1024;
 
-export const KAMPUS = [
-  "ITB",
-  "UPI",
-  "POLMAN",
-  "POLBAN",
-  "POLTEKKES",
-  "POLTEKESOS",
-  "STTT",
-  "UNPAS",
-  "UNISBA",
-  "ULBI",
-  "ITENAS",
-  "UNIKOM",
-  "USB YPKP",
-  "UT",
+/** Kampus asal santri, lengkap dengan logo (diambil dari situs pesantren). */
+export const KAMPUS: { singkatan: string; nama: string; logo: string }[] = [
+  { singkatan: "ITB", nama: "Institut Teknologi Bandung", logo: "/kampus/ITB.png" },
+  { singkatan: "UPI", nama: "Universitas Pendidikan Indonesia", logo: "/kampus/upi.png" },
+  {
+    singkatan: "POLMAN",
+    nama: "Politeknik Manufaktur Negeri Bandung",
+    logo: "/kampus/polman.png",
+  },
+  { singkatan: "POLBAN", nama: "Politeknik Negeri Bandung", logo: "/kampus/polban.png" },
+  {
+    singkatan: "POLTEKKES",
+    nama: "Poltekkes Kemenkes Bandung",
+    logo: "/kampus/poltekkes.png",
+  },
+  {
+    singkatan: "POLTEKESOS",
+    nama: "Politeknik Kesejahteraan Sosial",
+    logo: "/kampus/poltekesos.png",
+  },
+  {
+    singkatan: "STTT",
+    nama: "Sekolah Tinggi Teknologi Tekstil",
+    logo: "/kampus/sttt.png",
+  },
+  { singkatan: "UNPAS", nama: "Universitas Pasundan", logo: "/kampus/unpas.png" },
+  { singkatan: "UNISBA", nama: "Universitas Islam Bandung", logo: "/kampus/unisba.png" },
+  {
+    singkatan: "ULBI",
+    nama: "Universitas Logistik & Bisnis Indonesia",
+    logo: "/kampus/ulbi.png",
+  },
+  {
+    singkatan: "ITENAS",
+    nama: "Institut Teknologi Nasional Bandung",
+    logo: "/kampus/itenas.png",
+  },
+  {
+    singkatan: "UNIKOM",
+    nama: "Universitas Komputer Indonesia",
+    logo: "/kampus/unikom.png",
+  },
+  {
+    singkatan: "USB YPKP",
+    nama: "Universitas Sangga Buana YPKP",
+    logo: "/kampus/USB_YPKP_Logo.png",
+  },
+  { singkatan: "UT", nama: "Universitas Terbuka", logo: "/kampus/UT.png" },
 ];

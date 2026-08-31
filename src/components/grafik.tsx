@@ -16,21 +16,28 @@ import {
 } from "recharts";
 import { STATUS_PRESENSI_LABEL } from "@/lib/constants";
 
+/*
+  Warna grafik membaca token tema (var(--…)) sehingga ikut berganti saat
+  pengguna beralih antara mode terang dan gelap tanpa memuat ulang halaman.
+  Palet diatur di globals.css (--graf-*): nada dalam pada mode terang, nada
+  terang pada mode gelap — konsisten dan tidak mencolok.
+*/
 const SUMBU = {
-  stroke: "rgba(209,250,229,0.35)",
+  stroke: "var(--grafik-sumbu)",
   fontSize: 11,
 };
 
 const gayaTooltip = {
   contentStyle: {
-    background: "#0c2412",
-    border: "1px solid rgba(255,255,255,0.14)",
+    background: "var(--tip-latar)",
+    border: "1px solid var(--tip-tepi)",
     borderRadius: 12,
     fontSize: 12,
-    color: "#f8fafc",
+    color: "var(--color-teks)",
+    boxShadow: "var(--bayangan-kartu)",
   },
-  labelStyle: { color: "rgba(209,250,229,0.6)", marginBottom: 4 },
-  itemStyle: { color: "#f8fafc" },
+  labelStyle: { color: "var(--color-redup)", marginBottom: 4 },
+  itemStyle: { color: "var(--color-teks)" },
 };
 
 // --- Tren kehadiran harian ------------------------------------------------
@@ -55,8 +62,8 @@ export function GrafikTren({
       <AreaChart data={rapi} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
         <defs>
           <linearGradient id="gradTren" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#34d399" stopOpacity={0.45} />
-            <stop offset="100%" stopColor="#34d399" stopOpacity={0.02} />
+            <stop offset="0%" stopColor="var(--graf-area)" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="var(--graf-area)" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <XAxis
@@ -81,7 +88,7 @@ export function GrafikTren({
         <Area
           type="monotone"
           dataKey="persen"
-          stroke="#34d399"
+          stroke="var(--graf-area)"
           strokeWidth={2}
           fill="url(#gradTren)"
         />
@@ -93,11 +100,11 @@ export function GrafikTren({
 // --- Komposisi status -----------------------------------------------------
 
 const WARNA_STATUS: Record<string, string> = {
-  HADIR: "#34d399",
-  TERLAMBAT: "#fbbf24",
-  IZIN: "#38bdf8",
-  SAKIT: "#a78bfa",
-  ALFA: "#fb7185",
+  HADIR: "var(--graf-hadir)",
+  TERLAMBAT: "var(--graf-terlambat)",
+  IZIN: "var(--graf-izin)",
+  SAKIT: "var(--graf-sakit)",
+  ALFA: "var(--graf-alfa)",
 };
 
 export function GrafikStatus({
@@ -136,7 +143,7 @@ export function GrafikStatus({
           stroke="none"
         >
           {data.map((d) => (
-            <Cell key={d.kunci} fill={WARNA_STATUS[d.kunci] ?? "#64748b"} />
+            <Cell key={d.kunci} fill={WARNA_STATUS[d.kunci] ?? "var(--graf-samar)"} />
           ))}
         </Pie>
         <Tooltip {...gayaTooltip} />
@@ -144,7 +151,7 @@ export function GrafikStatus({
           verticalAlign="bottom"
           height={28}
           formatter={(v) => (
-            <span style={{ color: "rgba(209,250,229,0.7)", fontSize: 12 }}>{v}</span>
+            <span style={{ color: "var(--color-sekunder)", fontSize: 12 }}>{v}</span>
           )}
         />
       </PieChart>
@@ -166,11 +173,15 @@ export function GrafikBatang({
       <BarChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
         <XAxis
           dataKey="nama"
-          tick={SUMBU}
+          /* Label dimiringkan supaya nama kegiatan yang panjang tidak saling
+             menumpuk pada kartu yang sempit. */
+          tick={{ ...SUMBU, angle: -32, textAnchor: "end", dy: 6 }}
           tickLine={false}
           axisLine={false}
           interval={0}
-          tickFormatter={(v: string) => (v.length > 14 ? `${v.slice(0, 13)}…` : v)}
+          height={72}
+          tickMargin={10}
+          tickFormatter={(v: string) => (v.length > 16 ? `${v.slice(0, 15)}…` : v)}
         />
         <YAxis
           tick={SUMBU}
@@ -189,12 +200,12 @@ export function GrafikBatang({
               key={d.nama}
               fill={
                 d.persen >= 90
-                  ? "#34d399"
+                  ? "var(--graf-hadir)"
                   : d.persen >= 75
-                    ? "#a3e635"
+                    ? "var(--graf-limau)"
                     : d.persen >= 60
-                      ? "#fbbf24"
-                      : "#fb7185"
+                      ? "var(--graf-terlambat)"
+                      : "var(--graf-alfa)"
               }
             />
           ))}

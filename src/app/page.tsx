@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   BarChart3,
@@ -14,6 +15,8 @@ import {
   Users,
 } from "lucide-react";
 import { LogoTeks } from "@/components/logo";
+import { TombolTema } from "@/components/tombol-tema";
+import { Ungkap } from "@/components/ungkap";
 import { Kartu, TautanTombol } from "@/components/ui";
 import { APP, KAMPUS } from "@/lib/constants";
 
@@ -88,25 +91,27 @@ const PENGGUNA = [
   },
 ];
 
+const NAV = [
+  { href: "#fitur", label: "Fitur" },
+  { href: "#pengamanan", label: "Pengamanan" },
+  { href: "#pengguna", label: "Pengguna" },
+];
+
 export default function Beranda() {
   return (
-    <div className="min-h-dvh">
+    <div id="konten" className="min-h-dvh">
       {/* Navigasi */}
-      <header className="sticky top-0 z-40 border-b border-garis bg-[#0a1f0d]/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-garis bg-dasar/75 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
           <LogoTeks />
           <nav className="hidden items-center gap-7 text-sm text-sekunder md:flex">
-            <a className="transition hover:text-white" href="#fitur">
-              Fitur
-            </a>
-            <a className="transition hover:text-white" href="#pengamanan">
-              Pengamanan
-            </a>
-            <a className="transition hover:text-white" href="#pengguna">
-              Pengguna
-            </a>
+            {NAV.map((n) => (
+              <a key={n.href} className="transition hover:text-teks" href={n.href}>
+                {n.label}
+              </a>
+            ))}
             <a
-              className="transition hover:text-white"
+              className="transition hover:text-teks"
               href={APP.situsUtama}
               target="_blank"
               rel="noreferrer"
@@ -114,10 +119,13 @@ export default function Beranda() {
               Situs Pesantren ↗
             </a>
           </nav>
-          <TautanTombol href="/login" ukuran="sm">
-            Masuk
-            <ArrowRight size={15} />
-          </TautanTombol>
+          <div className="flex items-center gap-2">
+            <TombolTema />
+            <TautanTombol href="/login" ukuran="sm">
+              Masuk
+              <ArrowRight size={15} />
+            </TautanTombol>
+          </div>
         </div>
       </header>
 
@@ -126,14 +134,14 @@ export default function Beranda() {
         <div className="mx-auto max-w-6xl px-5 pb-16 pt-16 sm:pt-24">
           <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="muncul">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-aksen/25 bg-aksen/10 px-3.5 py-1.5 text-xs font-medium text-sukses">
                 <ScanLine size={14} />
                 Aplikasi internal {APP.lembaga}
               </span>
 
-              <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-teks sm:text-5xl lg:text-6xl">
                 Presensi kegiatan{" "}
-                <span className="bg-gradient-to-r from-emerald-300 to-emerald-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text text-transparent dark:from-emerald-300 dark:to-emerald-500">
                   sekali pindai
                 </span>
                 , perizinan tanpa kertas.
@@ -147,12 +155,12 @@ export default function Beranda() {
                 ketidakhadiran tanpa keterangan.
               </p>
 
-              <p className="mt-4 max-w-xl rounded-xl border-l-2 border-emerald-400/50 bg-white/[0.03] py-2.5 pl-4 text-sm italic leading-relaxed text-sekunder">
+              <blockquote className="mt-4 max-w-xl rounded-xl border-l-2 border-aksen/60 bg-permukaan py-2.5 pl-4 pr-3 text-sm italic leading-relaxed text-sekunder shadow-[var(--bayangan-kartu)]">
                 Di pesantren mahasiswa, ketidakhadiran belum tentu pelanggaran. Santri
                 yang praktikum sampai malam dan santri yang tidak disiplin sama-sama
                 tercatat &ldquo;tidak hadir&rdquo; pada buku absen manual. Sistem ini
                 memberi pengurus data untuk membedakan keduanya.
-              </p>
+              </blockquote>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <TautanTombol href="/login" ukuran="lg">
@@ -172,7 +180,7 @@ export default function Beranda() {
                   { n: "14", l: "Kampus asal" },
                 ].map((s) => (
                   <div key={s.l}>
-                    <dt className="text-2xl font-bold text-emerald-300">{s.n}</dt>
+                    <dt className="angka text-2xl font-bold text-sukses">{s.n}</dt>
                     <dd className="text-xs text-redup">{s.l}</dd>
                   </div>
                 ))}
@@ -181,23 +189,23 @@ export default function Beranda() {
 
             {/* Ilustrasi layar QR */}
             <div className="muncul relative mx-auto w-full max-w-sm">
-              <div className="absolute -inset-6 rounded-[2.5rem] bg-emerald-500/10 blur-3xl" />
+              <div className="absolute -inset-6 rounded-[2.5rem] bg-aksen/10 blur-3xl" />
               <Kartu className="relative overflow-hidden p-6">
                 <div className="flex items-center justify-between text-xs text-sekunder">
                   <span>Kajian Ba&apos;da Subuh</span>
-                  <span className="inline-flex items-center gap-1.5 text-emerald-300">
-                    <span className="denyut inline-block size-1.5 rounded-full bg-emerald-400" />
+                  <span className="inline-flex items-center gap-1.5 text-sukses">
+                    <span className="denyut inline-block size-1.5 rounded-full bg-sukses" />
                     Sesi dibuka
                   </span>
                 </div>
 
-                <div className="mt-5 grid place-items-center rounded-2xl bg-white p-5">
+                <div className="mt-5 grid place-items-center rounded-2xl bg-white p-5 ring-1 ring-black/5">
                   <QrIlustrasi />
                 </div>
 
                 <div className="mt-4 space-y-2.5">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full w-2/3 rounded-full bg-emerald-400" />
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-lapis">
+                    <div className="h-full w-2/3 rounded-full bg-sukses" />
                   </div>
                   <p className="text-center text-xs text-redup">
                     Kode berganti dalam 8 detik
@@ -210,8 +218,8 @@ export default function Beranda() {
                     { n: "4", l: "Izin" },
                     { n: "3", l: "Belum" },
                   ].map((x) => (
-                    <div key={x.l} className="rounded-xl bg-white/[0.05] py-2.5">
-                      <p className="text-lg font-bold text-white">{x.n}</p>
+                    <div key={x.l} className="rounded-xl bg-lapis py-2.5">
+                      <p className="angka text-lg font-bold text-teks">{x.n}</p>
                       <p className="text-[11px] text-redup">{x.l}</p>
                     </div>
                   ))}
@@ -223,39 +231,39 @@ export default function Beranda() {
       </section>
 
       {/* Fitur */}
-      <section id="fitur" className="border-t border-white/5 py-20">
+      <section id="fitur" className="border-t border-garis py-20">
         <div className="mx-auto max-w-6xl px-5">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-teks">
             Ruang lingkup fitur
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-sekunder">
             Tiga modul utama yang saling terhubung dalam satu basis data.
           </p>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Ungkap className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FITUR.map((f) => (
               <Kartu key={f.judul} sorot className="p-6">
-                <span className="inline-flex size-11 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
+                <span className="inline-flex size-11 items-center justify-center rounded-xl bg-aksen/10 text-sukses">
                   <f.ikon size={20} />
                 </span>
-                <h3 className="mt-4 font-semibold text-white">{f.judul}</h3>
+                <h3 className="mt-4 font-semibold text-teks">{f.judul}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-sekunder">{f.isi}</p>
               </Kartu>
             ))}
-          </div>
+          </Ungkap>
         </div>
       </section>
 
       {/* Pengamanan */}
-      <section id="pengamanan" className="border-t border-white/5 py-20">
+      <section id="pengamanan" className="border-t border-garis py-20">
         <div className="mx-auto max-w-6xl px-5">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-aksen/25 bg-aksen/10 px-3 py-1 text-xs font-medium text-sukses">
                 <Fingerprint size={13} />
                 Anti titip absen
               </span>
-              <h2 className="mt-5 text-3xl font-bold tracking-tight text-white">
+              <h2 className="mt-5 text-3xl font-bold tracking-tight text-teks">
                 QR tempel akan segera difoto lalu disebarkan
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-sekunder">
@@ -265,27 +273,27 @@ export default function Beranda() {
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <Ungkap className="grid gap-4 sm:grid-cols-2">
               {PENGAMANAN.map((p, i) => (
                 <Kartu key={p.judul} sorot className="p-5">
                   <span className="text-xs font-semibold text-aksen">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-1.5 font-semibold text-white">{p.judul}</h3>
+                  <h3 className="mt-1.5 font-semibold text-teks">{p.judul}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-sekunder">
                     {p.isi}
                   </p>
                 </Kartu>
               ))}
-            </div>
+            </Ungkap>
           </div>
         </div>
       </section>
 
       {/* Pengguna */}
-      <section id="pengguna" className="border-t border-white/5 py-20">
+      <section id="pengguna" className="border-t border-garis py-20">
         <div className="mx-auto max-w-6xl px-5">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-teks">
             Pengguna dan hak akses
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-sekunder">
@@ -294,34 +302,59 @@ export default function Beranda() {
             sebaliknya.
           </p>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Ungkap className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {PENGGUNA.map((p) => (
               <Kartu key={p.peran} sorot className="p-6">
-                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
+                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-aksen/10 text-sukses">
                   <Users size={18} />
                 </span>
-                <h3 className="mt-4 font-semibold text-white">{p.peran}</h3>
+                <h3 className="mt-4 font-semibold text-teks">{p.peran}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-sekunder">{p.isi}</p>
               </Kartu>
             ))}
-          </div>
+          </Ungkap>
         </div>
       </section>
 
       {/* Kampus */}
-      <section className="border-t border-white/5 py-14">
+      <section className="border-t border-garis py-20">
         <div className="mx-auto max-w-6xl px-5 text-center">
           <p className="text-xs font-medium uppercase tracking-widest text-samar">
             Santri berasal dari belasan perguruan tinggi di Bandung
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-2.5">
-            {KAMPUS.map((k) => (
-              <span
-                key={k}
-                className="rounded-full border border-garis bg-white/[0.04] px-3.5 py-1.5 text-xs text-sekunder"
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-teks">
+            Kampus-kampus ternama sekitar
+          </h2>
+        </div>
+
+        <div className="relative mt-10 overflow-hidden">
+          {/* Pudar di kedua tepi, warnanya mengikuti latar tema */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-dasar to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-dasar to-transparent sm:w-24" />
+
+          {/* Track: tiga salinan daftar, digeser sepertiga lebar per siklus */}
+          <div className="animasi-marquee flex w-max">
+            {[...KAMPUS, ...KAMPUS, ...KAMPUS].map((k, i) => (
+              <Kartu
+                key={`${k.singkatan}-${i}`}
+                className="mr-6 flex w-[220px] shrink-0 select-none flex-col items-center gap-4 px-6 py-6 transition-all duration-200 hover:-translate-y-1 hover:border-aksen/40 hover:shadow-lg"
               >
-                {k}
-              </span>
+                <span className="grid size-28 shrink-0 place-items-center overflow-hidden rounded-2xl border border-garis bg-lapis">
+                  <Image
+                    src={k.logo}
+                    alt={`Logo ${k.singkatan}`}
+                    width={112}
+                    height={112}
+                    className="h-full w-full object-contain p-2"
+                  />
+                </span>
+                <span className="rounded-full border border-aksen/20 bg-aksen/10 px-3 py-1 text-xs font-bold tracking-wide text-sukses">
+                  {k.singkatan}
+                </span>
+                <p className="text-center text-sm font-semibold leading-snug text-sekunder">
+                  {k.nama}
+                </p>
+              </Kartu>
             ))}
           </div>
         </div>
@@ -330,18 +363,22 @@ export default function Beranda() {
       {/* Ajakan */}
       <section className="py-16">
         <div className="mx-auto max-w-6xl px-5">
-          <Kartu className="overflow-hidden">
+          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-800 via-emerald-900 to-[#06240f] shadow-[0_12px_40px_-12px_rgba(4,120,87,0.45)]">
             <div className="grid gap-8 p-9 sm:p-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   Siap dipakai pengurus dan santri
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-sekunder">
+                <p className="mt-3 text-sm leading-relaxed text-emerald-100/90">
                   Masuk memakai akun yang dibuatkan pengurus. Santri cukup membuka
                   tautan dari peramban ponsel — tidak perlu mengunduh aplikasi apa pun.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <TautanTombol href="/login" ukuran="lg">
+                  <TautanTombol
+                    href="/login"
+                    ukuran="lg"
+                    className="shadow-lg shadow-black/20"
+                  >
                     Masuk ke sistem
                     <ArrowRight size={16} />
                   </TautanTombol>
@@ -350,25 +387,26 @@ export default function Beranda() {
                     target="_blank"
                     gaya="kedua"
                     ukuran="lg"
+                    className="border-white/30 bg-white/10 text-white hover:bg-white/20"
                   >
                     Kunjungi situs pesantren
                   </TautanTombol>
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm text-sekunder">
+              <div className="space-y-3 text-sm text-emerald-50/90">
                 <p className="flex items-start gap-2.5">
-                  <MapPin size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                  <MapPin size={16} className="mt-0.5 shrink-0 text-emerald-300" />
                   {APP.alamat}
                 </p>
                 <p className="flex items-start gap-2.5">
-                  <Phone size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                  <Phone size={16} className="mt-0.5 shrink-0 text-emerald-300" />
                   {APP.telepon}
                 </p>
-                <p className="text-redup">{APP.email}</p>
+                <p className="text-emerald-200/70">{APP.email}</p>
               </div>
             </div>
-          </Kartu>
+          </div>
         </div>
       </section>
 
@@ -383,14 +421,14 @@ export default function Beranda() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-5 text-xs text-redup">
-            <Link href="/login" className="transition hover:text-emerald-200">
+            <Link href="/login" className="transition hover:text-sukses">
               Masuk
             </Link>
             <a
               href={APP.situsUtama}
               target="_blank"
               rel="noreferrer"
-              className="transition hover:text-emerald-200"
+              className="transition hover:text-sukses"
             >
               ppmmh.site
             </a>

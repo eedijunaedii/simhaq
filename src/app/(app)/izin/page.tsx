@@ -140,8 +140,8 @@ export default async function HalamanIzin(props: {
               className={cn(
                 "inline-flex min-h-11 cursor-pointer items-center rounded-lg px-3.5 text-sm transition-colors duration-200",
                 aktif.kunci === t.kunci
-                  ? "bg-emerald-500/15 font-medium text-emerald-200"
-                  : "text-redup hover:bg-white/[0.06] hover:text-white"
+                  ? "bg-sukses/15 font-medium text-sukses"
+                  : "text-redup hover:bg-lapis hover:text-teks"
               )}
             >
               {t.label}
@@ -208,7 +208,7 @@ export default async function HalamanIzin(props: {
                         {JENIS_IZIN_LABEL[z.jenis]}
                       </TautanBaris>
                     ) : (
-                      <span className="block font-medium text-white">
+                      <span className="block font-medium text-teks">
                         {JENIS_IZIN_LABEL[z.jenis]}
                       </span>
                     )}
@@ -234,7 +234,7 @@ export default async function HalamanIzin(props: {
                       {STATUS_IZIN_LABEL[z.status]}
                     </Lencana>
                     {z.terlambatKembali ? (
-                      <span className="mt-1 flex items-center justify-end gap-1 text-[11px] text-amber-300">
+                      <span className="mt-1 flex items-center justify-end gap-1 text-[11px] text-waspada">
                         <AlertTriangle size={11} />
                         Telat kembali
                       </span>

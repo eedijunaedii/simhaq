@@ -58,7 +58,7 @@ export default async function HalamanProfil() {
       <div className="mb-6 flex flex-wrap items-center gap-4">
         <Avatar nama={user.nama} ukuran={64} />
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl font-bold text-white">{user.nama}</h2>
+          <h2 className="text-xl font-bold text-teks">{user.nama}</h2>
           <p className="mt-0.5 text-sm text-redup">
             {user.username} · {ROLE_LABEL[user.role as keyof typeof ROLE_LABEL]}
             {user.pengajar ? ` · ${user.pengajar.jabatan}` : ""}
@@ -116,7 +116,7 @@ export default async function HalamanProfil() {
                 <KepalaKartu judul="Perangkat presensi" />
                 <div className="p-5">
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-emerald-300">
+                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-lapis text-sukses">
                       <Smartphone size={17} />
                     </span>
                     <p className="text-sm leading-relaxed text-sekunder">

@@ -57,7 +57,7 @@ export default async function HalamanScan(props: {
         <div className="space-y-5">
           <Kartu>
             <div className="border-b border-garis px-5 py-4">
-              <h2 className="text-base font-semibold text-white">Sesi yang tersedia</h2>
+              <h2 className="text-base font-semibold text-teks">Sesi yang tersedia</h2>
               <p className="mt-0.5 text-sm text-redup">
                 {GENDER_LABEL[sesi.gender]}
               </p>
@@ -68,14 +68,14 @@ export default async function HalamanScan(props: {
                 keterangan="Sesi presensi hanya muncul saat musyrif membukanya."
               />
             ) : (
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-garis">
                 {sesiTerbuka.map((s) => {
                   const status = s.presensi[0]?.status;
                   return (
                     <li key={s.id} className="px-5 py-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-white">
+                          <p className="truncate text-sm font-medium text-teks">
                             {s.kegiatan.nama}
                           </p>
                           {s.halaqah ? (
@@ -85,11 +85,11 @@ export default async function HalamanScan(props: {
                           ) : null}
                         </div>
                         {status ? (
-                          <Lencana className="bg-emerald-500/15 text-emerald-300 ring-emerald-400/30">
+                          <Lencana className="bg-sukses/15 text-sukses ring-sukses/30">
                             Tercatat
                           </Lencana>
                         ) : (
-                          <Lencana className="bg-amber-500/15 text-amber-300 ring-amber-400/30">
+                          <Lencana className="bg-waspada/15 text-waspada ring-waspada/30">
                             Belum
                           </Lencana>
                         )}
@@ -106,7 +106,7 @@ export default async function HalamanScan(props: {
           </Kartu>
 
           <Kartu className="p-5">
-            <h3 className="text-sm font-semibold text-white">Perangkat Anda</h3>
+            <h3 className="text-sm font-semibold text-teks">Perangkat Anda</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-redup">
               {santri?.deviceId
                 ? "Akun ini sudah terikat pada satu perangkat. Bila Anda berganti ponsel, mintalah musyrif melepas keterikatan perangkat."

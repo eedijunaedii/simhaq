@@ -109,7 +109,7 @@ export default async function HalamanPengaturan() {
               {pengurus.map((u) => (
                 <Tr key={u.id}>
                   <Td>
-                    <span className="block font-medium text-white">{u.nama}</span>
+                    <span className="block font-medium text-teks">{u.nama}</span>
                     <span className="block text-xs text-samar">
                       {u.username} · {GENDER_LABEL[u.gender]}
                     </span>
@@ -129,8 +129,8 @@ export default async function HalamanPengaturan() {
                     <Lencana
                       className={
                         u.aktif
-                          ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30"
-                          : "bg-rose-500/15 text-rose-300 ring-rose-400/30"
+                          ? "bg-sukses/15 text-sukses ring-sukses/30"
+                          : "bg-bahaya/15 text-bahaya ring-bahaya/30"
                       }
                     >
                       {u.aktif ? "Aktif" : "Nonaktif"}
@@ -141,7 +141,7 @@ export default async function HalamanPengaturan() {
                       <form action={resetKataSandi.bind(null, u.id)}>
                         <button
                           type="submit"
-                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
+                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-lapis-naik hover:text-teks"
                           title="Atur ulang kata sandi (nilai baru tercatat pada log audit)"
                         >
                           <KeyRound size={15} />
@@ -151,7 +151,7 @@ export default async function HalamanPengaturan() {
                         <form action={ubahStatusAkun.bind(null, u.id, !u.aktif)}>
                           <button
                             type="submit"
-                            className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-white/10 hover:text-teks"
+                            className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-redup transition-colors duration-200 hover:bg-lapis-naik hover:text-teks"
                             title={u.aktif ? "Nonaktifkan akun" : "Aktifkan akun"}
                           >
                             <Power size={15} />
@@ -196,7 +196,7 @@ export default async function HalamanPengaturan() {
                     <Td>
                       <Link
                         href={`/santri/${w.santri.id}`}
-                        className="inline-block -my-1 py-1 font-medium text-white transition-colors duration-150 hover:text-aksen"
+                        className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
                       >
                         {w.santri.user.nama}
                       </Link>
@@ -221,7 +221,7 @@ export default async function HalamanPengaturan() {
                       <form action={cabutTokenWali.bind(null, w.id)}>
                         <button
                           type="submit"
-                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-rose-300 transition-colors duration-200 hover:bg-rose-500/10 hover:text-rose-200"
+                          className="inline-grid size-11 cursor-pointer place-items-center rounded-lg text-bahaya transition-colors duration-200 hover:bg-bahaya/10 hover:text-bahaya"
                           title="Cabut tautan"
                         >
                           <Trash2 size={15} />
@@ -237,13 +237,13 @@ export default async function HalamanPengaturan() {
 
         <Kartu>
           <KepalaKartu judul="Log aktivitas" keterangan="40 catatan terakhir" />
-          <ul className="divide-y divide-white/5">
+          <ul className="divide-y divide-garis">
             {audit.map((a) => (
               <li
                 key={a.id}
                 className="flex flex-wrap items-center gap-3 px-5 py-2.5 text-sm"
               >
-                <code className="rounded bg-white/[0.07] px-2 py-0.5 text-[11px] text-emerald-200">
+                <code className="rounded bg-lapis px-2 py-0.5 text-[11px] text-sukses">
                   {a.aksi}
                 </code>
                 <span className="text-sekunder">{a.entitas}</span>

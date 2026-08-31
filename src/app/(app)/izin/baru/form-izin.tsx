@@ -90,8 +90,8 @@ export function FormIzin() {
         label="Lampiran bukti (opsional)"
         petunjuk="JPG, PNG, WebP, atau PDF. Maksimal 2 MB. Contoh: surat tugas, jadwal praktikum, surat dokter."
       >
-        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/[0.03] px-4 py-3.5 text-sm text-sekunder transition hover:border-emerald-400/40 hover:bg-white/[0.06]">
-          <Paperclip size={17} className="shrink-0 text-emerald-300" />
+        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-kendali/60 bg-lapis px-4 py-3.5 text-sm text-sekunder transition hover:border-sukses/40 hover:bg-lapis">
+          <Paperclip size={17} className="shrink-0 text-sukses" />
           <span className="truncate">{namaBerkas ?? "Pilih berkas..."}</span>
           <input
             type="file"

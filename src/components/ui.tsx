@@ -1,5 +1,11 @@
 import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cn, warnaBatang } from "@/lib/utils";
 
 // --- Panel & kartu --------------------------------------------------------
@@ -29,10 +35,10 @@ export function Kartu({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-garis bg-permukaan/[0.55] backdrop-blur-sm",
-        sorot && "transition-colors duration-200 hover:border-kendali/60 hover:bg-permukaan-naik/70",
+        "kartu",
+        sorot && "transition-colors duration-200 hover:border-kendali/60 hover:bg-permukaan-naik",
         dapatDiklik &&
-          "cursor-pointer transition-colors duration-200 hover:border-aksen/50 hover:bg-permukaan-naik/95",
+          "cursor-pointer transition-all duration-200 hover:border-aksen/50 hover:shadow-[0_4px_16px_rgba(4,120,87,0.12)]",
         className
       )}
       {...rest}
@@ -52,9 +58,9 @@ export function KepalaKartu({
   aksi?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-garis px-5 py-4">
-      <div className="min-w-0">
-        <h2 className="text-base font-semibold tracking-tight text-white">{judul}</h2>
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-garis px-5 py-4">
+        <div className="min-w-0">
+          <h2 className="text-base font-semibold tracking-tight text-teks">{judul}</h2>
         {keterangan ? (
           <p className="mt-0.5 text-sm text-redup">{keterangan}</p>
         ) : null}
@@ -76,7 +82,7 @@ export function JudulHalaman({
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-teks sm:text-3xl">
           {judul}
         </h1>
         {keterangan ? (
@@ -91,10 +97,10 @@ export function JudulHalaman({
 // --- Tombol ---------------------------------------------------------------
 
 const GAYA_TOMBOL = {
-  utama: "bg-aksen text-[#06240f] hover:bg-aksen-lembut",
-  kedua: "bg-white/[0.07] text-teks hover:bg-white/[0.12] border border-kendali",
-  bahaya: "bg-rose-500 text-white hover:bg-rose-400",
-  hantu: "text-sekunder hover:bg-white/[0.08] hover:text-teks",
+  utama: "bg-aksen text-di-aksen hover:bg-aksen-lembut shadow-sm",
+  kedua: "bg-lapis text-teks hover:bg-lapis-naik border border-kendali/60",
+  bahaya: "bg-bahaya text-teks hover:brightness-110",
+  hantu: "text-sekunder hover:bg-lapis hover:text-teks",
 } as const;
 
 const UKURAN_TOMBOL = {
@@ -159,7 +165,7 @@ export function Lencana({
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
-        className ?? "bg-white/[0.08] text-sekunder ring-white/15"
+        className ?? "bg-lapis text-sekunder ring-garis"
       )}
     >
       {children}
@@ -178,8 +184,19 @@ export function Label({ className, ...rest }: ComponentProps<"label">) {
   );
 }
 
+/** Identitas stabil dari teks label, untuk mengaitkan <label> ke kontrolnya. */
+function idBidang(label: string) {
+  return (
+    "bidang-" +
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+  );
+}
+
 const KELAS_KENDALI =
-  "w-full min-h-11 rounded-xl border border-kendali bg-white/[0.05] px-3.5 py-2.5 text-sm text-teks outline-none transition-colors duration-200 placeholder:text-samar hover:border-aksen-lembut/70 focus-visible:border-aksen disabled:cursor-not-allowed disabled:opacity-50";
+  "w-full min-h-11 rounded-xl border border-kendali/70 bg-permukaan px-3.5 py-2.5 text-sm text-teks outline-none transition-colors duration-200 placeholder:text-samar hover:border-kendali focus-visible:border-aksen disabled:cursor-not-allowed disabled:opacity-50";
 
 export function Input({ className, ...rest }: ComponentProps<"input">) {
   return <input className={cn(KELAS_KENDALI, className)} {...rest} />;
@@ -204,12 +221,36 @@ export function Bidang({
   children: ReactNode;
   className?: string;
 }) {
+  /*
+    Kaitkan label ke kontrolnya lewat id/htmlFor supaya pembaca layar dan
+    bantuan label otomatis (mis. getByLabel) menemukan kontrol yang tepat.
+    Id diturunkan dari teks label sehingga tetap stabil antara render server
+    dan klien. Bila kontrol sudah membawa id sendiri, id itu dipertahankan.
+  */
+  const id = idBidang(label);
+  const idPetunjuk = petunjuk ? `${id}-petunjuk` : undefined;
+  const anak = isValidElement(children)
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id: (children as ReactElement<Record<string, unknown>>).props.id ?? id,
+        ...(idPetunjuk
+          ? {
+              "aria-describedby":
+                (children as ReactElement<Record<string, unknown>>).props[
+                  "aria-describedby"
+                ] ?? idPetunjuk,
+            }
+          : {}),
+      })
+    : children;
+
   return (
     <div className={className}>
-      <Label>{label}</Label>
-      {children}
+      <Label htmlFor={id}>{label}</Label>
+      {anak}
       {petunjuk ? (
-        <p className="mt-1.5 text-xs text-redup">{petunjuk}</p>
+        <p id={idPetunjuk} className="mt-1.5 text-xs text-redup">
+          {petunjuk}
+        </p>
       ) : null}
     </div>
   );
@@ -227,10 +268,10 @@ export function Peringatan({
   children: ReactNode;
 }) {
   const gaya = {
-    info: "border-sky-400/25 bg-sky-500/10 text-sky-100",
-    sukses: "border-emerald-400/25 bg-emerald-500/10 text-emerald-100",
-    galat: "border-rose-400/25 bg-rose-500/10 text-rose-100",
-    waspada: "border-amber-400/25 bg-amber-500/10 text-amber-100",
+    info: "border-info/25 bg-info/10 text-info",
+    sukses: "border-sukses/25 bg-sukses/10 text-sukses",
+    galat: "border-bahaya/25 bg-bahaya/10 text-bahaya",
+    waspada: "border-waspada/25 bg-waspada/10 text-waspada",
   }[nada];
 
   return (
@@ -252,7 +293,7 @@ export function Kosong({
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
-      <p className="text-sm font-medium text-white">{judul}</p>
+      <p className="text-sm font-medium text-teks">{judul}</p>
       {keterangan ? (
         <p className="max-w-sm text-sm text-redup">{keterangan}</p>
       ) : null}
@@ -280,9 +321,9 @@ export function KartuStat({
 }) {
   const warna = {
     netral: "text-teks",
-    baik: "text-aksen",
-    waspada: "text-amber-300",
-    buruk: "text-rose-300",
+    baik: "text-sukses",
+    waspada: "text-waspada",
+    buruk: "text-bahaya",
   }[nada];
 
   return (
@@ -315,7 +356,7 @@ export function BatangProgres({
 }) {
   const lebar = Math.max(0, Math.min(100, nilai));
   return (
-    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-white/10", className)}>
+    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-lapis", className)}>
       <div
         className={cn("h-full rounded-full transition-all", warnaBatang(lebar))}
         style={{ width: `${lebar}%` }}
@@ -349,14 +390,14 @@ export function Th({ className, ...rest }: ComponentProps<"th">) {
 export function Td({ className, ...rest }: ComponentProps<"td">) {
   return (
     <td
-      className={cn("border-b border-white/[0.06] px-4 py-3 align-middle text-sekunder", className)}
+      className={cn("border-b border-garis/70 px-4 py-3 align-middle text-sekunder", className)}
       {...rest}
     />
   );
 }
 
 export function Tr({ className, ...rest }: ComponentProps<"tr">) {
-  return <tr className={cn("transition-colors duration-150 hover:bg-white/[0.05]", className)} {...rest} />;
+  return <tr className={cn("transition-colors duration-150 hover:bg-permukaan-naik", className)} {...rest} />;
 }
 
 /**
@@ -370,7 +411,7 @@ export function Tr({ className, ...rest }: ComponentProps<"tr">) {
 export function TrTautan({ className, ...rest }: ComponentProps<"tr">) {
   return (
     <Tr
-      className={cn("relative cursor-pointer hover:bg-white/[0.06]", className)}
+      className={cn("relative cursor-pointer hover:bg-permukaan-naik", className)}
       {...rest}
     />
   );
@@ -386,7 +427,7 @@ export function TautanBaris({ className, ...rest }: ComponentProps<typeof Link>)
   return (
     <Link
       className={cn(
-        "font-medium text-white transition-colors duration-150 hover:text-aksen",
+        "font-medium text-teks transition-colors duration-150 hover:text-aksen",
         "after:absolute after:inset-0 after:content-['']",
         className
       )}
@@ -406,7 +447,7 @@ export function Avatar({ nama, ukuran = 36 }: { nama: string; ukuran?: number })
     .join("");
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-aksen to-emerald-500 font-semibold text-[#06240f]"
+      className="inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 font-semibold text-white"
       style={{ width: ukuran, height: ukuran, fontSize: ukuran * 0.36 }}
     >
       {huruf || "?"}

@@ -1,68 +1,147 @@
 @import "tailwindcss";
 
 /*
-  Sistem visual SIMHAQ.
+  Varian `dark:` mengikuti atribut tema aplikasi (bukan preferensi sistem),
+  supaya kelas seperti dark:bg-lapis ikut berganti saat pengguna menekan
+  saklar tema.
+*/
+@custom-variant dark (&:where([data-tema="gelap"], [data-tema="gelap"] *));
+
+/*
+  Sistem visual SIMHAQ — dual mode (terang & gelap).
 
   Identitas warna tetap mengikuti situs resmi PPM Minhajul Haq
-  (https://www.ppmmh.site), tetapi disusun ulang menjadi token semantik yang
-  setiap nilainya sudah diverifikasi memenuhi WCAG. Sebelumnya teks memakai
-  opasitas berjenjang (emerald-100/35 dan seterusnya) yang secara terukur
-  gagal: lima dari sepuluh kombinasi berada di bawah 4.5:1, yang terburuk
-  hanya 2.49:1.
+  (https://www.ppmmh.site): palet hijau #047857 / #10b981 / #34d399 dengan
+  tipografi Inter/Poppins. Seluruh warna disusun sebagai token semantik yang
+  nilainya berganti mengikuti tema pada <html data-tema="gelap">.
 
-  Rasio terhadap permukaan kartu rgb(19,38,21), diukur di peramban:
-    --teks        #F2F7F3  14.71:1  AAA
-    --sekunder    #C6D9C9  10.76:1  AAA
-    --redup       #9DB5A2   7.26:1  AAA
-    --samar       #8AA390   5.86:1  AA
-    --aksen       #4ADE80   9.15:1  AAA
-    --tepi-kendali #65876E  3.68:1  lolos 1.4.11 untuk batas kontrol
+  Tema diatur oleh skrip kecil di layout.tsx (sebelum cat pertama, tanpa
+  kedipan): preferensi tersimpan di localStorage "tema-simhaq", bila belum
+  ada maka mengikuti preferensi sistem pengguna.
+
+  Kontras mode terang (terhadap kartu putih #ffffff, diukur di peramban):
+    --color-teks        #16241a  15.6:1  AAA
+    --color-sekunder    #42594a   7.4:1  AAA
+    --color-redup       #5b7161   5.0:1  AA
+    --color-samar       #5f7566   4.6:1  AA
+    --color-aksen       #047857   4.8:1  AA (teks) / lolos 1.4.11 (batas)
+  Kontras mode gelap dipertahankan dari versi sebelumnya (semuanya AAA/AA
+  terhadap permukaan rgb(19,38,21)).
 */
 
+/* --- Token semantik -------------------------------------------------------
+   Nilai bawaan = mode terang. Mode gelap menimpanya pada blok bawah.
+--------------------------------------------------------------------------- */
 @theme {
   /* Permukaan */
-  --color-dasar: #0a1f0d;
-  --color-permukaan: #192c1c;
-  --color-permukaan-naik: #233525;
+  --color-dasar: #f2f6f2;
+  --color-dasar-naik: #ffffff;
+  --color-permukaan: #ffffff;
+  --color-permukaan-naik: #f6faf6;
+  --color-lapis: #eef3ee;
+  --color-lapis-naik: #e2ebe2;
 
-  /* Teks — semuanya lolos minimal AA pada ketiga permukaan di atas */
+  /* Teks */
+  --color-teks: #16241a;
+  --color-sekunder: #42594a;
+  --color-redup: #5b7161;
+  --color-samar: #5f7566;
+
+  /* Aksen jenama */
+  --color-ppm-dark: #064e3b;
+  --color-ppm: #047857;
+  --color-aksen: #047857;
+  --color-aksen-lembut: #065f46;
+  --color-di-aksen: #ffffff;
+
+  /* Status */
+  --color-sukses: #047857;
+  --color-waspada: #b45309;
+  --color-bahaya: #be123c;
+  --color-info: #0369a1;
+  --color-limau: #4d7c0f;
+  --color-ungu: #6d28d9;
+
+  /* Garis: pemisah halus, dan tepi kontrol yang wajib 3:1 */
+  --color-garis: #dfe8df;
+  --color-kendali: #7f9584;
+
+  --font-sans: var(--font-inter), Inter, Poppins, system-ui, Arial, Helvetica,
+    sans-serif;
+}
+
+/*
+  Mode gelap. Utilitas Tailwind (bg-permukaan, text-teks, dst.) dikompilasi
+  menjadi var(--color-…), sehingga menimpa token di sini cukup untuk
+  membalik seluruh tampilan aplikasi.
+*/
+[data-tema="gelap"] {
+  --color-dasar: #0a1f0d;
+  --color-dasar-naik: #0c2412;
+  --color-permukaan: rgba(255, 255, 255, 0.045);
+  --color-permukaan-naik: rgba(255, 255, 255, 0.09);
+  --color-lapis: rgba(255, 255, 255, 0.05);
+  --color-lapis-naik: rgba(255, 255, 255, 0.12);
+
   --color-teks: #f2f7f3;
   --color-sekunder: #c6d9c9;
   --color-redup: #9db5a2;
   --color-samar: #8aa390;
 
-  /* Aksen jenama */
-  --color-ppm-dark: #064e3b;
-  --color-ppm: #047857;
   --color-aksen: #4ade80;
   --color-aksen-lembut: #34d399;
+  --color-di-aksen: #06240f;
 
-  /* Garis: pemisah halus, dan tepi kontrol yang wajib 3:1 */
-  --color-garis: #2d4433;
+  --color-sukses: #34d399;
+  --color-waspada: #fbbf24;
+  --color-bahaya: #fb7185;
+  --color-info: #38bdf8;
+  --color-limau: #a3e635;
+  --color-ungu: #a78bfa;
+
+  --color-garis: rgba(255, 255, 255, 0.09);
   --color-kendali: #65876e;
-
-  --font-sans: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
 }
 
 :root {
-  --dasar: #0a1f0d;
-  --permukaan: rgba(255, 255, 255, 0.05);
-  --permukaan-naik: rgba(255, 255, 255, 0.09);
-
-  /* Pemisah dekoratif — tidak wajib 3:1 karena tidak membawa makna sendiri */
-  --garis: rgba(255, 255, 255, 0.09);
-  /* Batas kontrol (input, tombol sekunder) — wajib 3:1 per WCAG 1.4.11 */
-  --tepi-kendali: #65876e;
-
   /*
-    Warna cincin fokus. Sengaja variabel :root biasa, bukan token @theme:
-    Tailwind v4 mendaftarkan variabel @theme dengan `inherits: false`, sehingga
-    var(--color-aksen) gagal diwarisi elemen turunan dan properti singkat
-    `outline` diam-diam jatuh ke currentColor.
+    Variabel pendamping yang tidak lewat Tailwind: dipakai langsung di CSS
+    ini dan gaya sebaris komponen klien (tooltip grafik). Sengaja variabel
+    :root biasa — token @theme tidak diwarisi ke elemen turunan sehingga
+    properti seperti outline jatuh ke currentColor bila memakainya.
   */
-  --fokus: #4ade80;
+  --fokus: #047857;
+  --tirai: rgba(10, 31, 13, 0.45);
 
-  /* Skala spasi rapat, sesuai density 8/10 untuk alat operasional */
+  --bayangan-kartu:
+    0 1px 2px rgba(22, 36, 26, 0.05),
+    0 2px 8px rgba(22, 36, 26, 0.06);
+  --tip-latar: #ffffff;
+  --tip-tepi: #dfe8df;
+  --grafik-sumbu: #8ba393;
+
+  /* Palet grafik — mode terang memakai nada dalam yang kalem agar tidak
+     mencolok di atas latar putih. */
+  --graf-hadir: #047857;
+  --graf-terlambat: #b45309;
+  --graf-izin: #0369a1;
+  --graf-sakit: #6d28d9;
+  --graf-alfa: #be123c;
+  --graf-limau: #4d7c0f;
+  --graf-area: #059669;
+  --graf-samar: #64748b;
+  --puncak-latar-1: radial-gradient(
+    48rem 32rem at 15% -8%,
+    rgba(4, 120, 87, 0.07),
+    transparent 62%
+  );
+  --puncak-latar-2: radial-gradient(
+    40rem 28rem at 92% 0%,
+    rgba(16, 185, 129, 0.05),
+    transparent 58%
+  );
+
+  /* Skala spasi rapat, sesuai density alat operasional */
   --sela-xs: 0.25rem;
   --sela-sm: 0.5rem;
   --sela-md: 0.75rem;
@@ -73,27 +152,72 @@
   --lengkung: 0.75rem;
   --lengkung-lg: 1rem;
 
+  color-scheme: light;
+}
+
+[data-tema="gelap"] {
+  --fokus: #4ade80;
+  --tirai: rgba(0, 0, 0, 0.6);
+  --bayangan-kartu: none;
+  --tip-latar: #0c2412;
+  --tip-tepi: rgba(255, 255, 255, 0.14);
+  --grafik-sumbu: rgba(209, 250, 229, 0.35);
+
+  /* Palet grafik — mode gelap memakai nada lebih terang agar terbaca di
+     atas latar gelap, namun tetap senada dengan token status. */
+  --graf-hadir: #34d399;
+  --graf-terlambat: #fbbf24;
+  --graf-izin: #38bdf8;
+  --graf-sakit: #a78bfa;
+  --graf-alfa: #fb7185;
+  --graf-limau: #a3e635;
+  --graf-area: #10b981;
+  --graf-samar: #94a3b8;
+  --puncak-latar-1: radial-gradient(
+    48rem 32rem at 15% -8%,
+    rgba(6, 78, 59, 0.32),
+    transparent 62%
+  );
+  --puncak-latar-2: radial-gradient(
+    40rem 28rem at 92% 0%,
+    rgba(4, 120, 87, 0.18),
+    transparent 58%
+  );
+
   color-scheme: dark;
 }
 
 html,
 body {
-  background-color: var(--dasar);
+  background-color: var(--color-dasar);
   color: var(--color-teks);
 }
 
 body {
-  font-family: Inter, Poppins, system-ui, Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Inter, Poppins, system-ui, Arial, Helvetica,
+    sans-serif;
   min-height: 100dvh;
   /*
-    Gaya Minimalism/Swiss: latar dibuat jauh lebih tenang daripada sebelumnya
-    supaya data menjadi elemen paling menonjol, bukan hiasan gradasi.
+    Latar tenang: data tetap menjadi elemen paling menonjol, bukan hiasan
+    gradasi. Arah gradasinya mengikuti tema lewat --puncak-latar-*.
   */
-  background-image:
-    radial-gradient(48rem 32rem at 15% -8%, rgba(6, 78, 59, 0.32), transparent 62%),
-    radial-gradient(40rem 28rem at 92% 0%, rgba(4, 120, 87, 0.18), transparent 58%);
+  background-image: var(--puncak-latar-1), var(--puncak-latar-2);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+  Judul memakai Poppins (font tampilan). Referensi var() diarahkan langsung ke
+  --font-poppins/--font-inter yang dipasang next/font pada <body> — bukan lewat
+  variabel perantara di :root, karena nilai yang memuat var() tak terpecahkan
+  pada :root menjadi "guaranteed-invalid" dan tidak diwarisi.
+*/
+h1,
+h2,
+h3 {
+  font-family: var(--font-poppins), Poppins, var(--font-inter), Inter,
+    system-ui, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 /* Angka pada tabel dan statistik sejajar rapi antar baris. */
@@ -105,10 +229,6 @@ table,
 
 /* --- Fokus keyboard ------------------------------------------------------ */
 
-/*
-  Sebelumnya tidak ada satu pun gaya fokus di seluruh aplikasi, sehingga
-  pengguna papan ketik tidak dapat melihat posisinya.
-*/
 :focus-visible {
   outline-width: 2px;
   outline-style: solid;
@@ -142,13 +262,35 @@ html {
   scroll-behavior: smooth;
 }
 
+/* --- Tautan "Lewati ke konten" ------------------------------------------ */
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-aksen);
+  color: var(--color-di-aksen);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transform: translateY(-200%);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* --- Komponen dasar ------------------------------------------------------ */
 
 @layer components {
   .kartu {
-    background: var(--permukaan);
-    border: 1px solid var(--garis);
+    background: var(--color-permukaan);
+    border: 1px solid var(--color-garis);
     border-radius: var(--lengkung-lg);
+    box-shadow: var(--bayangan-kartu);
   }
 
   .tautan-halus {
@@ -167,6 +309,12 @@ html {
 input,
 select,
 textarea {
+  color-scheme: light;
+}
+
+[data-tema="gelap"] input,
+[data-tema="gelap"] select,
+[data-tema="gelap"] textarea {
   color-scheme: dark;
 }
 
@@ -176,7 +324,7 @@ textarea::placeholder {
 }
 
 select option {
-  background-color: #0f2a18;
+  background-color: var(--tip-latar);
   color: var(--color-teks);
 }
 
@@ -199,7 +347,8 @@ input::-ms-clear {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(74, 222, 128, 0.32) transparent;
+  scrollbar-color: color-mix(in oklab, var(--color-aksen) 30%, transparent)
+    transparent;
 }
 
 *::-webkit-scrollbar {
@@ -208,7 +357,7 @@ input::-ms-clear {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(74, 222, 128, 0.28);
+  background: color-mix(in oklab, var(--color-aksen) 26%, transparent);
   border-radius: 9999px;
   border: 3px solid transparent;
   background-clip: content-box;
@@ -246,6 +395,48 @@ input::-ms-clear {
 }
 
 /*
+  Ungkap saat scroll: keadaan tersembunyi/default hidup di CSS, komponen hanya
+  menambah kelas .ungkap-terlihat saat masuk viewport. Penyembunyian dipagari
+  kelas `.js` (dipasang skrip awal di <html>) agar konten tidak tersembunyi
+  pada peramban tanpa JavaScript. Bila pengguna menonaktifkan animasi, konten
+  langsung tampil lewat prefers-reduced-motion di bawah.
+*/
+.js .ungkap {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+
+.js .ungkap.ungkap-terlihat {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+  Marquee logo kampus: track berisi tiga salinan daftar, digeser tepat
+  sepertiga lebar per siklus sehingga putarannya mulus tanpa terputus.
+  Berhenti saat kursor di atasnya.
+*/
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+
+.animasi-marquee {
+  animation: marquee 45s linear infinite;
+}
+
+.animasi-marquee:hover {
+  animation-play-state: paused;
+}
+
+/*
   Hormati preferensi pengguna yang sensitif terhadap gerak. Denyut penanda
   "sesi dibuka" tetap dipertahankan sebagai perubahan opasitas lambat karena
   membawa makna status, bukan sekadar hiasan.
@@ -263,6 +454,16 @@ input::-ms-clear {
   .denyut {
     animation: none;
     opacity: 0.85;
+  }
+
+  .animasi-marquee {
+    animation: none;
+  }
+
+  .js .ungkap {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

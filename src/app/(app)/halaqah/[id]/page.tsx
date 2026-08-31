@@ -55,7 +55,7 @@ export default async function HalamanDetailHalaqah(props: {
     <>
       <Link
         href="/halaqah"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-white"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-teks"
       >
         <ArrowLeft size={16} />
         Halaqah
@@ -120,7 +120,7 @@ export default async function HalamanDetailHalaqah(props: {
                         className="group flex items-center gap-3"
                       >
                         <Avatar nama={a.nama} ukuran={32} />
-                        <span className="font-medium text-white group-hover:text-aksen">
+                        <span className="font-medium text-teks group-hover:text-aksen">
                           {a.nama}
                         </span>
                       </Link>
@@ -131,8 +131,8 @@ export default async function HalamanDetailHalaqah(props: {
                     <Td className="text-center text-sekunder">
                       {a.hadir + a.terlambat}
                     </Td>
-                    <Td className="text-center text-sky-300/80">{a.izin + a.sakit}</Td>
-                    <Td className="text-center text-rose-300/80">{a.alfa}</Td>
+                    <Td className="text-center text-info/80">{a.izin + a.sakit}</Td>
+                    <Td className="text-center text-bahaya/80">{a.alfa}</Td>
                     <Td className="text-right">
                       <span className={cn("font-semibold", warnaKehadiran(a.persen))}>
                         {a.total > 0 ? `${a.persen}%` : "—"}

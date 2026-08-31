@@ -106,7 +106,7 @@ export default async function HalamanPresensiSaya() {
                 {riwayat.map((p) => (
                   <Tr key={p.id}>
                     <Td>
-                      <span className="block font-medium text-white">
+                      <span className="block font-medium text-teks">
                         {p.sesi.kegiatan.nama}
                       </span>
                       {p.sesi.halaqah ? (
