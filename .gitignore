@@ -55,8 +55,11 @@ next-env.d.ts
 /.windsurf
 /.agents
 
-# skill bawaan generator Prisma
-/.claude/skills
+# generator / assistant artifacts (jangan di-push)
+.claude/
+design-system/
+CLAUDE.md
+AGENTS.md
 /skills-lock.json
 
 .vercel
