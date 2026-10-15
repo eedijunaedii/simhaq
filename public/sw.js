@@ -6,8 +6,8 @@
  * di-cache — antrean luring ditangani di sisi halaman (localStorage).
  */
 
-const VERSI = "simhaq-v1";
-const ASET = ["/luring", "/ikon-192.png", "/ikon-512.png", "/ikon.svg"];
+const VERSI = "simhaq-v2";
+const ASET = ["/luring", "/ikon-192.png", "/ikon-512.png", "/favicon-32.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
