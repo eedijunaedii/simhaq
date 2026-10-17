@@ -2,9 +2,10 @@
  * Seed data contoh untuk SIMHAQ.
  *
  * Data lembaga (nama, alamat, jumlah santri, daftar kampus, program, fasilitas)
- * mengikuti situs resmi https://www.ppmmh.site. Nama pengajar dan santri
- * sengaja dibuat fiktif sebagai data uji, dan harus diganti dengan data asli
- * pesantren sebelum dipakai secara nyata.
+ * mengikuti situs resmi https://www.ppmmh.site. Nama dan kampus santri berasal
+ * dari data resmi pesantren (lihat prisma/data-santri.ts); nama pengajar masih
+ * fiktif. Seluruh riwayat presensi dan izin adalah data contoh yang
+ * dibangkitkan di berkas ini agar tampilan dan grafik ada isinya.
  *
  * Jalankan: npm run db:seed
  */
@@ -12,6 +13,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "node:crypto";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { SANTRI_PUTRA, SANTRI_PUTRI } from "./data-santri";
 
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -38,33 +40,6 @@ function acak() {
 const acakInt = (min: number, maks: number) => min + Math.floor(acak() * (maks - min + 1));
 const pilih = <T,>(arr: readonly T[]) => arr[Math.floor(acak() * arr.length)];
 
-// --- Kumpulan nama fiktif -------------------------------------------------
-
-const DEPAN_PUTRA = [
-  "Ahmad", "Muhammad", "Abdul", "Fauzan", "Rizky", "Hanif", "Ilham", "Yusuf",
-  "Ridwan", "Farhan", "Zaki", "Naufal", "Aditya", "Bagas", "Dimas", "Iqbal",
-  "Raihan", "Syahrul", "Taufik", "Umar", "Wildan", "Zulfikar", "Arif", "Bayu",
-  "Candra", "Dzaki", "Fikri", "Galih", "Hafiz", "Irfan", "Luthfi", "Rafi",
-];
-const BELAKANG_PUTRA = [
-  "Nugroho", "Ramadhan", "Saputra", "Hidayat", "Maulana", "Firdaus", "Kurniawan",
-  "Wibowo", "Pratama", "Setiawan", "Anwar", "Fadhilah", "Gunawan", "Hakim",
-  "Jauhari", "Kamil", "Mubarak", "Nashiruddin", "Prasetyo", "Rahman", "Siregar",
-  "Utomo", "Wijaya", "Yudistira", "Zamzami", "Abdillah", "Baihaqi", "Cahyadi",
-];
-const DEPAN_PUTRI = [
-  "Aisyah", "Fatimah", "Khadijah", "Zahra", "Nabila", "Salsabila", "Hafshah",
-  "Maryam", "Aulia", "Nadia", "Rania", "Syifa", "Tsabita", "Wafa", "Yasmin",
-  "Zahwa", "Alifa", "Citra", "Dinda", "Farah", "Ghina", "Husna", "Intan",
-  "Jihan", "Karima", "Laila", "Mutiara", "Naila", "Qonita", "Rahma",
-];
-const BELAKANG_PUTRI = [
-  "Azzahra", "Nurhaliza", "Rahmawati", "Kusuma", "Anggraini", "Fitriani",
-  "Hasanah", "Jamilah", "Khairunnisa", "Lestari", "Maulida", "Nafisah",
-  "Oktaviani", "Permata", "Ramadhani", "Safitri", "Tsuraya", "Utami",
-  "Wulandari", "Yulianti", "Zulaikha", "Amalia", "Cahyani", "Dewanti",
-];
-
 const KAMPUS_JURUSAN: Record<string, string[]> = {
   ITB: ["Teknik Informatika", "Teknik Elektro", "Teknik Kimia", "Matematika"],
   UPI: ["Pendidikan Matematika", "Pendidikan Bahasa Arab", "Ilmu Komputer"],
@@ -80,8 +55,13 @@ const KAMPUS_JURUSAN: Record<string, string[]> = {
   UNIKOM: ["Teknik Informatika", "Sistem Informasi", "Desain Komunikasi Visual"],
   "USB YPKP": ["Akuntansi", "Manajemen"],
   UT: ["Manajemen", "Pendidikan Agama Islam"],
+  // Muncul pada data santri walau tidak termasuk 14 kampus yang
+  // logonya ditampilkan di halaman depan.
+  ENHAI: ["Perhotelan", "Usaha Perjalanan Wisata"],
+  PEP: ["Teknik Energi", "Teknik Pertambangan"],
 };
-const DAFTAR_KAMPUS = Object.keys(KAMPUS_JURUSAN);
+/** Dipakai bila kolom pada data sumber memang kosong. */
+const BELUM_DIISI = "Belum diisi";
 
 const DAERAH = [
   "Bandung", "Garut", "Tasikmalaya", "Cirebon", "Bekasi", "Bogor", "Sukabumi",
@@ -122,28 +102,28 @@ const GEDUNG = [
 
 const PENGAJAR = [
   { nama: "K.H. Abdurrahman Fauzi", gelar: "Lc., M.A.", jabatan: "Pimpinan", bidang: "Tafsir & Ushul Fiqih", gender: "PUTRA", dewanGuru: true, role: "ADMIN", username: "pimpinan" },
-  { nama: "Ustadz Muhammad Syakir", gelar: "Lc.", jabatan: "Dewan Guru", bidang: "Hadits & Sirah", gender: "PUTRA", dewanGuru: true, role: "MUSYRIF", username: "syakir" },
-  { nama: "Ustadz Abdul Hakim Nasution", gelar: "S.Pd.I., M.Pd.", jabatan: "Dewan Guru", bidang: "Bahasa Arab", gender: "PUTRA", dewanGuru: true, role: "MUSYRIF", username: "hakim" },
-  { nama: "Ustadz Ridwan Al-Bantani", gelar: "S.Ag.", jabatan: "Dewan Guru", bidang: "Fiqih Ibadah", gender: "PUTRA", dewanGuru: true, role: "MUSYRIF", username: "ridwan" },
-  { nama: "Ustadz Hanif Mustaqim", gelar: "S.H.", jabatan: "Dewan Guru", bidang: "Tahsin & Tahfizh", gender: "PUTRA", dewanGuru: true, role: "MUSYRIF", username: "hanif" },
-  { nama: "Ustadzah Aisyah Nurhalimah", gelar: "S.Pd.", jabatan: "Dewan Guru", bidang: "Tahsin & Tahfizh", gender: "PUTRI", dewanGuru: true, role: "MUSYRIF", username: "aisyah" },
-  { nama: "Ustadzah Fatimah Az-Zahra", gelar: "Lc.", jabatan: "Dewan Guru", bidang: "Akhlak & Fiqih Nisa", gender: "PUTRI", dewanGuru: true, role: "MUSYRIF", username: "fatimah" },
-  // Musyrif/musyrifah pendamping harian (bukan dewan guru)
-  { nama: "Ustadz Naufal Ihsan", gelar: null, jabatan: "Musyrif", bidang: "Kepengasuhan Putra", gender: "PUTRA", dewanGuru: false, role: "MUSYRIF", username: "naufal" },
-  { nama: "Ustadz Rafi Baihaqi", gelar: null, jabatan: "Musyrif", bidang: "Kepengasuhan Putra", gender: "PUTRA", dewanGuru: false, role: "MUSYRIF", username: "rafi" },
-  { nama: "Ustadzah Salsabila Hanun", gelar: null, jabatan: "Musyrifah", bidang: "Kepengasuhan Putri", gender: "PUTRI", dewanGuru: false, role: "MUSYRIF", username: "salsabila" },
-  { nama: "Ustadzah Khadijah Mumtaz", gelar: null, jabatan: "Musyrifah", bidang: "Kepengasuhan Putri", gender: "PUTRI", dewanGuru: false, role: "MUSYRIF", username: "khadijah" },
+  { nama: "Ustadz Muhammad Syakir", gelar: "Lc.", jabatan: "Dewan Guru", bidang: "Hadits & Sirah", gender: "PUTRA", dewanGuru: true, role: "PEMBINA", username: "syakir" },
+  { nama: "Ustadz Abdul Hakim Nasution", gelar: "S.Pd.I., M.Pd.", jabatan: "Dewan Guru", bidang: "Bahasa Arab", gender: "PUTRA", dewanGuru: true, role: "PEMBINA", username: "hakim" },
+  { nama: "Ustadz Ridwan Al-Bantani", gelar: "S.Ag.", jabatan: "Dewan Guru", bidang: "Fiqih Ibadah", gender: "PUTRA", dewanGuru: true, role: "PEMBINA", username: "ridwan" },
+  { nama: "Ustadz Hanif Mustaqim", gelar: "S.H.", jabatan: "Dewan Guru", bidang: "Tahsin & Tahfizh", gender: "PUTRA", dewanGuru: true, role: "PEMBINA", username: "hanif" },
+  { nama: "Ustadzah Aisyah Nurhalimah", gelar: "S.Pd.", jabatan: "Dewan Guru", bidang: "Tahsin & Tahfizh", gender: "PUTRI", dewanGuru: true, role: "PEMBINA", username: "aisyah" },
+  { nama: "Ustadzah Fatimah Az-Zahra", gelar: "Lc.", jabatan: "Dewan Guru", bidang: "Akhlak & Fiqih Nisa", gender: "PUTRI", dewanGuru: true, role: "PEMBINA", username: "fatimah" },
+  // Pembina pendamping harian (bukan dewan guru)
+  { nama: "Ustadz Naufal Ihsan", gelar: null, jabatan: "Pembina", bidang: "Kepengasuhan Putra", gender: "PUTRA", dewanGuru: false, role: "PEMBINA", username: "naufal" },
+  { nama: "Ustadz Rafi Baihaqi", gelar: null, jabatan: "Pembina", bidang: "Kepengasuhan Putra", gender: "PUTRA", dewanGuru: false, role: "PEMBINA", username: "rafi" },
+  { nama: "Ustadzah Salsabila Hanun", gelar: null, jabatan: "Pembina", bidang: "Kepengasuhan Putri", gender: "PUTRI", dewanGuru: false, role: "PEMBINA", username: "salsabila" },
+  { nama: "Ustadzah Khadijah Mumtaz", gelar: null, jabatan: "Pembina", bidang: "Kepengasuhan Putri", gender: "PUTRI", dewanGuru: false, role: "PEMBINA", username: "khadijah" },
 ];
 
 const HALAQAH = [
-  { nama: "Halaqah Al-Fatih", gender: "PUTRA", musyrif: "hanif" },
-  { nama: "Halaqah Al-Faruq", gender: "PUTRA", musyrif: "naufal" },
-  { nama: "Halaqah Ibnu Sina", gender: "PUTRA", musyrif: "rafi" },
-  { nama: "Halaqah Al-Ghazali", gender: "PUTRA", musyrif: "ridwan" },
-  { nama: "Halaqah Khadijah", gender: "PUTRI", musyrif: "aisyah" },
-  { nama: "Halaqah Hafshah", gender: "PUTRI", musyrif: "salsabila" },
-  { nama: "Halaqah Ummu Salamah", gender: "PUTRI", musyrif: "khadijah" },
-  { nama: "Halaqah Sumayyah", gender: "PUTRI", musyrif: "fatimah" },
+  { nama: "Halaqah Al-Fatih", gender: "PUTRA", pembina: "hanif" },
+  { nama: "Halaqah Al-Faruq", gender: "PUTRA", pembina: "naufal" },
+  { nama: "Halaqah Ibnu Sina", gender: "PUTRA", pembina: "rafi" },
+  { nama: "Halaqah Al-Ghazali", gender: "PUTRA", pembina: "ridwan" },
+  { nama: "Halaqah Khadijah", gender: "PUTRI", pembina: "aisyah" },
+  { nama: "Halaqah Hafshah", gender: "PUTRI", pembina: "salsabila" },
+  { nama: "Halaqah Ummu Salamah", gender: "PUTRI", pembina: "khadijah" },
+  { nama: "Halaqah Sumayyah", gender: "PUTRI", pembina: "fatimah" },
 ];
 
 type DefKegiatan = {
@@ -174,7 +154,7 @@ const KEGIATAN: DefKegiatan[] = [
     nama: "Halaqah Tahsin & Tahfizh",
     kategori: "HARIAN",
     gender: "SEMUA",
-    deskripsi: "Setoran hafalan dan perbaikan bacaan bersama musyrif halaqah masing-masing.",
+    deskripsi: "Setoran hafalan dan perbaikan bacaan bersama pembina halaqah masing-masing.",
     toleransi: 10,
     pengampu: "hanif",
     perHalaqah: true,
@@ -288,7 +268,7 @@ async function main() {
 
   const sandiAdmin = await bcrypt.hash("admin123", 10);
   const sandiPetugas = await bcrypt.hash("petugas123", 10);
-  const sandiMusyrif = await bcrypt.hash("musyrif123", 10);
+  const sandiPembina = await bcrypt.hash("pembina123", 10);
   const sandiSantri = await bcrypt.hash("santri123", 10);
 
   // 1. Admin sistem -------------------------------------------------------
@@ -319,14 +299,14 @@ async function main() {
     },
   });
 
-  // 2. Pengajar & musyrif -------------------------------------------------
+  // 2. Pengajar & pembina -------------------------------------------------
   const userPengajar: Record<string, { userId: string; pengajarId: string }> = {};
   for (const p of PENGAJAR) {
     const u = await prisma.user.create({
       data: {
         nama: p.nama,
         username: p.username,
-        passwordHash: p.role === "ADMIN" ? sandiAdmin : sandiMusyrif,
+        passwordHash: p.role === "ADMIN" ? sandiAdmin : sandiPembina,
         role: p.role,
         gender: p.gender,
         email: `${p.username}@ppmmh.site`,
@@ -364,40 +344,28 @@ async function main() {
   }
 
   // 4. Halaqah ------------------------------------------------------------
-  const halaqahRows: { id: string; nama: string; gender: string; musyrif: string }[] = [];
+  const halaqahRows: { id: string; nama: string; gender: string; pembina: string }[] = [];
   for (const h of HALAQAH) {
     const row = await prisma.halaqah.create({
       data: {
         nama: h.nama,
         gender: h.gender,
-        musyrifId: userPengajar[h.musyrif].userId,
+        pembinaId: userPengajar[h.pembina].userId,
         deskripsi: `Kelompok binaan ${h.nama} di bawah bimbingan ${
-          PENGAJAR.find((p) => p.username === h.musyrif)?.nama
+          PENGAJAR.find((p) => p.username === h.pembina)?.nama
         }.`,
       },
     });
-    halaqahRows.push({ id: row.id, nama: h.nama, gender: h.gender, musyrif: h.musyrif });
+    halaqahRows.push({ id: row.id, nama: h.nama, gender: h.gender, pembina: h.pembina });
   }
   const halaqahPutra = halaqahRows.filter((h) => h.gender === "PUTRA").map((h) => h.id);
   const halaqahPutri = halaqahRows.filter((h) => h.gender === "PUTRI").map((h) => h.id);
 
-  // 5. Santri (82 orang: 45 putra, 37 putri) ------------------------------
-  console.log("Membuat 82 santri...");
-  const dipakai = new Set<string>();
-  function namaUnik(gender: string) {
-    for (let i = 0; i < 500; i++) {
-      const nama =
-        gender === "PUTRA"
-          ? `${pilih(DEPAN_PUTRA)} ${pilih(BELAKANG_PUTRA)}`
-          : `${pilih(DEPAN_PUTRI)} ${pilih(BELAKANG_PUTRI)}`;
-      if (!dipakai.has(nama)) {
-        dipakai.add(nama);
-        return nama;
-      }
-    }
-    throw new Error("Kehabisan kombinasi nama");
-  }
-
+  // 5. Santri (dari daftar resmi pesantren) --------------------------------
+  const totalSantri = SANTRI_PUTRA.length + SANTRI_PUTRI.length;
+  console.log(
+    `Membuat ${totalSantri} santri (${SANTRI_PUTRA.length} putra, ${SANTRI_PUTRI.length} putri)...`
+  );
   type SantriSeed = {
     id: string;
     userId: string;
@@ -410,14 +378,20 @@ async function main() {
   let urut = 0;
 
   for (const gender of ["PUTRA", "PUTRI"] as const) {
-    const jumlah = gender === "PUTRA" ? 45 : 37;
+    const daftar = gender === "PUTRA" ? SANTRI_PUTRA : SANTRI_PUTRI;
     const kamarPool = gender === "PUTRA" ? kamarPutra : kamarPutri;
     const halaqahPool = gender === "PUTRA" ? halaqahPutra : halaqahPutri;
 
-    for (let i = 0; i < jumlah; i++) {
+    for (let i = 0; i < daftar.length; i++) {
       urut++;
-      const nama = namaUnik(gender);
-      const kampus = pilih(DAFTAR_KAMPUS);
+      const { nama, kampus: kampusSumber } = daftar[i];
+      /* Sebagian baris pada data pesantren belum terisi kampusnya. Nilainya
+         tidak ditebak: lebih baik tampil apa adanya daripada menempelkan
+         keterangan karangan pada nama orang sungguhan. */
+      const kampus = kampusSumber ?? BELUM_DIISI;
+      const jurusan = kampusSumber
+        ? pilih(KAMPUS_JURUSAN[kampusSumber] ?? [BELUM_DIISI])
+        : BELUM_DIISI;
       const angkatan = acakInt(2022, 2025);
       const halaqahId = halaqahPool[i % halaqahPool.length];
 
@@ -437,7 +411,7 @@ async function main() {
           userId: u.id,
           nim: `${angkatan}${String(acakInt(10000, 99999))}`,
           kampus,
-          jurusan: pilih(KAMPUS_JURUSAN[kampus]),
+          jurusan,
           angkatan,
           asalDaerah: pilih(DAERAH),
           tanggalMasuk: new Date(angkatan, 7, acakInt(1, 28)),
@@ -513,16 +487,16 @@ async function main() {
     const selesai = new Date(mulai.getTime() + durasiJam * 3_600_000);
 
     // Izin masa lalu umumnya sudah selesai diproses; yang akan datang masih
-    // menunggu keputusan musyrif.
+    // menunggu keputusan pembina.
     let status: string;
     if (offsetHari > 0) status = acak() < 0.55 ? "DIAJUKAN" : "DISETUJUI";
     else if (selesai < new Date()) status = acak() < 0.12 ? "DITOLAK" : "SELESAI";
     else status = acak() < 0.2 ? "DIPROSES" : "DISETUJUI";
 
     const disetujui = status === "DISETUJUI" || status === "SELESAI";
-    const musyrifHalaqah = HALAQAH.find(
+    const pembinaHalaqah = HALAQAH.find(
       (h) => h.gender === santri.gender
-    )!.musyrif;
+    )!.pembina;
 
     nomorIzin++;
     const izin = await prisma.izin.create({
@@ -536,7 +510,7 @@ async function main() {
         tujuan: jenis === "PULANG" ? pilih(DAERAH) : jenis === "SAKIT" ? "Klinik / kamar" : "Kampus",
         status,
         diprosesOlehId:
-          status === "DIAJUKAN" ? null : userPengajar[musyrifHalaqah].userId,
+          status === "DIAJUKAN" ? null : userPengajar[pembinaHalaqah].userId,
         waktuProses: status === "DIAJUKAN" ? null : new Date(mulai.getTime() - 3_600_000),
         catatanPengurus:
           status === "DITOLAK"
@@ -618,25 +592,25 @@ async function main() {
       const kelompok: {
         gender: string;
         halaqahId: string | null;
-        musyrif: string;
+        pembina: string;
         peserta: SantriSeed[];
       }[] = def.perHalaqah
         ? halaqahRows.map((h) => ({
             gender: h.gender,
             halaqahId: h.id,
-            musyrif: h.musyrif,
+            pembina: h.pembina,
             peserta: santriPerHalaqah.get(h.id) ?? [],
           }))
         : (["PUTRA", "PUTRI"] as const).map((g) => ({
             gender: g,
             halaqahId: null,
-            musyrif: halaqahRows.find((h) => h.gender === g)!.musyrif,
+            pembina: halaqahRows.find((h) => h.gender === g)!.pembina,
             peserta: santriPerGender[g],
           }));
 
       for (const kel of kelompok) {
         if (kel.peserta.length === 0) continue;
-        const pembuka = userPengajar[kel.musyrif].userId;
+        const pembuka = userPengajar[kel.pembina].userId;
 
         const sesi = await prisma.sesiPresensi.create({
           data: {
@@ -707,7 +681,7 @@ async function main() {
         for (const b of baris) {
           if (b.metode === "MANUAL" && !b.dicatatOlehId) {
             b.dicatatOlehId = pembuka;
-            b.catatan = "Ponsel tidak tersedia, diinput musyrif.";
+            b.catatan = "Ponsel tidak tersedia, diinput pembina.";
           }
         }
 
@@ -774,8 +748,8 @@ Seed selesai.
 Akun uji:
   admin    / admin123     (Admin / Pimpinan)
   satpam   / petugas123   (Petugas Keamanan - pos gerbang)
-  hanif    / musyrif123   (Musyrif putra - Halaqah Al-Fatih)
-  aisyah   / musyrif123   (Musyrifah putri - Halaqah Khadijah)
+  hanif    / pembina123   (Pembina putra - Halaqah Al-Fatih)
+  aisyah   / pembina123   (Pembina putri - Halaqah Khadijah)
   ${slugUsername(santriSemua[0].nama, 1)} / santri123 (Santri: ${santriSemua[0].nama})
 `);
 }
