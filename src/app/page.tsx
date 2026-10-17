@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { LogoTeks } from "@/components/logo";
 import { TombolTema } from "@/components/tombol-tema";
+import { MenuPonsel } from "@/components/menu-ponsel";
 import { Ungkap } from "@/components/ungkap";
 import { Kartu, TautanTombol } from "@/components/ui";
 import { APP, KAMPUS } from "@/lib/constants";
@@ -97,6 +98,10 @@ const NAV = [
   { href: "#pengguna", label: "Pengguna" },
 ];
 
+/* Satu sumber daftar tautan untuk navigasi lebar maupun menu ponsel, supaya
+   keduanya tidak pernah berbeda isi. */
+const NAV_PONSEL = [...NAV, { href: APP.situsUtama, label: "Situs Pesantren", luar: true }];
+
 export default function Beranda() {
   return (
     <div id="konten" className="min-h-dvh">
@@ -119,12 +124,15 @@ export default function Beranda() {
               Situs Pesantren ↗
             </a>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <TombolTema />
             <TautanTombol href="/login" ukuran="sm">
               Masuk
               <ArrowRight size={15} />
             </TautanTombol>
+            {/* Paling kanan: posisi lazim tombol menu, sekaligus membuat
+                panelnya sejajar dengan tepi kanan halaman. */}
+            <MenuPonsel tautan={NAV_PONSEL} />
           </div>
         </div>
       </header>
