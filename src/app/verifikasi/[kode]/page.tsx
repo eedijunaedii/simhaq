@@ -97,13 +97,16 @@ export default async function HalamanVerifikasi(props: {
                 <XCircle size={28} />
               )}
             </span>
-            <p className="mt-4 text-lg font-semibold text-teks">
+            {/* Teks inilah pesan utama halaman, jadi ia yang pantas menjadi
+                tajuk tingkat teratas. Preflight Tailwind menormalkan ukuran dan
+                margin h1, sehingga tampilannya tidak berubah. */}
+            <h1 className="mt-4 text-lg font-semibold text-teks">
               {!izin
                 ? "Kartu izin tidak ditemukan"
                 : sah
                   ? "Izin sah dan sedang berlaku"
                   : "Izin tidak sedang berlaku"}
-            </p>
+            </h1>
             <p className="mt-1 text-sm text-redup">
               {!izin
                 ? "Kode pada kartu tidak terdaftar di sistem."

@@ -41,6 +41,10 @@ export default async function HalamanLogin(props: {
       <main id="konten" className="flex flex-1 items-center justify-center px-5 pb-16">
         <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center text-center">
+            {/* Secara visual judul halaman diwakili lambang SIMHAQ di bawah,
+                tetapi pembaca layar menelusuri halaman lewat tajuk — tanpa h1
+                halaman ini tidak punya penanda tingkat teratas sama sekali. */}
+            <h1 className="sr-only">Masuk ke SIMHAQ</h1>
             <LogoTeks ukuran={44} />
             <p className="mt-4 text-sm text-redup">
               Masuk dengan akun yang dibuatkan pengurus {APP.lembaga}.

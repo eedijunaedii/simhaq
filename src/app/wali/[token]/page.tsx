@@ -66,9 +66,12 @@ export default async function HalamanWali(props: {
           <span className="mx-auto grid size-14 place-items-center rounded-full bg-lapis-naik text-redup">
             <ShieldQuestion size={28} />
           </span>
-          <p className="mt-4 text-lg font-semibold text-teks">
+          {/* Cabang ini sebelumnya tidak punya tajuk sama sekali, sementara
+              cabang token yang sah punya — jadi halaman yang sama bisa tampil
+              tanpa penanda tingkat teratas bagi pembaca layar. */}
+          <h1 className="mt-4 text-lg font-semibold text-teks">
             Tautan tidak berlaku
-          </p>
+          </h1>
           <p className="mt-2 text-sm leading-relaxed text-redup">
             Tautan ini sudah dicabut atau tidak dikenali. Silakan hubungi pengurus{" "}
             {APP.lembaga} di {APP.telepon}.
