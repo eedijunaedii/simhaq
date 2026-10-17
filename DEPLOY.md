@@ -94,8 +94,25 @@ memutus keduanya sekaligus, jadi ketiga tempat di bawah harus diperbarui.
 Selama jeda antara rotasi dan pembaruan env Vercel, produksi tidak bisa
 mengakses basis data. Kerjakan berurutan tanpa jeda panjang.
 
-**1. Rotasi di Neon.** Dasbor Neon → proyek **SIMHAQ** → **Roles** →
-`neondb_owner` → **Reset password**. Salin kata sandi barunya.
+**1. Rotasi di Neon.** Menu Roles berada di dalam **Postgres database**
+pada sidebar (item bertanda `>`), bukan menu tersendiri:
+
+Dasbor Neon → proyek **SIMHAQ** → pastikan branch **production** terpilih di
+menu atas sidebar → **Postgres database** → **Roles** → menu titik tiga pada
+baris `neondb_owner` → **Reset password** → **Reset**. Salin kata sandi baru
+dari modal yang muncul; Neon tidak menampilkannya lagi setelah ditutup.
+
+Konsol selalu membuat kata sandi acak, yang bisa memuat karakter yang perlu
+di-encode di URL. Untuk menentukan sendiri kata sandinya (mis. hanya huruf
+dan angka, sehingga langkah 2 bebas masalah encoding), pakai **SQL Editor**
+di dasbor Neon:
+
+```sql
+ALTER USER neondb_owner WITH PASSWORD 'sandi_baru_huruf_dan_angka';
+```
+
+Keduanya setara: sama-sama merotasi kredensial, berlaku seketika, dan tidak
+menyentuh isi basis data.
 
 **2. Susun kembali kedua string koneksi.** Hanya bagian kata sandi yang
 berubah; sisanya tetap:
