@@ -4,9 +4,9 @@
 
 | | |
 | --- | --- |
-| **URL** | <https://simhaq.vercel.app> |
-| Project Vercel | `eedijunaediis-projects/simhaq` |
-| Dashboard | <https://vercel.com/eedijunaediis-projects/simhaq> |
+| **URL** | <https://simhaq-ppmmh.vercel.app> |
+| Project Vercel | `eedijunaediis-projects/simhaq-ppmmh` |
+| Dashboard | <https://vercel.com/eedijunaediis-projects/simhaq-ppmmh> |
 | Basis data | Neon PostgreSQL, region `ap-southeast-1` (Singapura) |
 | Isi database | 82 santri · 11 pengajar · 7 kegiatan · 316 sesi · 7.052 presensi · 55 izin |
 
@@ -88,7 +88,7 @@ catatan `CNAME` ke `cname.vercel-dns.com` pada pengelola DNS `ppmmh.site`.
 | Kebutuhan | Perintah |
 | --- | --- |
 | Deploy ulang setelah mengubah kode | `npx vercel deploy --prod` |
-| Lihat log runtime | `npx vercel logs https://simhaq.vercel.app` |
+| Lihat log runtime | `npx vercel logs https://simhaq-ppmmh.vercel.app` |
 | Lihat environment variable | `npx vercel env ls production` |
 | Terapkan perubahan skema ke Neon | `npx prisma db push` |
 | Isi ulang data contoh | `npm run db:seed` |
