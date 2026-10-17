@@ -1,0 +1,13 @@
+# Berkas biner: jangan pernah dikonversi akhir barisnya.
+#
+# PDF panduan tidak mengandung byte NUL di awal berkas, sehingga Git salah
+# mengenalinya sebagai teks dan mengubah LF menjadi CRLF saat checkout di
+# Windows — hasilnya PDF rusak dan tidak bisa dibuka.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
