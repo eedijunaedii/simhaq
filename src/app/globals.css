@@ -44,18 +44,18 @@
   /* Teks */
   --color-teks: #16241a;
   --color-sekunder: #42594a;
-  --color-redup: #5b7161;
-  --color-samar: #5f7566;
+  --color-redup: #54695a;
+  --color-samar: #556b5c;
 
   /* Aksen jenama */
   --color-ppm-dark: #064e3b;
   --color-ppm: #047857;
-  --color-aksen: #047857;
+  --color-aksen: #046a4d;
   --color-aksen-lembut: #065f46;
   --color-di-aksen: #ffffff;
 
   /* Status */
-  --color-sukses: #047857;
+  --color-sukses: #046a4d;
   --color-waspada: #b45309;
   --color-bahaya: #be123c;
   --color-info: #0369a1;
@@ -361,6 +361,18 @@ input::-ms-clear {
   border-radius: 9999px;
   border: 3px solid transparent;
   background-clip: content-box;
+}
+
+/*
+  Dipasang sesaat pada <html> ketika tema berganti, lalu dilepas pada frame
+  berikutnya. Tanpa ini, transisi warna tersangkut pada nilai tema lama:
+  terukur 0 pelanggaran kontras pada muat bersih, 122 setelah menekan saklar.
+*/
+.tanpa-transisi,
+.tanpa-transisi *,
+.tanpa-transisi *::before,
+.tanpa-transisi *::after {
+  transition: none !important;
 }
 
 /* --- Gerak --------------------------------------------------------------- */

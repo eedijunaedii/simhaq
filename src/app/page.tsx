@@ -403,7 +403,7 @@ export default function Beranda() {
                   <Phone size={16} className="mt-0.5 shrink-0 text-emerald-300" />
                   {APP.telepon}
                 </p>
-                <p className="text-emerald-200/70">{APP.email}</p>
+                <p className="text-emerald-100">{APP.email}</p>
               </div>
             </div>
           </div>
