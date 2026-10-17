@@ -8,6 +8,7 @@
 | Project Vercel | `eedijunaediis-projects/simhaq-ppmmh` |
 | Dashboard | <https://vercel.com/eedijunaediis-projects/simhaq-ppmmh> |
 | Basis data | Neon PostgreSQL, region `ap-southeast-1` (Singapura) |
+| Region fungsi | `sin1` (Singapura), disetel di `vercel.json` agar sejalur dengan basis data |
 | Isi database | 82 santri · 11 pengajar · 7 kegiatan · 316 sesi · 7.052 presensi · 55 izin |
 
 ### Environment variable produksi
