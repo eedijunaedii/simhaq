@@ -5,6 +5,16 @@ import { muatEnvUji } from "./e2e/jaga";
 // pengujian dan tidak pernah menyentuh basis data produksi.
 muatEnvUji();
 
+/*
+  Di CI (dan bila UJI_PRODUKSI=1) pengujian dijalankan di atas hasil `next build`
+  lewat `next start`, bukan server pengembangan. Keduanya berbeda cukup jauh —
+  minifikasi, React mode produksi, penanganan galat, pembuatan halaman statis —
+  sehingga menguji `next dev` saja bisa melewatkan bug yang hanya muncul di
+  produksi. Build harus sudah ada lebih dulu; CI menjalankannya pada langkah
+  tersendiri sebelum ini.
+*/
+const pakaiBuildProduksi = !!process.env.CI || process.env.UJI_PRODUKSI === "1";
+
 export default defineConfig({
   testDir: "./e2e",
   globalSetup: "./e2e/global-setup.ts",
@@ -22,7 +32,7 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
-    command: "npm run dev",
+    command: pakaiBuildProduksi ? "npm run start" : "npm run dev",
     url: "http://localhost:3000",
     // Jangan pakai ulang server yang sudah jalan: server itu kemungkinan besar
     // dinyalakan dengan .env produksi, sehingga pengujian akan menulis ke sana.

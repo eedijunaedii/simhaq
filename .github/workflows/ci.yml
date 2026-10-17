@@ -53,12 +53,16 @@ jobs:
       - name: Periksa lint
         run: npm run lint
 
+      - name: Periksa tipe
+        run: npx tsc --noEmit
+
       - name: Build produksi
         run: npm run build
 
       - name: Pasang Chromium untuk Playwright
         run: npx playwright install --with-deps chromium
 
+      # Dijalankan di atas hasil build di atas (next start), bukan next dev.
       - name: Jalankan pengujian e2e
         run: npx playwright test
 
