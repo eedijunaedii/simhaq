@@ -48,6 +48,13 @@ const nextConfig: NextConfig = {
               "object-src 'none'",
             ].join("; "),
           },
+          {
+            // Paksa HTTPS pada kunjungan berikutnya. Vercel mengirimkannya
+            // sendiri untuk domain .vercel.app, tetapi tidak untuk domain
+            // khusus seperti presensi.ppmmh.site — jadi disetel di sini.
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
