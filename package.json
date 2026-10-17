@@ -15,7 +15,8 @@
     "db:reset": "prisma migrate reset --force",
     "postinstall": "prisma generate",
     "db:postgres": "node scripts/basis-data.mjs postgres",
-    "db:sqlite": "node scripts/basis-data.mjs sqlite"
+    "db:sqlite": "node scripts/basis-data.mjs sqlite",
+    "cek:db": "node scripts/cek-koneksi.mjs"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.9.1",

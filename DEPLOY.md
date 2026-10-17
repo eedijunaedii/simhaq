@@ -85,6 +85,76 @@ catatan `CNAME` ke `cname.vercel-dns.com` pada pengelola DNS `ppmmh.site`.
 
 ---
 
+## Rotasi kata sandi basis data
+
+Peran `neondb_owner` dipakai bersama oleh basis data produksi (`neondb`) dan
+basis data pengujian (`simhaq_test`) pada endpoint yang sama. Satu rotasi
+memutus keduanya sekaligus, jadi ketiga tempat di bawah harus diperbarui.
+
+Selama jeda antara rotasi dan pembaruan env Vercel, produksi tidak bisa
+mengakses basis data. Kerjakan berurutan tanpa jeda panjang.
+
+**1. Rotasi di Neon.** Dasbor Neon → proyek **SIMHAQ** → **Roles** →
+`neondb_owner` → **Reset password**. Salin kata sandi barunya.
+
+**2. Susun kembali kedua string koneksi.** Hanya bagian kata sandi yang
+berubah; sisanya tetap:
+
+```
+postgresql://neondb_owner:<SANDI-BARU>@ep-autumn-bird-b3j7z9xo.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=verify-full
+postgresql://neondb_owner:<SANDI-BARU>@ep-autumn-bird-b3j7z9xo.c-4.ap-southeast-1.aws.neon.tech/simhaq_test?sslmode=verify-full
+```
+
+Kalau kata sandi mengandung `@`, `/`, `:`, `?`, `#` atau `%`, karakter itu
+harus di-percent-encode (`@` → `%40`, `/` → `%2F`, `:` → `%3A`, `?` → `%3F`,
+`#` → `%23`, `%` → `%25`). Paling aman: minta Neon membuat ulang sampai
+sandinya hanya huruf dan angka.
+
+**3. Perbarui tiga tempat.**
+
+| Tempat | Nilai |
+| --- | --- |
+| `.env` | string `neondb` |
+| `.env.test` | string `simhaq_test` |
+| Vercel → Settings → Environment Variables → `DATABASE_URL` (Production) | string `neondb` |
+
+Untuk Vercel bisa juga lewat CLI:
+
+```
+npx vercel env rm DATABASE_URL production
+npx vercel env add DATABASE_URL production
+```
+
+**4. Verifikasi lokal.**
+
+```
+npm run cek:db
+```
+
+Keduanya harus `OK`. Kalau muncul "kata sandi ditolak", berkas itu belum
+diperbarui atau sandinya perlu di-percent-encode.
+
+**5. Deploy ulang.** Mengubah environment variable di Vercel tidak otomatis
+menerapkannya ke deployment yang sedang berjalan:
+
+```
+npx vercel deploy --prod
+```
+
+**6. Verifikasi produksi.** Halaman berikut melakukan kueri basis data, jadi
+harus membalas 200 dan menampilkan pesan "Tautan tidak berlaku", bukan galat:
+
+```
+curl -sS -o NUL -w "%{http_code}
+" https://simhaq-ppmmh.vercel.app/wali/abc
+```
+
+**7. Jalankan ulang e2e** untuk memastikan basis data pengujian ikut pulih:
+
+```
+npm run test:e2e
+```
+
 ## Catatan domain
 
 Mengganti nama proyek di Vercel **tidak** ikut memindahkan domain `.vercel.app`-nya.
