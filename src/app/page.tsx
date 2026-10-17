@@ -25,7 +25,7 @@ const FITUR = [
   {
     ikon: QrCode,
     judul: "Presensi QR Code dinamis",
-    isi: "Musyrif membuka sesi, layar menampilkan QR yang isinya berganti setiap 40 detik. Santri cukup memindai dari ponsel masing-masing.",
+    isi: "Pembina membuka sesi, layar menampilkan QR yang isinya berganti setiap 40 detik. Santri cukup memindai dari ponsel masing-masing.",
   },
   {
     ikon: FileCheck2,
@@ -79,7 +79,7 @@ const PENGGUNA = [
     isi: "Memindai QR untuk presensi, mengajukan izin beserta lampiran bukti, dan melihat rekap kehadiran pribadi.",
   },
   {
-    peran: "Musyrif / Musyrifah",
+    peran: "Pembina",
     isi: "Membuka dan menutup sesi presensi, menyetujui atau menolak izin, melakukan presensi manual bila diperlukan, serta melihat rekap santri binaannya.",
   },
   {

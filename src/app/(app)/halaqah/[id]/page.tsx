@@ -37,7 +37,7 @@ export default async function HalamanDetailHalaqah(props: {
       nama: true,
       gender: true,
       deskripsi: true,
-      musyrif: { select: { nama: true, telepon: true } },
+      pembina: { select: { nama: true, telepon: true } },
       _count: { select: { santri: true, sesi: true } },
     },
   });
@@ -66,7 +66,7 @@ export default async function HalamanDetailHalaqah(props: {
         keterangan={
           halaqah.deskripsi ??
           `Kelompok binaan ${GENDER_LABEL[halaqah.gender]} bersama ${
-            halaqah.musyrif?.nama ?? "musyrif"
+            halaqah.pembina?.nama ?? "pembina"
           }.`
         }
         aksi={<Lencana>{GENDER_LABEL[halaqah.gender]}</Lencana>}
@@ -91,8 +91,8 @@ export default async function HalamanDetailHalaqah(props: {
       <Kartu>
         <KepalaKartu
           judul="Anggota halaqah"
-          keterangan={`Musyrif: ${halaqah.musyrif?.nama ?? "-"}${
-            halaqah.musyrif?.telepon ? ` · ${halaqah.musyrif.telepon}` : ""
+          keterangan={`Pembina: ${halaqah.pembina?.nama ?? "-"}${
+            halaqah.pembina?.telepon ? ` · ${halaqah.pembina.telepon}` : ""
           }`}
         />
         {anggota.length === 0 ? (

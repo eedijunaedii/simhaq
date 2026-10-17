@@ -28,7 +28,7 @@ export default async function HalamanPengaturan() {
   const [pengaturan, pengurus, santri, tokenWali, audit] = await Promise.all([
     prisma.pengaturanSistem.findMany(),
     prisma.user.findMany({
-      where: { role: { in: ["MUSYRIF", "ADMIN"] } },
+      where: { role: { in: ["PEMBINA", "ADMIN"] } },
       select: {
         id: true,
         nama: true,
@@ -93,7 +93,7 @@ export default async function HalamanPengaturan() {
         <Kartu>
           <KepalaKartu
             judul="Akun pengurus"
-            keterangan={`${pengurus.length} akun musyrif, dewan guru, dan admin`}
+            keterangan={`${pengurus.length} akun pembina, dewan guru, dan admin`}
           />
           <Tabel>
             <thead>

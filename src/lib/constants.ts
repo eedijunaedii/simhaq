@@ -23,7 +23,7 @@ export const APP = {
 
 export const ROLE = {
   SANTRI: "SANTRI",
-  MUSYRIF: "MUSYRIF",
+  PEMBINA: "PEMBINA",
   ADMIN: "ADMIN",
   /**
    * Petugas keamanan yang berjaga di pintu dan parkiran. Hak aksesnya sengaja
@@ -37,7 +37,7 @@ export type Role = (typeof ROLE)[keyof typeof ROLE];
 
 export const ROLE_LABEL: Record<Role, string> = {
   SANTRI: "Santri",
-  MUSYRIF: "Musyrif / Musyrifah",
+  PEMBINA: "Pembina",
   ADMIN: "Admin / Pimpinan",
   PETUGAS: "Petugas Keamanan",
 };
@@ -90,7 +90,7 @@ export const METODE_PRESENSI = {
 
 export const METODE_PRESENSI_LABEL: Record<string, string> = {
   QR: "Pindai QR",
-  MANUAL: "Input musyrif",
+  MANUAL: "Input pembina",
   OTOMATIS_IZIN: "Otomatis dari izin",
 };
 

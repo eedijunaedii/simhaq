@@ -25,7 +25,7 @@ export default async function HalamanHalaqah() {
     <>
       <JudulHalaman
         judul="Halaqah"
-        keterangan="Kelompok binaan santri beserta musyrif pendampingnya. Persentase dihitung dari 30 hari terakhir."
+        keterangan="Kelompok binaan santri beserta pembina pendampingnya. Persentase dihitung dari 30 hari terakhir."
       />
 
       {daftar.length === 0 ? (
@@ -49,7 +49,7 @@ export default async function HalamanHalaqah() {
 
                 <h2 className="mt-3.5 font-semibold text-teks">{h.nama}</h2>
                 <p className="mt-0.5 text-sm text-redup">
-                  Musyrif {h.musyrif}
+                  Pembina {h.pembina}
                 </p>
 
                 <div className="mt-4">

@@ -101,10 +101,10 @@ export async function GET(request: Request) {
 
   // --- Per halaqah --------------------------------------------------------
   autoTable(doc, {
-    head: [["Halaqah", "Musyrif", "Santri", "Hadir", "Izin", "Alfa", "%"]],
+    head: [["Halaqah", "Pembina", "Santri", "Hadir", "Izin", "Alfa", "%"]],
     body: perHalaqah.map((h) => [
       h.nama,
-      h.musyrif,
+      h.pembina,
       String(h.jumlahSantri),
       String(h.hadir),
       String(h.izin),

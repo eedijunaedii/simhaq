@@ -264,7 +264,7 @@ export async function tolakIzinDariForm(data: FormData) {
 /**
  * Catat bahwa santri sudah kembali ke pesantren.
  *
- * Boleh dilakukan petugas keamanan di gerbang maupun musyrif. Petugas tidak
+ * Boleh dilakukan petugas keamanan di gerbang maupun pembina. Petugas tidak
  * dibatasi gender karena ia menjaga satu pintu untuk seluruh santri.
  */
 export async function tandaiKembali(izinId: string) {

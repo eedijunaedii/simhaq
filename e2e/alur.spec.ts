@@ -14,14 +14,14 @@ test.describe("Alur berbasis peran", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Pos gerbang");
   });
 
-  test("musyrif melihat menu Sesi Presensi", async ({ page }) => {
-    await masuk(page, "hanif", "musyrif123");
+  test("pembina melihat menu Sesi Presensi", async ({ page }) => {
+    await masuk(page, "hanif", "pembina123");
     await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
     await expect(page.getByRole("link", { name: "Sesi Presensi" })).toBeVisible();
   });
 
   test("santri dapat mengajukan izin", async ({ page }) => {
-    await masuk(page, "abdulcahya017", "santri123");
+    await masuk(page, "abdillahma001", "santri123");
     await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
 
     await page.goto("/izin/baru");

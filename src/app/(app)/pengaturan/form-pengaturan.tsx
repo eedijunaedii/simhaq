@@ -60,7 +60,7 @@ export function FormPengaturan({
               Aktifkan pembatasan lokasi secara bawaan
             </span>
             <span className="mt-0.5 block text-xs leading-relaxed text-redup">
-              Musyrif tetap dapat mematikannya per sesi. Akurasi GPS di dalam bangunan
+              Pembina tetap dapat mematikannya per sesi. Akurasi GPS di dalam bangunan
               tidak selalu stabil, jadi disarankan dibiarkan mati.
             </span>
           </span>

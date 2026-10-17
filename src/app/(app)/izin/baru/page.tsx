@@ -26,7 +26,7 @@ export default async function HalamanIzinBaru() {
 
       <JudulHalaman
         judul="Ajukan izin"
-        keterangan="Isi rentang waktu dan alasan sejelas mungkin. Musyrif akan menerima pengajuan ini dan dapat menyetujuinya langsung dari ponsel."
+        keterangan="Isi rentang waktu dan alasan sejelas mungkin. Pembina akan menerima pengajuan ini dan dapat menyetujuinya langsung dari ponsel."
       />
 
       <div className="max-w-2xl">

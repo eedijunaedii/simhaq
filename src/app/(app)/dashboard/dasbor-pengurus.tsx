@@ -240,7 +240,7 @@ export async function DasborPengurus({
         <Kartu>
           <KepalaKartu
             judul="Izin menunggu keputusan"
-            keterangan="Perlu ditinjau musyrif"
+            keterangan="Perlu ditinjau pembina"
             aksi={
               <TautanTombol href="/izin" gaya="kedua" ukuran="sm">
                 Semua izin
@@ -298,7 +298,7 @@ export async function DasborPengurus({
         <Kartu>
           <KepalaKartu
             judul="Kehadiran per halaqah"
-            keterangan="Kelompok binaan musyrif"
+            keterangan="Kelompok binaan pembina"
             aksi={
               <TautanTombol href="/halaqah" gaya="kedua" ukuran="sm">
                 Detail
@@ -323,7 +323,7 @@ export async function DasborPengurus({
                     </div>
                     <BatangProgres nilai={h.persen} />
                     <p className="mt-1 text-[11px] text-samar">
-                      {h.jumlahSantri} santri · musyrif {h.musyrif}
+                      {h.jumlahSantri} santri · pembina {h.pembina}
                     </p>
                   </div>
                 ))

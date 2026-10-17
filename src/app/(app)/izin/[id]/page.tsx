@@ -71,7 +71,7 @@ export default async function HalamanDetailIzin(props: {
           nim: true,
           kampus: true,
           user: { select: { nama: true, gender: true } },
-          halaqah: { select: { nama: true, musyrif: { select: { nama: true } } } },
+          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       },
@@ -153,7 +153,7 @@ export default async function HalamanDetailIzin(props: {
               <Info label="Halaqah">
                 {izin.santri.halaqah?.nama ?? "-"}
                 <span className="block text-xs text-samar">
-                  Musyrif {izin.santri.halaqah?.musyrif?.nama ?? "-"}
+                  Pembina {izin.santri.halaqah?.pembina?.nama ?? "-"}
                 </span>
               </Info>
               <Info label="Mulai">{fmtTanggalJam(izin.mulai)}</Info>
@@ -226,7 +226,7 @@ export default async function HalamanDetailIzin(props: {
           {bisaDiproses ? (
             <Kartu>
               <KepalaKartu
-                judul="Keputusan musyrif"
+                judul="Keputusan pembina"
                 keterangan="Izin yang disetujui otomatis menutup sesi presensi pada rentang waktunya."
               />
               <div className="space-y-4 p-5">

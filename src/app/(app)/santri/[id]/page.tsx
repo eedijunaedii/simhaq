@@ -59,7 +59,7 @@ export default async function HalamanDetailSantri(props: {
       user: {
         select: { nama: true, username: true, gender: true, telepon: true, email: true },
       },
-      halaqah: { select: { id: true, nama: true, musyrif: { select: { nama: true } } } },
+      halaqah: { select: { id: true, nama: true, pembina: { select: { nama: true } } } },
       kamar: { select: { nama: true, gedung: true } },
       waliToken: { select: { token: true, namaWali: true, aktif: true } },
     },
@@ -274,7 +274,7 @@ export default async function HalamanDetailSantri(props: {
                   "-"
                 )}
               </Baris>
-              <Baris label="Musyrif">{santri.halaqah?.musyrif?.nama ?? "-"}</Baris>
+              <Baris label="Pembina">{santri.halaqah?.pembina?.nama ?? "-"}</Baris>
               <Baris label="Kamar">
                 {santri.kamar ? `${santri.kamar.nama}, ${santri.kamar.gedung}` : "-"}
               </Baris>

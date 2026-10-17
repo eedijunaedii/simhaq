@@ -40,7 +40,7 @@ export default async function HalamanKegiatan() {
     <>
       <JudulHalaman
         judul="Jenis kegiatan & jadwal"
-        keterangan="Kegiatan wajib pesantren beserta jadwal rutinnya. Jadwal dipakai sebagai nilai bawaan saat musyrif membuka sesi presensi."
+        keterangan="Kegiatan wajib pesantren beserta jadwal rutinnya. Jadwal dipakai sebagai nilai bawaan saat pembina membuka sesi presensi."
       />
       <PengelolaKegiatan
         kegiatan={kegiatan}

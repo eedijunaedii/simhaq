@@ -13,7 +13,7 @@ export default async function LayoutAplikasi({
 
   // Badge penghitung pada menu sidebar, hanya untuk pengurus.
   let badge: { izin?: number; presensi?: number } = {};
-  if (sesi.role === ROLE.MUSYRIF || sesi.role === ROLE.ADMIN) {
+  if (sesi.role === ROLE.PEMBINA || sesi.role === ROLE.ADMIN) {
     const { gender } = filterGender(sesi);
     const [izin, presensi] = await Promise.all([
       prisma.izin.count({

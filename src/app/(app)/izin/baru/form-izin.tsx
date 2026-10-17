@@ -75,7 +75,7 @@ export function FormIzin() {
 
       <Bidang
         label="Alasan"
-        petunjuk="Jelaskan dengan ringkas dan jujur agar musyrif mudah menilai."
+        petunjuk="Jelaskan dengan ringkas dan jujur agar pembina mudah menilai."
       >
         <Textarea
           name="alasan"

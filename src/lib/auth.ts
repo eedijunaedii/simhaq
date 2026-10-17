@@ -64,9 +64,9 @@ export async function wajibPeran(...peran: Role[]): Promise<Sesi> {
   return sesi;
 }
 
-/** Musyrif atau admin (pengurus). */
+/** Pembina atau admin (pengurus). */
 export function wajibPengurus() {
-  return wajibPeran(ROLE.MUSYRIF, ROLE.ADMIN);
+  return wajibPeran(ROLE.PEMBINA, ROLE.ADMIN);
 }
 
 export function wajibAdmin() {
@@ -81,11 +81,11 @@ export function wajibAdmin() {
  * rekap kehadiran, maupun persetujuan izin.
  */
 export function wajibPenjagaGerbang() {
-  return wajibPeran(ROLE.PETUGAS, ROLE.MUSYRIF, ROLE.ADMIN);
+  return wajibPeran(ROLE.PETUGAS, ROLE.PEMBINA, ROLE.ADMIN);
 }
 
 export function bolehJagaGerbang(role: Role) {
-  return role === ROLE.PETUGAS || role === ROLE.MUSYRIF || role === ROLE.ADMIN;
+  return role === ROLE.PETUGAS || role === ROLE.PEMBINA || role === ROLE.ADMIN;
 }
 
 /** Halaman awal setelah masuk, berbeda menurut peran. */

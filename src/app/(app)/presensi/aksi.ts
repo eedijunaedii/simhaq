@@ -289,7 +289,7 @@ export async function pindaiQr(input: {
     return {
       status: "gagal",
       pesan: "Sesi presensi sudah ditutup.",
-      detail: "Hubungi musyrif bila Anda hadir tetapi belum sempat memindai.",
+      detail: "Hubungi pembina bila Anda hadir tetapi belum sempat memindai.",
     };
   }
   if (sekarang < sesi.waktuBuka || sekarang > sesi.waktuTutup) {
@@ -325,7 +325,7 @@ export async function pindaiQr(input: {
         status: "gagal",
         pesan: "Kode QR sudah kedaluwarsa.",
         detail:
-          "Kode ini sudah lama berlalu, jadi tidak dapat dipakai. Pindai langsung dari layar yang ditampilkan musyrif.",
+          "Kode ini sudah lama berlalu, jadi tidak dapat dipakai. Pindai langsung dari layar yang ditampilkan pembina.",
       };
     }
     return { status: "gagal", pesan: "Kode QR tidak sah." };
@@ -370,7 +370,7 @@ export async function pindaiQr(input: {
       status: "gagal",
       pesan: "Perangkat tidak cocok dengan yang terdaftar.",
       detail:
-        "Akun Anda terikat pada satu perangkat. Minta musyrif melepas keterikatan bila Anda berganti ponsel.",
+        "Akun Anda terikat pada satu perangkat. Minta pembina melepas keterikatan bila Anda berganti ponsel.",
     };
   }
   if (!santri.deviceId) {
@@ -443,7 +443,7 @@ export async function pindaiQr(input: {
     return {
       status: "gagal",
       pesan: "Anda tercatat sedang berizin pada sesi ini.",
-      detail: "Bila Anda ternyata hadir, mintalah musyrif memperbarui catatan.",
+      detail: "Bila Anda ternyata hadir, mintalah pembina memperbarui catatan.",
     };
   }
 

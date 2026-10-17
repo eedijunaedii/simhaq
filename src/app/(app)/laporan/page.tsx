@@ -187,7 +187,7 @@ export default async function HalamanLaporan(props: {
                   </div>
                   <BatangProgres nilai={h.persen} />
                   <p className="mt-1 text-[11px] text-samar">
-                    {h.jumlahSantri} santri · musyrif {h.musyrif}
+                    {h.jumlahSantri} santri · pembina {h.pembina}
                   </p>
                 </div>
               ))

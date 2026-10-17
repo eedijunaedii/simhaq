@@ -106,7 +106,7 @@ export async function GET(request: Request) {
   const s3 = wb.addWorksheet("Per Halaqah");
   s3.columns = [
     { header: "Halaqah", key: "nama", width: 26 },
-    { header: "Musyrif", key: "musyrif", width: 28 },
+    { header: "Pembina", key: "pembina", width: 28 },
     { header: "Jumlah santri", key: "jumlah", width: 14 },
     { header: "Hadir", key: "hadir", width: 10 },
     { header: "Izin/Sakit", key: "izin", width: 12 },
@@ -117,7 +117,7 @@ export async function GET(request: Request) {
   for (const h of perHalaqah) {
     s3.addRow({
       nama: h.nama,
-      musyrif: h.musyrif,
+      pembina: h.pembina,
       jumlah: h.jumlahSantri,
       hadir: h.hadir,
       izin: h.izin,

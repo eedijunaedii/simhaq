@@ -36,7 +36,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
           kampus: true,
           jurusan: true,
           deviceId: true,
-          halaqah: { select: { nama: true, musyrif: { select: { nama: true } } } },
+          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       }),
@@ -297,7 +297,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
               label="Halaqah"
               nilai={
                 profil.halaqah
-                  ? `${profil.halaqah.nama} — ${profil.halaqah.musyrif?.nama ?? "-"}`
+                  ? `${profil.halaqah.nama} — ${profil.halaqah.pembina?.nama ?? "-"}`
                   : "Belum ditentukan"
               }
             />

@@ -25,7 +25,7 @@ model User {
   nama         String
   username     String  @unique
   passwordHash String
-  role         String // SANTRI | MUSYRIF | ADMIN
+  role         String // SANTRI | PEMBINA | ADMIN
   gender       String // PUTRA | PUTRI
   email        String?
   telepon      String?
@@ -34,7 +34,7 @@ model User {
   santri   ProfilSantri?
   pengajar ProfilPengajar?
 
-  halaqahDiampu   Halaqah[]        @relation("MusyrifHalaqah")
+  halaqahDiampu   Halaqah[]        @relation("PembinaHalaqah")
   sesiDibuka      SesiPresensi[]   @relation("SesiDibukaOleh")
   sesiDitutup     SesiPresensi[]   @relation("SesiDitutupOleh")
   presensiDicatat Presensi[]       @relation("PresensiDicatatOleh")
@@ -92,7 +92,7 @@ model ProfilPengajar {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   gelar    String?
-  jabatan  String // Musyrif | Musyrifah | Dewan Guru | Pimpinan | Sekretaris
+  jabatan  String // Pembina | Dewan Guru | Pimpinan | Sekretaris
   bidang   String // bidang keilmuan / kegiatan yang diampu
   dewanGuru Boolean @default(false)
 
@@ -128,8 +128,8 @@ model Halaqah {
   gender    String // PUTRA | PUTRI
   deskripsi String?
 
-  musyrifId String?
-  musyrif   User?   @relation("MusyrifHalaqah", fields: [musyrifId], references: [id], onDelete: SetNull)
+  pembinaId String?
+  pembina   User?   @relation("PembinaHalaqah", fields: [pembinaId], references: [id], onDelete: SetNull)
 
   santri ProfilSantri[]
   sesi   SesiPresensi[]

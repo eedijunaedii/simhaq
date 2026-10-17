@@ -46,7 +46,7 @@ export default async function HalamanScan(props: {
     <>
       <JudulHalaman
         judul="Pindai QR presensi"
-        keterangan="Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti setiap 40 detik sehingga tangkapan layar tidak berlaku."
+        keterangan="Arahkan kamera ke layar QR yang ditampilkan pembina. Kode berganti setiap 40 detik sehingga tangkapan layar tidak berlaku."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
@@ -65,7 +65,7 @@ export default async function HalamanScan(props: {
             {sesiTerbuka.length === 0 ? (
               <Kosong
                 judul="Tidak ada sesi terbuka"
-                keterangan="Sesi presensi hanya muncul saat musyrif membukanya."
+                keterangan="Sesi presensi hanya muncul saat pembina membukanya."
               />
             ) : (
               <ul className="divide-y divide-garis">
@@ -109,7 +109,7 @@ export default async function HalamanScan(props: {
             <h3 className="text-sm font-semibold text-teks">Perangkat Anda</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-redup">
               {santri?.deviceId
-                ? "Akun ini sudah terikat pada satu perangkat. Bila Anda berganti ponsel, mintalah musyrif melepas keterikatan perangkat."
+                ? "Akun ini sudah terikat pada satu perangkat. Bila Anda berganti ponsel, mintalah pembina melepas keterikatan perangkat."
                 : "Perangkat belum terdaftar. Perangkat yang Anda pakai pada pemindaian pertama akan terikat otomatis dengan akun ini."}
             </p>
           </Kartu>

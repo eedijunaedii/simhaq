@@ -350,7 +350,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
                 </span>
                 <p className="mt-4 font-medium text-teks">Siap memindai</p>
                 <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-redup">
-                  Arahkan kamera ke layar QR yang ditampilkan musyrif. Kode berganti
+                  Arahkan kamera ke layar QR yang ditampilkan pembina. Kode berganti
                   setiap 40 detik, jadi pindai langsung dari layarnya.
                 </p>
                 <Tombol onClick={mulaiKamera} className="mt-5">
@@ -388,7 +388,7 @@ export function Pemindai({ tokenAwal }: { tokenAwal?: string }) {
       {galatKamera ? (
         <p className="flex items-center justify-center gap-2 text-center text-xs text-samar">
           <CameraOff size={14} />
-          Bila kamera tetap tidak bisa dipakai, mintalah musyrif mencatat kehadiran Anda
+          Bila kamera tetap tidak bisa dipakai, mintalah pembina mencatat kehadiran Anda
           secara manual.
         </p>
       ) : null}

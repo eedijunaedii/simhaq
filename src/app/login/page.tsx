@@ -10,8 +10,8 @@ export const metadata: Metadata = { title: "Masuk" };
 
 const AKUN_UJI = [
   { peran: "Admin / Pimpinan", u: "admin", s: "admin123" },
-  { peran: "Musyrif putra", u: "hanif", s: "musyrif123" },
-  { peran: "Musyrifah putri", u: "aisyah", s: "musyrif123" },
+  { peran: "Pembina putra", u: "hanif", s: "pembina123" },
+  { peran: "Pembina putri", u: "aisyah", s: "pembina123" },
   { peran: "Petugas keamanan", u: "satpam", s: "petugas123" },
 ];
 
