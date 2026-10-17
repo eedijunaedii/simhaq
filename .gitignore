@@ -50,6 +50,7 @@ next-env.d.ts
 
 # jangan abaikan contoh env
 !.env.example
+!.env.test.example
 
 # skills bawaan generator
 /.windsurf
@@ -63,7 +64,6 @@ AGENTS.md
 /skills-lock.json
 
 .vercel
-.env*
 
 # playwright (artefak uji, tidak perlu di repo inti)
 .playwright/

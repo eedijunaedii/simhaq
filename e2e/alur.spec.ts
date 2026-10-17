@@ -1,0 +1,48 @@
+import { test, expect, type Page } from "@playwright/test";
+
+async function masuk(page: Page, username: string, sandi: string) {
+  await page.goto("/login");
+  await page.locator('input[name="username"]').fill(username);
+  await page.locator('input[name="kataSandi"]').fill(sandi);
+  await page.getByRole("button", { name: "Masuk" }).click();
+}
+
+test.describe("Alur berbasis peran", () => {
+  test("petugas keamanan dialihkan ke pos gerbang", async ({ page }) => {
+    await masuk(page, "satpam", "petugas123");
+    await page.waitForURL(/\/gerbang/, { timeout: 15_000 });
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Pos gerbang");
+  });
+
+  test("musyrif melihat menu Sesi Presensi", async ({ page }) => {
+    await masuk(page, "hanif", "musyrif123");
+    await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
+    await expect(page.getByRole("link", { name: "Sesi Presensi" })).toBeVisible();
+  });
+
+  test("santri dapat mengajukan izin", async ({ page }) => {
+    await masuk(page, "abdulcahya017", "santri123");
+    await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
+
+    await page.goto("/izin/baru");
+    await page.locator('textarea[name="alasan"]').fill(
+      "Praktikum Kimia Fisika sampai malam hari di laboratorium kampus."
+    );
+    await page.getByRole("button", { name: "Ajukan izin" }).click();
+
+    // Setelah disimpan, pengguna diarahkan ke halaman detail izin.
+    await page.waitForURL(/\/izin\/[a-z0-9]+/i, { timeout: 15_000 });
+  });
+});
+
+test.describe("Halaman publik tanpa akun", () => {
+  test("token wali yang tidak sah menampilkan pesan", async ({ page }) => {
+    await page.goto("/wali/token-palsu-123");
+    await expect(page.getByText("Tautan tidak berlaku")).toBeVisible();
+  });
+
+  test("kartu izin yang tidak dikenal menampilkan pesan", async ({ page }) => {
+    await page.goto("/verifikasi/IZN-XXXX");
+    await expect(page.getByText("Kartu izin tidak ditemukan")).toBeVisible();
+  });
+});
