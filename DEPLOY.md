@@ -5,6 +5,7 @@
 | | |
 | --- | --- |
 | **URL** | <https://simhaq-ppmmh.vercel.app> |
+| Alias lama | <https://simhaq-redesain.vercel.app> masih aktif dan menunjuk ke deployment yang sama |
 | Project Vercel | `eedijunaediis-projects/simhaq-ppmmh` |
 | Dashboard | <https://vercel.com/eedijunaediis-projects/simhaq-ppmmh> |
 | Basis data | Neon PostgreSQL, region `ap-southeast-1` (Singapura) |
@@ -83,6 +84,16 @@ Vercel → **Settings → Domains** → tambahkan `presensi.ppmmh.site`, lalu bu
 catatan `CNAME` ke `cname.vercel-dns.com` pada pengelola DNS `ppmmh.site`.
 
 ---
+
+## Catatan domain
+
+Mengganti nama proyek di Vercel **tidak** ikut memindahkan domain `.vercel.app`-nya.
+Setelah rename, `simhaq-ppmmh.vercel.app` harus didaftarkan sebagai domain proyek
+(`vercel domains add simhaq-ppmmh.vercel.app simhaq-ppmmh`). Memasangnya sebagai
+alias biasa saja tidak cukup: proteksi SSO proyek berlaku untuk semua URL kecuali
+domain proyek, sehingga alias polos akan dialihkan ke halaman login Vercel.
+
+`simhaq.vercel.app` bukan milik proyek ini — itu proyek `simhaq` lama yang terpisah.
 
 ## Perintah yang sering dipakai
 
