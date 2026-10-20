@@ -18,7 +18,6 @@
 | --- | --- |
 | `DATABASE_URL` | Connection string Neon, memakai `sslmode=verify-full` |
 | `AUTH_SECRET` | Kunci penandatanganan sesi (64 karakter heksadesimal) |
-| `ADMIN_LINTAS_GENDER` | `false` |
 
 Zona waktu **tidak** disetel lewat environment variable — Vercel mencadangkan
 nama `TZ`. Nilainya ditetapkan di `src/instrumentation.ts`, dengan override

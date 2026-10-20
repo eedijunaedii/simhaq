@@ -79,22 +79,21 @@ export function halamanAwal() {
 }
 
 /**
- * Pembatasan berdasarkan gender sesuai kebijakan hijab pesantren:
- * pengurus putra hanya melihat data santri putra, demikian sebaliknya.
- * Admin/pimpinan tetap dibatasi kecuali diberi izin lintas gender.
+ * Pembatasan berdasarkan gender sesuai kebijakan hijab pesantren: pembina
+ * putra hanya melihat data santri putra, demikian sebaliknya.
+ *
+ * Admin/pimpinan dikecualikan. Mereka bertanggung jawab atas seluruh
+ * pesantren — memaksa pimpinan hanya melihat separuh santrinya membuat rekap,
+ * laporan, dan pendataan tidak dapat dipakai untuk mengambil keputusan.
  */
 export function filterGender(sesi: Sesi): { gender?: Gender } {
-  if (sesi.role === ROLE.ADMIN && process.env.ADMIN_LINTAS_GENDER === "true") {
-    return {};
-  }
+  if (sesi.role === ROLE.ADMIN) return {};
   return { gender: sesi.gender };
 }
 
 /** Nilai gender yang boleh diakses, termasuk sesi bergender "SEMUA". */
 export function genderYangBolehDiakses(sesi: Sesi): string[] {
-  if (sesi.role === ROLE.ADMIN && process.env.ADMIN_LINTAS_GENDER === "true") {
-    return ["PUTRA", "PUTRI", "SEMUA"];
-  }
+  if (sesi.role === ROLE.ADMIN) return ["PUTRA", "PUTRI", "SEMUA"];
   return [sesi.gender, "SEMUA"];
 }
 

@@ -61,9 +61,8 @@ Buka <http://localhost:3000>.
 | --- | --- | --- |
 | Admin / Pimpinan | `admin` | `admin123` |
 | Pimpinan pesantren | `pimpinan` | `admin123` |
-| Musyrif putra (Halaqah Al-Fatih) | `hanif` | `musyrif123` |
-| Petugas keamanan (pos gerbang) | `satpam` | `petugas123` |
-| Musyrifah putri (Halaqah Khadijah) | `aisyah` | `musyrif123` |
+| Pembina Kelas A | `hanif` | `pembina123` |
+| Pembina Kelas B | `aisyah` | `pembina123` |
 | Santri | pola `namaXXX`, mis. `luthfiabdi001` | `santri123` |
 
 Daftar nama pengguna santri selengkapnya ada pada menu **Santri** setelah masuk
@@ -80,7 +79,7 @@ sebagai pengurus.
 
 ### Modul A — Presensi kegiatan berbasis QR Code
 
-- Musyrif membuka sesi presensi untuk kegiatan tertentu; layar menampilkan QR
+- Pembina membuka sesi presensi untuk kegiatan tertentu; layar menampilkan QR
   Code yang isinya berganti otomatis (bawaan 40 detik, dapat diatur 5–60 detik
   per sesi).
 - Santri memindai QR dari ponsel masing-masing lewat peramban.
@@ -88,7 +87,7 @@ sebagai pengurus.
   keterangan**.
 - Sesi menutup sendiri pada waktu yang ditentukan; saat ditutup, peserta yang
   belum tercatat otomatis ditandai tanpa keterangan.
-- Presensi manual oleh musyrif sebagai cadangan, lengkap dengan catatan siapa
+- Presensi manual oleh pembina sebagai cadangan, lengkap dengan catatan siapa
   yang menginput (terlihat di menu Pengawasan).
 
 **Pengamanan terhadap titip absen**
@@ -105,31 +104,26 @@ radius) dicatat sebagai temuan pada menu **Pengawasan**.
 
 ### Modul B — Perizinan digital
 
+Izin di sini berarti **izin tidak mengikuti KBM pesantren**, bukan izin keluar
+area. Seluruh alurnya selesai di dalam pesantren.
+
 - Santri mengajukan izin: jenis (kuliah/praktikum, kegiatan kampus, sakit, pulang
-  kampung, keperluan keluarga, lainnya), rentang waktu, tujuan, alasan, dan
-  lampiran bukti (JPG/PNG/WebP/PDF, maks. 2 MB).
-- Alur status: **diajukan → diproses → disetujui/ditolak → selesai**.
-- Musyrif menyetujui atau menolak dari ponsel, dengan catatan untuk santri.
-- Izin yang disetujui **otomatis menutup seluruh sesi presensi pada rentang
+  kampung, keperluan keluarga, lainnya), rentang waktu, alasan, dan lampiran
+  bukti (JPG/PNG/WebP/PDF, maks. 2 MB).
+- Pembina — yang berperan seperti wali kelas — menyetujui atau menolak dari
+  ponsel, dengan catatan untuk santri.
+- Izin yang disetujui **otomatis mengisi seluruh sesi presensi pada rentang
   waktunya** — termasuk sesi yang sudah berlalu — tanpa menimpa kehadiran yang
-  benar-benar terjadi.
-- **Kartu izin digital** berupa QR yang berguna dua arah:
-  - **Saat keluar** — petugas memindainya untuk memeriksa keabsahan izin.
-    Halaman `/verifikasi/<kode>` terbuka tanpa perlu akun.
-  - **Saat kembali** — petugas yang sudah masuk memindai kartu yang sama, lalu
-    menekan "Tandai sudah kembali". Santri tidak perlu memindai apa pun.
-- Izin yang lewat batas dan belum dikonfirmasi muncul sebagai **daftar tugas**
-  di halaman Pengawasan, bukan sebagai pelanggaran — belum dikonfirmasi belum
-  tentu terlambat. Temuan pelanggaran baru dibuat bila ada yang mengonfirmasi
-  kepulangan setelah batas waktu.
+  benar-benar terjadi. Jenis **sakit** tercatat sebagai sakit, selebihnya
+  sebagai izin.
 
 ### Modul C — Rekapitulasi dan pelaporan
 
-- Dasbor persentase kehadiran per santri, per halaqah, dan per jenis kegiatan.
+- Dasbor persentase kehadiran per santri, per kelas, dan per jenis kegiatan.
 - Grafik tren kehadiran harian (30 hari) dan bulanan (6 bulan).
 - Daftar santri dengan kehadiran di bawah ambang tertentu sebagai prioritas
   pembinaan (bawaan 75%, dapat diubah di Pengaturan).
-- Unduhan rekap **Excel** (4 lembar: ringkasan, per santri, per halaqah, per
+- Unduhan rekap **Excel** (4 lembar: ringkasan, per santri, per kelas, per
   kegiatan) dan **PDF** berkop pesantren.
 
 ### Pengguna dan hak akses
@@ -137,18 +131,15 @@ radius) dicatat sebagai temuan pada menu **Pengawasan**.
 | Pengguna | Kewenangan |
 | --- | --- |
 | Santri | Memindai QR, mengajukan izin beserta lampiran, melihat rekap kehadiran pribadi. |
-| Musyrif / Musyrifah | Membuka & menutup sesi, menyetujui/menolak izin, presensi manual, melihat rekap santri binaan. |
+| Pembina | Membuka & menutup sesi, menyetujui/menolak izin, presensi manual, melihat rekap santri binaannya. Berperan seperti wali kelas. |
 | Admin / Pimpinan | Data induk santri, kamar, kegiatan & jadwal; dasbor keseluruhan; unduh laporan; pengaturan sistem. |
-| Petugas Keamanan | Memeriksa kartu izin di gerbang dan mencatat kepulangan santri. Hak paling sempit di sistem: tidak dapat membuka data santri, rekap kehadiran, sesi presensi, maupun alasan dan lampiran izin. |
 | Wali santri | Melihat rekap kehadiran anaknya lewat tautan bertoken `/wali/<token>`, tanpa perlu membuat akun. |
 
-Hak akses dipisahkan berdasarkan gender sesuai kebijakan hijab pesantren:
-pengurus putra hanya dapat mengakses data santri putra, demikian pula sebaliknya.
-Petugas keamanan dikecualikan karena menjaga satu pintu untuk seluruh santri —
-sebagai gantinya, data yang ditampilkan kepadanya dibatasi seminimal mungkin:
-nama, jenis izin, dan batas waktu kembali saja.
-Untuk membuka akses lintas gender bagi admin, setel `ADMIN_LINTAS_GENDER="true"`
-pada `.env`.
+Hak akses **pembina** dipisahkan berdasarkan gender sesuai kebijakan hijab
+pesantren: pembina putra hanya dapat mengakses data santri putra, demikian pula
+sebaliknya. Admin/pimpinan dikecualikan karena bertanggung jawab atas seluruh
+pesantren — rekap dan laporan tidak dapat dipakai mengambil keputusan bila
+pimpinan hanya melihat separuh santrinya.
 
 ---
 
@@ -178,7 +169,6 @@ src/lib/presensi.ts           penerapan izin ke sesi, penandaan alfa, penutupan 
 src/lib/rekap.ts              seluruh agregasi untuk dasbor dan laporan
 src/lib/auth.ts               sesi, peran, pembatasan gender, log audit
 src/app/(app)/                halaman yang memerlukan login
-src/app/verifikasi/[kode]/    verifikasi kartu izin (publik)
 src/app/wali/[token]/         rekap untuk wali santri (publik, bertoken)
 src/app/api/laporan/          unduhan Excel & PDF
 src/app/api/sesi/[id]/token/  token QR aktif untuk layar presensi
@@ -247,7 +237,6 @@ git remote add origin https://github.com/<akun>/simhaq.git && git push -u origin
    | --- | --- |
    | `DATABASE_URL` | connection string Neon |
    | `AUTH_SECRET` | string acak 64 karakter |
-   | `ADMIN_LINTAS_GENDER` | `false` |
 
 4. Klik **Deploy**. Aplikasi akan tersedia di `https://<nama>.vercel.app`.
 
@@ -277,7 +266,7 @@ di **Settings → Domains** pada Vercel, lalu buat catatan `CNAME` yang mengarah
 - **Jaringan lemah.** Pemindaian yang gagal terkirim disimpan sementara di
   perangkat (localStorage) dan dikirim ulang otomatis setelah jaringan pulih.
 - **Ganti ponsel.** Santri dapat melepas keterikatan perangkatnya sendiri dari
-  menu Profil; musyrif juga dapat melepasnya dari halaman detail santri. Setiap
+  menu Profil; pembina juga dapat melepasnya dari halaman detail santri. Setiap
   pelepasan tercatat pada log audit.
 - **Kata sandi awal.** Seluruh akun seed memakai kata sandi yang sama. Ganti
   melalui menu Profil, atau atur ulang massal dari menu Pengaturan sebelum

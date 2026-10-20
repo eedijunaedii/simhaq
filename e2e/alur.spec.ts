@@ -14,6 +14,39 @@ test.describe("Alur berbasis peran", () => {
     await expect(page.getByRole("link", { name: "Sesi Presensi" })).toBeVisible();
   });
 
+  /*
+    Kebijakan hijab membatasi pembina pada santri segendernya, tetapi
+    admin/pimpinan dikecualikan: rekap dan laporan tidak dapat dipakai
+    mengambil keputusan bila pimpinan hanya melihat separuh pesantren.
+  */
+  test("admin melihat santri putra maupun putri", async ({ page }) => {
+    await masuk(page, "admin", "admin123");
+    await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
+
+    await page.goto("/santri");
+    await expect(page.getByText("Seluruh santri aktif pesantren.")).toBeVisible();
+
+    const jumlahAdmin = Number(
+      (await page.locator("main").first().innerText()).match(/(\d+)\s+santri/)?.[1]
+    );
+    expect(jumlahAdmin).toBeGreaterThan(0);
+
+    // Pembina pada gender mana pun harus melihat lebih sedikit daripada admin.
+    for (const [nama, sandi] of [["hanif", "pembina123"], ["aisyah", "pembina123"]]) {
+      // Sesi sebelumnya harus dibuang dulu: membuka /login sambil masih masuk
+      // akan dialihkan ke dasbor, sehingga formulirnya tidak pernah muncul.
+      await page.context().clearCookies();
+      await masuk(page, nama, sandi);
+      await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
+      await page.goto("/santri");
+      const jumlahPembina = Number(
+        (await page.locator("main").first().innerText()).match(/(\d+)\s+santri/)?.[1]
+      );
+      expect(jumlahPembina, `pembina ${nama} tidak boleh melihat seluruh santri`)
+        .toBeLessThan(jumlahAdmin);
+    }
+  });
+
   test("santri dapat mengajukan izin", async ({ page }) => {
     await masuk(page, "abdillahma001", "santri123");
     await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
