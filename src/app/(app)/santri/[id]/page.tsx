@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, Link2Off, Smartphone } from "lucide-react";
 import { QrTautan } from "@/components/qr-statis";
+import { TautanWali } from "@/components/tautan-wali";
 import {
   Avatar,
   BatangProgres,
@@ -32,6 +33,7 @@ import { prisma } from "@/lib/prisma";
 import { rekapSantri } from "@/lib/rekap";
 import { fmtJam, fmtTanggal, fmtTanggalPendek } from "@/lib/tanggal";
 import { cn, warnaKehadiran } from "@/lib/utils";
+import { asalSitus } from "@/lib/situs";
 import { lepasPerangkat } from "../../presensi/aksi";
 
 export const metadata: Metadata = { title: "Detail Santri" };
@@ -107,6 +109,7 @@ export default async function HalamanDetailSantri(props: {
   ]);
 
   const wali = santri.waliToken[0];
+  const asal = await asalSitus();
 
   return (
     <>
@@ -362,9 +365,9 @@ export default async function HalamanDetailSantri(props: {
                   <QrTautan path={`/wali/${wali.token}`} ukuran={150} />
                 </div>
                 <p className="text-center text-sm text-sekunder">{wali.namaWali}</p>
-                <code className="w-full break-all rounded-lg bg-lapis-naik px-3 py-2 text-center text-[11px] text-sukses">
-                  /wali/{wali.token}
-                </code>
+                <div className="w-full">
+                  <TautanWali tautan={`${asal}/wali/${wali.token}`} ukuran="kecil" />
+                </div>
               </div>
             </Kartu>
           ) : null}

@@ -18,11 +18,14 @@ import { prisma } from "@/lib/prisma";
 import { fmtTanggalJam } from "@/lib/tanggal";
 import { cabutTokenWali, resetKataSandi, ubahStatusAkun } from "./aksi";
 import { FormPengaturan, FormTokenWali } from "./form-pengaturan";
+import { TautanWali } from "@/components/tautan-wali";
+import { asalSitus } from "@/lib/situs";
 
 export const metadata: Metadata = { title: "Pengaturan" };
 export const dynamic = "force-dynamic";
 
 export default async function HalamanPengaturan() {
+  const asal = await asalSitus();
   const pengguna = await wajibAdmin();
 
   const [pengaturan, pengurus, santri, tokenWali, audit] = await Promise.all([
@@ -208,9 +211,10 @@ export default async function HalamanPengaturan() {
                       </span>
                     </Td>
                     <Td className="hidden md:table-cell">
-                      <code className="break-all text-[11px] text-aksen">
-                        /wali/{w.token}
-                      </code>
+                      <TautanWali
+                        tautan={`${asal}/wali/${w.token}`}
+                        ukuran="kecil"
+                      />
                       {w.terakhirDibuka ? (
                         <span className="block text-[11px] text-samar">
                           dibuka {fmtTanggalJam(w.terakhirDibuka)}
