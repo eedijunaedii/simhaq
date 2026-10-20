@@ -129,15 +129,27 @@ export async function catatAudit(input: {
   detail?: unknown;
 }) {
   const h = await headers();
-  await prisma.auditLog.create({
-    data: {
-      userId: input.userId ?? null,
-      aksi: input.aksi,
-      entitas: input.entitas,
-      entitasId: input.entitasId ?? null,
-      detail: input.detail === undefined ? null : JSON.stringify(input.detail),
-      ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
-      userAgent: h.get("user-agent"),
-    },
-  });
+  const data = {
+    userId: input.userId ?? null,
+    aksi: input.aksi,
+    entitas: input.entitas,
+    entitasId: input.entitasId ?? null,
+    detail: input.detail === undefined ? null : JSON.stringify(input.detail),
+    ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    userAgent: h.get("user-agent"),
+  };
+
+  try {
+    await prisma.auditLog.create({ data });
+  } catch (e) {
+    /*
+      Pelakunya bisa saja sudah tidak ada — misalnya basis data diisi ulang
+      sementara peramban masih memegang cookie lama — sehingga kunci tamu ke
+      User dilanggar (Prisma P2003). Catatannya tetap ditulis tanpa tautan
+      pengguna: jejak auditnya lebih berharga daripada tautannya, dan
+      kegagalan pencatatan tidak boleh menggagalkan tindakan penggunanya.
+    */
+    if ((e as { code?: string })?.code !== "P2003") throw e;
+    await prisma.auditLog.create({ data: { ...data, userId: null } });
+  }
 }
