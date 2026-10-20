@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Search } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import {
   Avatar,
   Input,
@@ -12,11 +12,13 @@ import {
   Lencana,
   Select,
   Tabel,
+  TautanTombol,
+  Tombol,
   Td,
   Th,
   Tr,
 } from "@/components/ui";
-import { AMBANG_PEMBINAAN, GENDER_LABEL } from "@/lib/constants";
+import { AMBANG_PEMBINAAN, GENDER_LABEL, ROLE } from "@/lib/constants";
 import { filterGender, wajibPengurus } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rekapPerSantri } from "@/lib/rekap";
@@ -95,6 +97,14 @@ export default async function HalamanSantri(props: {
             ? `Menampilkan santri ${GENDER_LABEL[gender]} sesuai kebijakan hijab pesantren.`
             : "Seluruh santri aktif pesantren."
         }
+        aksi={
+          pengguna.role === ROLE.ADMIN ? (
+            <TautanTombol href="/santri/baru" ukuran="sm">
+              <UserPlus size={15} />
+              Tambah santri
+            </TautanTombol>
+          ) : null
+        }
       />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -144,12 +154,13 @@ export default async function HalamanSantri(props: {
               </option>
             ))}
           </Select>
-          <button
-            type="submit"
-            className="rounded-xl bg-sukses px-4 py-2 text-sm font-medium text-sukses transition hover:bg-sukses"
-          >
+          {/* Sebelumnya tombol ini memakai bg-sukses sekaligus text-sukses,
+              sehingga tulisannya sewarna latar dan tampak sebagai kotak hijau
+              kosong. Memakai komponen Tombol sekalian menyeragamkannya. */}
+          <Tombol type="submit">
+            <Search size={15} />
             Cari
-          </button>
+          </Tombol>
         </form>
 
         {daftar.length === 0 ? (
