@@ -21,16 +21,16 @@ import { prisma } from "@/lib/prisma";
 import { rekapPerSantri } from "@/lib/rekap";
 import { cn, persen, warnaKehadiran } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Detail Halaqah" };
+export const metadata: Metadata = { title: "Detail Kelas" };
 export const dynamic = "force-dynamic";
 
-export default async function HalamanDetailHalaqah(props: {
+export default async function HalamanDetailKelas(props: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await props.params;
   const pengguna = await wajibPengurus();
 
-  const halaqah = await prisma.halaqah.findUnique({
+  const kelas = await prisma.kelas.findUnique({
     where: { id },
     select: {
       id: true,
@@ -42,10 +42,10 @@ export default async function HalamanDetailHalaqah(props: {
     },
   });
 
-  if (!halaqah) notFound();
-  if (!genderYangBolehDiakses(pengguna).includes(halaqah.gender)) redirect("/halaqah");
+  if (!kelas) notFound();
+  if (!genderYangBolehDiakses(pengguna).includes(kelas.gender)) redirect("/kelas");
 
-  const anggota = await rekapPerSantri({ halaqahId: halaqah.id });
+  const anggota = await rekapPerSantri({ kelasId: kelas.id });
   const totalHadir = anggota.reduce((s, a) => s + a.hadir + a.terlambat, 0);
   const totalCatatan = anggota.reduce((s, a) => s + a.total, 0);
   const rerata = persen(totalHadir, totalCatatan);
@@ -54,33 +54,33 @@ export default async function HalamanDetailHalaqah(props: {
   return (
     <>
       <Link
-        href="/halaqah"
+        href="/kelas"
         className="mb-4 inline-flex items-center gap-2 text-sm text-redup transition hover:text-teks"
       >
         <ArrowLeft size={16} />
-        Halaqah
+        Kelas
       </Link>
 
       <JudulHalaman
-        judul={halaqah.nama}
+        judul={kelas.nama}
         keterangan={
-          halaqah.deskripsi ??
-          `Kelompok binaan ${GENDER_LABEL[halaqah.gender]} bersama ${
-            halaqah.pembina?.nama ?? "pembina"
+          kelas.deskripsi ??
+          `Kelompok binaan ${GENDER_LABEL[kelas.gender]} bersama ${
+            kelas.pembina?.nama ?? "pembina"
           }.`
         }
-        aksi={<Lencana>{GENDER_LABEL[halaqah.gender]}</Lencana>}
+        aksi={<Lencana>{GENDER_LABEL[kelas.gender]}</Lencana>}
       />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KartuStat label="Anggota" nilai={halaqah._count.santri} />
+        <KartuStat label="Anggota" nilai={kelas._count.santri} />
         <KartuStat
           label="Rerata kehadiran"
           nilai={rerata}
           satuan="%"
           nada={rerata >= 90 ? "baik" : rerata >= AMBANG_PEMBINAAN ? "netral" : "waspada"}
         />
-        <KartuStat label="Sesi halaqah" nilai={halaqah._count.sesi} />
+        <KartuStat label="Sesi kelas" nilai={kelas._count.sesi} />
         <KartuStat
           label="Perlu pembinaan"
           nilai={perlu.length}
@@ -90,9 +90,9 @@ export default async function HalamanDetailHalaqah(props: {
 
       <Kartu>
         <KepalaKartu
-          judul="Anggota halaqah"
-          keterangan={`Pembina: ${halaqah.pembina?.nama ?? "-"}${
-            halaqah.pembina?.telepon ? ` · ${halaqah.pembina.telepon}` : ""
+          judul="Anggota kelas"
+          keterangan={`Pembina: ${kelas.pembina?.nama ?? "-"}${
+            kelas.pembina?.telepon ? ` · ${kelas.pembina.telepon}` : ""
           }`}
         />
         {anggota.length === 0 ? (

@@ -41,7 +41,7 @@ export default async function HalamanProfil() {
           asalDaerah: true,
           deviceId: true,
           deviceBoundAt: true,
-          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
+          kelas: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       },
@@ -97,9 +97,9 @@ export default async function HalamanProfil() {
                   <Baris label="Program studi">{user.santri.jurusan}</Baris>
                   <Baris label="Angkatan">{user.santri.angkatan}</Baris>
                   <Baris label="Asal daerah">{user.santri.asalDaerah}</Baris>
-                  <Baris label="Halaqah">{user.santri.halaqah?.nama ?? "-"}</Baris>
+                  <Baris label="Kelas">{user.santri.kelas?.nama ?? "-"}</Baris>
                   <Baris label="Pembina">
-                    {user.santri.halaqah?.pembina?.nama ?? "-"}
+                    {user.santri.kelas?.pembina?.nama ?? "-"}
                   </Baris>
                   <Baris label="Kamar">
                     {user.santri.kamar

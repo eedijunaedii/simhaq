@@ -5,16 +5,16 @@ import { STATUS_PRESENSI_DARI_IZIN } from "./constants";
 /** Kriteria santri yang menjadi peserta sebuah sesi presensi. */
 export function kriteriaPeserta(sesi: {
   gender: string;
-  halaqahId: string | null;
+  kelasId: string | null;
 }) {
   return {
     status: "AKTIF",
-    ...(sesi.halaqahId ? { halaqahId: sesi.halaqahId } : {}),
+    ...(sesi.kelasId ? { kelasId: sesi.kelasId } : {}),
     ...(sesi.gender === "SEMUA" ? {} : { user: { gender: sesi.gender } }),
   };
 }
 
-export async function pesertaSesi(sesi: { gender: string; halaqahId: string | null }) {
+export async function pesertaSesi(sesi: { gender: string; kelasId: string | null }) {
   return prisma.profilSantri.findMany({
     where: kriteriaPeserta(sesi),
     select: {
@@ -22,7 +22,7 @@ export async function pesertaSesi(sesi: { gender: string; halaqahId: string | nu
       nim: true,
       kampus: true,
       user: { select: { nama: true, gender: true } },
-      halaqah: { select: { nama: true } },
+      kelas: { select: { nama: true } },
       kamar: { select: { nama: true } },
     },
     orderBy: { user: { nama: "asc" } },
@@ -40,7 +40,7 @@ export async function terapkanIzinKeSesi(sesiId: string) {
     select: {
       id: true,
       gender: true,
-      halaqahId: true,
+      kelasId: true,
       waktuBuka: true,
       waktuTutup: true,
     },
@@ -98,7 +98,7 @@ export async function terapkanIzinKeSemuaSesi(izinId: string) {
       selesai: true,
       santriId: true,
       santri: {
-        select: { halaqahId: true, user: { select: { gender: true } } },
+        select: { kelasId: true, user: { select: { gender: true } } },
       },
     },
   });
@@ -111,7 +111,7 @@ export async function terapkanIzinKeSemuaSesi(izinId: string) {
       waktuBuka: { lte: izin.selesai },
       waktuTutup: { gte: izin.mulai },
       gender: { in: [izin.santri.user.gender, "SEMUA"] },
-      OR: [{ halaqahId: null }, { halaqahId: izin.santri.halaqahId }],
+      OR: [{ kelasId: null }, { kelasId: izin.santri.kelasId }],
     },
     select: { id: true },
   });
@@ -147,7 +147,7 @@ export async function terapkanIzinKeSemuaSesi(izinId: string) {
 export async function lengkapiAlfa(sesiId: string) {
   const sesi = await prisma.sesiPresensi.findUnique({
     where: { id: sesiId },
-    select: { id: true, gender: true, halaqahId: true },
+    select: { id: true, gender: true, kelasId: true },
   });
   if (!sesi) return 0;
 

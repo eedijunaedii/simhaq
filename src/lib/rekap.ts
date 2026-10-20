@@ -102,7 +102,7 @@ export type BarisSantri = {
   nama: string;
   gender: string;
   kampus: string;
-  halaqah: string | null;
+  kelas: string | null;
   hadir: number;
   terlambat: number;
   izin: number;
@@ -115,7 +115,7 @@ export type BarisSantri = {
 export async function rekapPerSantri(opsi: {
   gender?: string;
   rentang?: Rentang;
-  halaqahId?: string;
+  kelasId?: string;
   kegiatanId?: string;
 }): Promise<BarisSantri[]> {
   const r = opsi.rentang ?? rentang30Hari();
@@ -125,13 +125,13 @@ export async function rekapPerSantri(opsi: {
       where: {
         status: "AKTIF",
         ...(opsi.gender ? { user: { gender: opsi.gender } } : {}),
-        ...(opsi.halaqahId ? { halaqahId: opsi.halaqahId } : {}),
+        ...(opsi.kelasId ? { kelasId: opsi.kelasId } : {}),
       },
       select: {
         id: true,
         kampus: true,
         user: { select: { nama: true, gender: true } },
-        halaqah: { select: { nama: true } },
+        kelas: { select: { nama: true } },
       },
       orderBy: { user: { nama: "asc" } },
     }),
@@ -143,7 +143,7 @@ export async function rekapPerSantri(opsi: {
           tanggal: { gte: r.mulai, lte: r.selesai },
           ...(opsi.kegiatanId ? { kegiatanId: opsi.kegiatanId } : {}),
         },
-        ...(opsi.halaqahId ? { santri: { halaqahId: opsi.halaqahId } } : {}),
+        ...(opsi.kelasId ? { santri: { kelasId: opsi.kelasId } } : {}),
         ...whereGender(opsi.gender),
       },
     }),
@@ -169,7 +169,7 @@ export async function rekapPerSantri(opsi: {
       nama: s.user.nama,
       gender: s.user.gender,
       kampus: s.kampus,
-      halaqah: s.halaqah?.nama ?? null,
+      kelas: s.kelas?.nama ?? null,
       hadir,
       terlambat,
       izin,
@@ -181,13 +181,15 @@ export async function rekapPerSantri(opsi: {
   });
 }
 
-// --- Rekap per halaqah ----------------------------------------------------
+// --- Rekap per kelas ----------------------------------------------------
 
-export async function rekapPerHalaqah(opsi: { gender?: string; rentang?: Rentang }) {
+export async function rekapPerKelas(opsi: { gender?: string; rentang?: Rentang }) {
   const r = opsi.rentang ?? rentang30Hari();
 
-  const halaqah = await prisma.halaqah.findMany({
-    where: opsi.gender ? { gender: opsi.gender } : {},
+  const kelas = await prisma.kelas.findMany({
+    // Kelas boleh bergender "SEMUA" (berisi santri putra dan putri), jadi
+    // pencocokannya tidak boleh persis: kelas campur harus tetap terlihat.
+    where: opsi.gender ? { gender: { in: [opsi.gender, "SEMUA"] } } : {},
     select: {
       id: true,
       nama: true,
@@ -199,12 +201,12 @@ export async function rekapPerHalaqah(opsi: { gender?: string; rentang?: Rentang
   });
 
   const hasil = await Promise.all(
-    halaqah.map(async (h) => {
+    kelas.map(async (h) => {
       const per = await prisma.presensi.groupBy({
         by: ["status"],
         _count: { _all: true },
         where: {
-          santri: { halaqahId: h.id },
+          santri: { kelasId: h.id },
           sesi: { tanggal: { gte: r.mulai, lte: r.selesai } },
         },
       });

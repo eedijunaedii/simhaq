@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { revalidatePath } from "next/cache";
-import { AlertTriangle, Check, Clock, Eye } from "lucide-react";
+import { AlertTriangle, Check, Eye } from "lucide-react";
 import {
   Kartu,
   KartuStat,
@@ -18,9 +18,7 @@ import {
 } from "@/lib/constants";
 import { catatAudit, filterGender, wajibPengurus } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { fmtTanggalJam, selisihManusiawi } from "@/lib/tanggal";
-import { JENIS_IZIN_LABEL } from "@/lib/constants";
-import { izinBelumDikonfirmasi } from "../izin/aksi";
+import { fmtTanggalJam } from "@/lib/tanggal";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Pengawasan" };
@@ -53,7 +51,7 @@ export default async function HalamanPengawasan(props: {
 
   const whereGender = gender ? { santri: { user: { gender } } } : {};
 
-  const [flag, hitung, presensiManual, belumDikonfirmasi] = await Promise.all([
+  const [flag, hitung, presensiManual] = await Promise.all([
     prisma.flagPelanggaran.findMany({
       where: {
         ...whereGender,
@@ -70,7 +68,7 @@ export default async function HalamanPengawasan(props: {
           select: {
             id: true,
             user: { select: { nama: true } },
-            halaqah: { select: { nama: true } },
+            kelas: { select: { nama: true } },
           },
         },
         sesi: {
@@ -103,7 +101,6 @@ export default async function HalamanPengawasan(props: {
       orderBy: { createdAt: "desc" },
       take: 25,
     }),
-    izinBelumDikonfirmasi(gender),
   ]);
 
   const perStatus: Record<string, number> = {};
@@ -124,47 +121,8 @@ export default async function HalamanPengawasan(props: {
         />
         <KartuStat label="Sedang ditinjau" nilai={perStatus.DITINJAU ?? 0} />
         <KartuStat label="Selesai ditangani" nilai={perStatus.SELESAI ?? 0} nada="baik" />
-        <KartuStat
-          label="Belum dikonfirmasi kembali"
-          nilai={belumDikonfirmasi.length}
-          nada={belumDikonfirmasi.length > 0 ? "waspada" : "baik"}
-          keterangan="Menunggu petugas gerbang"
-        />
       </div>
 
-      {belumDikonfirmasi.length > 0 ? (
-        <Kartu className="mb-6 border-waspada/25 bg-waspada/[0.05]">
-          <KepalaKartu
-            judul="Belum dikonfirmasi kembali"
-            keterangan="Batas izin sudah lewat dan belum ada petugas yang menandai kepulangannya. Ini daftar tugas, bukan pelanggaran — santrinya bisa saja sudah pulang tepat waktu."
-          />
-          <ul className="divide-y divide-garis">
-            {belumDikonfirmasi.map((z) => (
-              <li key={z.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
-                <Clock size={16} className="shrink-0 text-waspada" />
-                <div className="min-w-48 flex-1">
-                  <Link
-                    href={`/santri/${z.santri.id}`}
-                    className="inline-block -my-1 py-1 font-medium text-teks transition-colors duration-150 hover:text-aksen"
-                  >
-                    {z.santri.user.nama}
-                  </Link>
-                  <p className="text-xs text-redup">
-                    {JENIS_IZIN_LABEL[z.jenis]} · batas {fmtTanggalJam(z.selesai)} (
-                    {selisihManusiawi(z.selesai)})
-                  </p>
-                </div>
-                <Link
-                  href={`/izin/${z.id}`}
-                  className="rounded-xl border border-kendali bg-lapis-naik px-3.5 py-2 text-xs font-medium text-teks transition hover:bg-lapis-naik"
-                >
-                  Buka izin
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Kartu>
-      ) : null}
 
       <Kartu className="mb-6">
         <div className="flex flex-wrap gap-1.5 border-b border-garis px-4 py-3">
@@ -225,7 +183,7 @@ export default async function HalamanPengawasan(props: {
                   </p>
                   <p className="mt-1 text-xs text-samar">
                     {fmtTanggalJam(f.createdAt)}
-                    {f.santri.halaqah ? ` · ${f.santri.halaqah.nama}` : ""}
+                    {f.santri.kelas ? ` · ${f.santri.kelas.nama}` : ""}
                     {f.sesi ? ` · ${f.sesi.kegiatan.nama}` : ""}
                     {f.ditanganiOleh ? ` · ditangani ${f.ditanganiOleh.nama}` : ""}
                   </p>

@@ -2,22 +2,18 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
-  AlertTriangle,
   ArrowLeft,
   Check,
   CircleSlash,
   Download,
-  LogIn,
   Paperclip,
   X,
 } from "lucide-react";
-import { QrTautan } from "@/components/qr-statis";
 import {
   Kartu,
   KepalaKartu,
   Lencana,
   JudulHalaman,
-  Peringatan,
   Textarea,
   Tombol,
 } from "@/components/ui";
@@ -31,7 +27,7 @@ import {
 import { genderYangBolehDiakses, wajibLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fmtTanggalJam, selisihManusiawi } from "@/lib/tanggal";
-import { batalkanIzin, setujuiIzinDariForm, tandaiKembali, tolakIzinDariForm } from "../aksi";
+import { batalkanIzin, setujuiIzinDariForm, tolakIzinDariForm } from "../aksi";
 
 export const metadata: Metadata = { title: "Detail Izin" };
 export const dynamic = "force-dynamic";
@@ -41,15 +37,10 @@ export default async function HalamanDetailIzin(props: {
 }) {
   const { id } = await props.params;
   const sesi = await wajibLogin();
-  // Detail izin memuat alasan pribadi dan lampiran bukti (mis. surat dokter),
-  // di luar kebutuhan petugas gerbang. Ia memakai halaman verifikasi kartu.
-  if (sesi.role === ROLE.PETUGAS) redirect("/gerbang");
-
   const izin = await prisma.izin.findUnique({
     where: { id },
     select: {
       id: true,
-      kode: true,
       jenis: true,
       mulai: true,
       selesai: true,
@@ -58,8 +49,6 @@ export default async function HalamanDetailIzin(props: {
       status: true,
       catatanPengurus: true,
       waktuProses: true,
-      waktuKembali: true,
-      terlambatKembali: true,
       createdAt: true,
       diprosesOleh: { select: { nama: true } },
       lampiran: {
@@ -71,7 +60,7 @@ export default async function HalamanDetailIzin(props: {
           nim: true,
           kampus: true,
           user: { select: { nama: true, gender: true } },
-          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
+          kelas: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       },
@@ -96,7 +85,6 @@ export default async function HalamanDetailIzin(props: {
   if (!bolehLihat) redirect("/izin");
 
   const bisaDiproses = pengurus && ["DIAJUKAN", "DIPROSES"].includes(izin.status);
-  const bisaDitandaiKembali = pengurus && izin.status === "DISETUJUI";
   const bisaDibatalkan =
     (milikSendiri || pengurus) && ["DIAJUKAN", "DIPROSES"].includes(izin.status);
   const berlaku =
@@ -116,23 +104,13 @@ export default async function HalamanDetailIzin(props: {
 
       <JudulHalaman
         judul={JENIS_IZIN_LABEL[izin.jenis]}
-        keterangan={`${izin.kode} · diajukan ${fmtTanggalJam(izin.createdAt)}`}
+        keterangan={`Diajukan ${fmtTanggalJam(izin.createdAt)}`}
         aksi={
           <Lencana className={STATUS_IZIN_STYLE[izin.status]}>
             {STATUS_IZIN_LABEL[izin.status]}
           </Lencana>
         }
       />
-
-      {izin.terlambatKembali ? (
-        <div className="mb-5">
-          <Peringatan nada="waspada" judul="Terlambat kembali">
-            {izin.waktuKembali
-              ? `Santri tercatat kembali ${fmtTanggalJam(izin.waktuKembali)}, melewati batas izin.`
-              : "Batas waktu izin sudah lewat namun santri belum tercatat kembali ke pesantren."}
-          </Peringatan>
-        </div>
-      ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
         <div className="space-y-6">
@@ -150,10 +128,10 @@ export default async function HalamanDetailIzin(props: {
                   {izin.santri.nim} · {izin.santri.kampus}
                 </span>
               </Info>
-              <Info label="Halaqah">
-                {izin.santri.halaqah?.nama ?? "-"}
+              <Info label="Kelas">
+                {izin.santri.kelas?.nama ?? "-"}
                 <span className="block text-xs text-samar">
-                  Pembina {izin.santri.halaqah?.pembina?.nama ?? "-"}
+                  Pembina {izin.santri.kelas?.pembina?.nama ?? "-"}
                 </span>
               </Info>
               <Info label="Mulai">{fmtTanggalJam(izin.mulai)}</Info>
@@ -308,64 +286,6 @@ export default async function HalamanDetailIzin(props: {
         </div>
 
         <div className="space-y-6">
-          {izin.status === "DISETUJUI" || izin.status === "SELESAI" ? (
-            <Kartu className="overflow-hidden">
-              <div className="border-b border-garis bg-sukses/[0.07] px-5 py-4 text-center">
-                <p className="text-sm font-semibold text-teks">Kartu Izin Digital</p>
-                <p className="mt-0.5 text-xs text-redup">
-                  Tunjukkan saat keluar area pesantren
-                </p>
-              </div>
-              <div className="flex flex-col items-center gap-4 p-6">
-                <div className="rounded-2xl bg-white p-3.5">
-                  <QrTautan path={`/verifikasi/${izin.kode}`} ukuran={180} />
-                </div>
-                <div className="text-center">
-                  <p className="font-mono text-sm text-sukses">{izin.kode}</p>
-                  <p className="mt-1 text-sm font-medium text-teks">
-                    {izin.santri.user.nama}
-                  </p>
-                  <p className="mt-0.5 text-xs text-redup">
-                    {JENIS_IZIN_LABEL[izin.jenis]}
-                  </p>
-                  <p className="mt-2 text-xs leading-relaxed text-redup">
-                    {fmtTanggalJam(izin.mulai)}
-                    <br />
-                    s.d. {fmtTanggalJam(izin.selesai)}
-                  </p>
-                </div>
-              </div>
-            </Kartu>
-          ) : null}
-
-          {bisaDitandaiKembali ? (
-            <Kartu className="p-5">
-              <p className="text-sm font-semibold text-teks">Konfirmasi kepulangan</p>
-              <p className="mt-1 text-xs leading-relaxed text-redup">
-                Tandai bila santri sudah kembali ke pesantren. Kembali melewati batas
-                waktu akan tercatat pada halaman Pengawasan.
-              </p>
-              <form
-                action={async () => {
-                  "use server";
-                  await tandaiKembali(izin.id);
-                }}
-                className="mt-4"
-              >
-                <Tombol type="submit" ukuran="sm" className="w-full">
-                  <LogIn size={15} />
-                  Tandai sudah kembali
-                </Tombol>
-              </form>
-              {izin.selesai < new Date() ? (
-                <p className="mt-3 flex items-start gap-1.5 text-xs text-waspada">
-                  <AlertTriangle size={13} className="mt-0.5 shrink-0" />
-                  Batas waktu izin sudah lewat.
-                </p>
-              ) : null}
-            </Kartu>
-          ) : null}
-
           {bisaDibatalkan ? (
             <form
               action={async () => {

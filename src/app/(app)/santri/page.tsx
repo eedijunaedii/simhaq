@@ -26,17 +26,17 @@ export const metadata: Metadata = { title: "Santri" };
 export const dynamic = "force-dynamic";
 
 export default async function HalamanSantri(props: {
-  searchParams: Promise<{ q?: string; halaqah?: string; kampus?: string }>;
+  searchParams: Promise<{ q?: string; kelas?: string; kampus?: string }>;
 }) {
   const pengguna = await wajibPengurus();
   const sp = await props.searchParams;
   const { gender } = filterGender(pengguna);
 
-  const [daftar, halaqah, kampusRows, rekap] = await Promise.all([
+  const [daftar, kelas, kampusRows, rekap] = await Promise.all([
     prisma.profilSantri.findMany({
       where: {
         ...(gender ? { user: { gender } } : {}),
-        ...(sp.halaqah ? { halaqahId: sp.halaqah } : {}),
+        ...(sp.kelas ? { kelasId: sp.kelas } : {}),
         ...(sp.kampus ? { kampus: sp.kampus } : {}),
         ...(sp.q
           ? {
@@ -59,13 +59,14 @@ export default async function HalamanSantri(props: {
         status: true,
         deviceId: true,
         user: { select: { nama: true, gender: true, username: true } },
-        halaqah: { select: { id: true, nama: true } },
+        kelas: { select: { id: true, nama: true } },
         kamar: { select: { nama: true, gedung: true } },
       },
       orderBy: { user: { nama: "asc" } },
     }),
-    prisma.halaqah.findMany({
-      where: gender ? { gender } : {},
+    prisma.kelas.findMany({
+      // Kelas campur bergender "SEMUA" harus ikut terdaftar sebagai penyaring.
+      where: gender ? { gender: { in: [gender, "SEMUA"] } } : {},
       select: { id: true, nama: true },
       orderBy: { nama: "asc" },
     }),
@@ -127,9 +128,9 @@ export default async function HalamanSantri(props: {
               className="pl-10"
             />
           </div>
-          <Select name="halaqah" defaultValue={sp.halaqah ?? ""} className="w-auto min-w-44">
-            <option value="">Semua halaqah</option>
-            {halaqah.map((h) => (
+          <Select name="kelas" defaultValue={sp.kelas ?? ""} className="w-auto min-w-44">
+            <option value="">Semua kelas</option>
+            {kelas.map((h) => (
               <option key={h.id} value={h.id}>
                 {h.nama}
               </option>
@@ -162,7 +163,7 @@ export default async function HalamanSantri(props: {
               <tr>
                 <Th>Santri</Th>
                 <Th className="hidden md:table-cell">Kampus / Jurusan</Th>
-                <Th className="hidden lg:table-cell">Halaqah</Th>
+                <Th className="hidden lg:table-cell">Kelas</Th>
                 <Th className="hidden xl:table-cell">Kamar</Th>
                 <Th className="text-right">Kehadiran</Th>
               </tr>
@@ -195,7 +196,7 @@ export default async function HalamanSantri(props: {
                       </span>
                     </Td>
                     <Td className="hidden text-sekunder lg:table-cell">
-                      {s.halaqah?.nama ?? "-"}
+                      {s.kelas?.nama ?? "-"}
                     </Td>
                     <Td className="hidden text-sekunder xl:table-cell">
                       {s.kamar ? `${s.kamar.nama}` : "-"}

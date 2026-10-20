@@ -159,7 +159,7 @@ export function GrafikStatus({
   );
 }
 
-// --- Perbandingan antar kegiatan / halaqah --------------------------------
+// --- Perbandingan antar kegiatan / kelas --------------------------------
 
 export function GrafikBatang({
   data,

@@ -16,7 +16,7 @@ export type BarisPeserta = {
   nama: string;
   nim: string;
   kampus: string;
-  halaqah: string | null;
+  kelas: string | null;
   kamar: string | null;
   status: string | null;
   metode: string | null;
@@ -103,7 +103,7 @@ export function DaftarPeserta({
         <thead>
           <tr>
             <Th>Santri</Th>
-            <Th className="hidden md:table-cell">Halaqah / Kamar</Th>
+            <Th className="hidden md:table-cell">Kelas / Kamar</Th>
             <Th className="hidden sm:table-cell">Metode</Th>
             <Th>Status</Th>
             {bolehUbah ? <Th className="text-right">Ubah</Th> : null}
@@ -119,7 +119,7 @@ export function DaftarPeserta({
                 </span>
               </Td>
               <Td className="hidden text-xs text-redup md:table-cell">
-                {p.halaqah ?? "-"}
+                {p.kelas ?? "-"}
                 {p.kamar ? ` · ${p.kamar}` : ""}
               </Td>
               <Td className="hidden text-xs text-redup sm:table-cell">

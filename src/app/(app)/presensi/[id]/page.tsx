@@ -37,7 +37,7 @@ export default async function HalamanSesi(props: {
     select: {
       id: true,
       gender: true,
-      halaqahId: true,
+      kelasId: true,
       status: true,
       tanggal: true,
       waktuBuka: true,
@@ -47,7 +47,7 @@ export default async function HalamanSesi(props: {
       wajibLokasi: true,
       radiusMeter: true,
       kegiatan: { select: { nama: true, kode: true, toleransiTerlambatMenit: true } },
-      halaqah: { select: { nama: true } },
+      kelas: { select: { nama: true } },
       dibukaOleh: { select: { nama: true } },
       ditutupOleh: { select: { nama: true } },
       ditutupPada: true,
@@ -80,7 +80,7 @@ export default async function HalamanSesi(props: {
       nama: p.user.nama,
       nim: p.nim,
       kampus: p.kampus,
-      halaqah: p.halaqah?.nama ?? null,
+      kelas: p.kelas?.nama ?? null,
       kamar: p.kamar?.nama ?? null,
       status: rec?.status ?? null,
       metode: rec?.metode ?? null,
@@ -112,7 +112,7 @@ export default async function HalamanSesi(props: {
           <>
             {fmtTanggal(sesi.tanggal)} · {fmtJam(sesi.waktuBuka)} –{" "}
             {fmtJam(sesi.waktuTutup)} · {GENDER_LABEL[sesi.gender]}
-            {sesi.halaqah ? ` · ${sesi.halaqah.nama}` : ""}
+            {sesi.kelas ? ` · ${sesi.kelas.nama}` : ""}
           </>
         }
         aksi={
@@ -188,7 +188,7 @@ export default async function HalamanSesi(props: {
               sesiId={sesi.id}
               namaKegiatan={sesi.kegiatan.nama}
               keterangan={`${GENDER_LABEL[sesi.gender]}${
-                sesi.halaqah ? ` · ${sesi.halaqah.nama}` : ""
+                sesi.kelas ? ` · ${sesi.kelas.nama}` : ""
               } · tutup ${selisihManusiawi(sesi.waktuTutup)}`}
             />
           ) : (

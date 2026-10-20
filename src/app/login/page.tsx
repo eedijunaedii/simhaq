@@ -12,7 +12,6 @@ const AKUN_UJI = [
   { peran: "Admin / Pimpinan", u: "admin", s: "admin123" },
   { peran: "Pembina putra", u: "hanif", s: "pembina123" },
   { peran: "Pembina putri", u: "aisyah", s: "pembina123" },
-  { peran: "Petugas keamanan", u: "satpam", s: "petugas123" },
 ];
 
 const FITUR = [

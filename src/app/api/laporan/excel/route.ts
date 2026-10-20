@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { ambilSesi, filterGender } from "@/lib/auth";
 import { APP, ROLE, STATUS_PRESENSI_LABEL } from "@/lib/constants";
 import {
-  rekapPerHalaqah,
+  rekapPerKelas,
   rekapPerKegiatan,
   rekapPerSantri,
   ringkasanDasbor,
@@ -19,14 +19,14 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const { rentang, label } = bacaRentang(url.searchParams);
-  const halaqahId = url.searchParams.get("halaqah") ?? undefined;
+  const kelasId = url.searchParams.get("kelas") ?? undefined;
   const kegiatanId = url.searchParams.get("kegiatan") ?? undefined;
   const { gender } = filterGender(pengguna);
 
-  const [ringkas, perSantri, perHalaqah, perKegiatan] = await Promise.all([
+  const [ringkas, perSantri, perKelas, perKegiatan] = await Promise.all([
     ringkasanDasbor(gender),
-    rekapPerSantri({ gender, rentang, halaqahId, kegiatanId }),
-    rekapPerHalaqah({ gender, rentang }),
+    rekapPerSantri({ gender, rentang, kelasId, kegiatanId }),
+    rekapPerKelas({ gender, rentang }),
     rekapPerKegiatan({ gender, rentang }),
   ]);
 
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
     { header: "No", key: "no", width: 6 },
     { header: "Nama", key: "nama", width: 30 },
     { header: "Kampus", key: "kampus", width: 14 },
-    { header: "Halaqah", key: "halaqah", width: 22 },
+    { header: "Kelas", key: "kelas", width: 22 },
     { header: "Hadir", key: "hadir", width: 9 },
     { header: "Terlambat", key: "terlambat", width: 11 },
     { header: "Izin", key: "izin", width: 8 },
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
       no: i + 1,
       nama: r.nama,
       kampus: r.kampus,
-      halaqah: r.halaqah ?? "-",
+      kelas: r.kelas ?? "-",
       hadir: r.hadir,
       terlambat: r.terlambat,
       izin: r.izin,
@@ -102,10 +102,10 @@ export async function GET(request: Request) {
   s2.autoFilter = { from: "A1", to: "K1" };
   s2.views = [{ state: "frozen", ySplit: 1 }];
 
-  // --- Lembar per halaqah -------------------------------------------------
-  const s3 = wb.addWorksheet("Per Halaqah");
+  // --- Lembar per kelas -------------------------------------------------
+  const s3 = wb.addWorksheet("Per Kelas");
   s3.columns = [
-    { header: "Halaqah", key: "nama", width: 26 },
+    { header: "Kelas", key: "nama", width: 26 },
     { header: "Pembina", key: "pembina", width: 28 },
     { header: "Jumlah santri", key: "jumlah", width: 14 },
     { header: "Hadir", key: "hadir", width: 10 },
@@ -114,7 +114,7 @@ export async function GET(request: Request) {
     { header: "Kehadiran (%)", key: "persen", width: 14 },
   ];
   s3.getRow(1).eachCell((c) => Object.assign(c, gayaKepala));
-  for (const h of perHalaqah) {
+  for (const h of perKelas) {
     s3.addRow({
       nama: h.nama,
       pembina: h.pembina,

@@ -2,13 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { randomBytes } from "node:crypto";
 import {
   catatAudit,
   genderYangBolehDiakses,
   wajibLogin,
   wajibPengurus,
-  wajibPenjagaGerbang,
 } from "@/lib/auth";
 import { JENIS_IZIN, MAKS_LAMPIRAN, ROLE } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
@@ -18,22 +16,6 @@ export type Hasil = { ok?: string; galat?: string };
 
 const JENIS_SAH = Object.values(JENIS_IZIN) as string[];
 const TIPE_LAMPIRAN = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
-
-/**
- * Kode izin acak (48 bit, huruf besar). Kode dipakai pada halaman publik
- * /verifikasi/[kode], sehingga tidak boleh bisa ditebak/di-enumerasi.
- */
-async function kodeIzinBaru() {
-  for (let coba = 0; coba < 5; coba++) {
-    const kode = `IZN-${randomBytes(6).toString("hex").toUpperCase()}`;
-    const ada = await prisma.izin.findUnique({
-      where: { kode },
-      select: { id: true },
-    });
-    if (!ada) return kode;
-  }
-  throw new Error("Gagal membuat kode izin unik.");
-}
 
 /**
  * Deteksi jenis berkas dari isinya (magic bytes), bukan dari klaim MIME yang
@@ -108,11 +90,12 @@ export async function ajukanIzin(_sebelum: Hasil, data: FormData): Promise<Hasil
       mulai: { lte: selesai },
       selesai: { gte: mulai },
     },
-    select: { kode: true },
+    select: { id: true },
   });
   if (bentrok) {
     return {
-      galat: `Rentang waktu ini bertumpang tindih dengan izin ${bentrok.kode} yang masih berjalan.`,
+      galat:
+        "Rentang waktu ini bertumpang tindih dengan izin lain yang masih berjalan.",
     };
   }
 
@@ -141,7 +124,6 @@ export async function ajukanIzin(_sebelum: Hasil, data: FormData): Promise<Hasil
 
   const izin = await prisma.izin.create({
     data: {
-      kode: await kodeIzinBaru(),
       santriId: sesi.santriId,
       jenis,
       mulai,
@@ -151,7 +133,7 @@ export async function ajukanIzin(_sebelum: Hasil, data: FormData): Promise<Hasil
       status: "DIAJUKAN",
       ...(lampiran ? { lampiran: { create: lampiran } } : {}),
     },
-    select: { id: true, kode: true },
+    select: { id: true },
   });
 
   await catatAudit({
@@ -259,102 +241,4 @@ export async function tolakIzinDariForm(data: FormData) {
   const izinId = String(data.get("izinId") ?? "");
   const catatan = String(data.get("catatan") ?? "");
   await prosesIzin(izinId, "DITOLAK", catatan);
-}
-
-/**
- * Catat bahwa santri sudah kembali ke pesantren.
- *
- * Boleh dilakukan petugas keamanan di gerbang maupun pembina. Petugas tidak
- * dibatasi gender karena ia menjaga satu pintu untuk seluruh santri.
- */
-export async function tandaiKembali(izinId: string) {
-  const sesi = await wajibPenjagaGerbang();
-
-  const izin = await prisma.izin.findUnique({
-    where: { id: izinId },
-    select: {
-      selesai: true,
-      status: true,
-      santriId: true,
-      santri: { select: { user: { select: { gender: true } } } },
-    },
-  });
-  if (!izin || izin.status !== "DISETUJUI") return;
-  if (!genderYangBolehDiakses(sesi).includes(izin.santri.user.gender)) return;
-
-  const sekarang = new Date();
-  const terlambat = sekarang > izin.selesai;
-
-  await prisma.izin.update({
-    where: { id: izinId },
-    data: {
-      status: "SELESAI",
-      waktuKembali: sekarang,
-      terlambatKembali: terlambat,
-    },
-  });
-
-  // Temuan pengawasan hanya dibuat bila keterlambatan benar-benar terbukti,
-  // yakni saat ada orang yang mengonfirmasi kepulangan setelah batas waktu.
-  if (terlambat) {
-    await prisma.flagPelanggaran.create({
-      data: {
-        santriId: izin.santriId,
-        jenis: "TELAT_KEMBALI",
-        keterangan: `Kembali ${Math.round(
-          (sekarang.getTime() - izin.selesai.getTime()) / 60000
-        )} menit melewati batas izin, dikonfirmasi ${sesi.nama}.`,
-      },
-    });
-  }
-
-  await catatAudit({
-    userId: sesi.sub,
-    aksi: "IZIN_SELESAI",
-    entitas: "Izin",
-    entitasId: izinId,
-    detail: { terlambat },
-  });
-
-  revalidatePath(`/izin/${izinId}`);
-  revalidatePath("/izin");
-  revalidatePath("/gerbang");
-}
-
-/**
- * Izin yang batas waktunya sudah lewat namun belum ada yang mengonfirmasi
- * kepulangan santrinya.
- *
- * Ini sengaja TIDAK dicatat sebagai temuan pelanggaran. Belum dikonfirmasi
- * belum tentu terlambat — bisa jadi santrinya pulang tepat waktu dan petugas
- * yang belum sempat menandai. Menuduh lebih dulu membuat halaman Pengawasan
- * penuh laporan palsu, dan pengurus berhenti mempercayainya.
- *
- * Keterlambatan baru dicatat sebagai temuan oleh `tandaiKembali()`, yaitu saat
- * ada orang yang benar-benar mengonfirmasi kepulangan setelah batas waktu.
- */
-export async function izinBelumDikonfirmasi(gender?: string) {
-  return prisma.izin.findMany({
-    where: {
-      status: "DISETUJUI",
-      selesai: { lt: new Date() },
-      waktuKembali: null,
-      ...(gender ? { santri: { user: { gender } } } : {}),
-    },
-    select: {
-      id: true,
-      kode: true,
-      jenis: true,
-      mulai: true,
-      selesai: true,
-      santri: {
-        select: {
-          id: true,
-          user: { select: { nama: true } },
-          halaqah: { select: { nama: true } },
-        },
-      },
-    },
-    orderBy: { selesai: "asc" },
-  });
 }

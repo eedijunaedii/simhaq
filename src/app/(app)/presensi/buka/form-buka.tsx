@@ -30,13 +30,13 @@ function Kirim() {
 
 export function FormBukaSesi({
   kegiatan,
-  halaqah,
+  kelas,
   genderTersedia,
   genderBawaan,
   lokasiBawaan,
 }: {
   kegiatan: Kegiatan[];
-  halaqah: { id: string; nama: string; gender: string }[];
+  kelas: { id: string; nama: string; gender: string }[];
   genderTersedia: string[];
   genderBawaan: string;
   lokasiBawaan: { lat: string; lng: string; radius: number };
@@ -50,7 +50,7 @@ export function FormBukaSesi({
   const hariIni = new Date().getDay();
   const jadwalHariIni = terpilih?.jadwal.find((j) => j.hari === hariIni);
 
-  const halaqahTersedia = halaqah.filter(
+  const kelasTersedia = kelas.filter(
     (h) => gender === "SEMUA" || h.gender === gender
   );
 
@@ -96,12 +96,12 @@ export function FormBukaSesi({
         </Bidang>
 
         <Bidang
-          label="Halaqah (opsional)"
+          label="Kelas (opsional)"
           petunjuk="Kosongkan bila sesi berlaku untuk seluruh santri."
         >
-          <Select name="halaqahId" defaultValue="">
-            <option value="">Semua halaqah</option>
-            {halaqahTersedia.map((h) => (
+          <Select name="kelasId" defaultValue="">
+            <option value="">Semua kelas</option>
+            {kelasTersedia.map((h) => (
               <option key={h.id} value={h.id}>
                 {h.nama}
               </option>

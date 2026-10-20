@@ -16,7 +16,7 @@ export async function bukaSesi(_sebelum: Hasil, data: FormData): Promise<Hasil> 
   const sesi = await wajibPengurus();
 
   const kegiatanId = String(data.get("kegiatanId") ?? "");
-  const halaqahId = String(data.get("halaqahId") ?? "") || null;
+  const kelasId = String(data.get("kelasId") ?? "") || null;
   const gender = String(data.get("gender") ?? sesi.gender);
   const jamMulai = String(data.get("jamMulai") ?? "");
   const durasiMenit = Number(data.get("durasiMenit") ?? 60);
@@ -55,7 +55,7 @@ export async function bukaSesi(_sebelum: Hasil, data: FormData): Promise<Hasil> 
   const adaTerbuka = await prisma.sesiPresensi.findFirst({
     where: {
       kegiatanId,
-      halaqahId,
+      kelasId,
       gender,
       status: "DIBUKA",
     },
@@ -68,7 +68,7 @@ export async function bukaSesi(_sebelum: Hasil, data: FormData): Promise<Hasil> 
   const baru = await prisma.sesiPresensi.create({
     data: {
       kegiatanId,
-      halaqahId,
+      kelasId,
       gender,
       tanggal: new Date(sekarang.getFullYear(), sekarang.getMonth(), sekarang.getDate()),
       waktuBuka: sekarang,
@@ -91,7 +91,7 @@ export async function bukaSesi(_sebelum: Hasil, data: FormData): Promise<Hasil> 
     aksi: "BUKA_SESI",
     entitas: "SesiPresensi",
     entitasId: baru.id,
-    detail: { kegiatanId, halaqahId, gender },
+    detail: { kegiatanId, kelasId, gender },
   });
 
   revalidatePath("/presensi");
@@ -270,7 +270,7 @@ export async function pindaiQr(input: {
       rotasiDetik: true,
       status: true,
       gender: true,
-      halaqahId: true,
+      kelasId: true,
       waktuBuka: true,
       waktuTutup: true,
       batasTerlambat: true,
@@ -336,7 +336,7 @@ export async function pindaiQr(input: {
     where: { id: santriId },
     select: {
       id: true,
-      halaqahId: true,
+      kelasId: true,
       status: true,
       deviceId: true,
       user: { select: { gender: true, nama: true } },
@@ -348,8 +348,8 @@ export async function pindaiQr(input: {
   if (sesi.gender !== "SEMUA" && sesi.gender !== santri.user.gender) {
     return { status: "gagal", pesan: "Sesi ini bukan untuk kelompok Anda." };
   }
-  if (sesi.halaqahId && sesi.halaqahId !== santri.halaqahId) {
-    return { status: "gagal", pesan: "Sesi ini khusus untuk halaqah lain." };
+  if (sesi.kelasId && sesi.kelasId !== santri.kelasId) {
+    return { status: "gagal", pesan: "Sesi ini khusus untuk kelas lain." };
   }
 
   // 4. Keterikatan perangkat

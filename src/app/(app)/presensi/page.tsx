@@ -105,7 +105,7 @@ export default async function HalamanPresensi() {
                   <p className="mt-2.5 font-semibold text-teks">{s.kegiatan.nama}</p>
                   <p className="mt-0.5 text-xs text-redup">
                     {GENDER_LABEL[s.gender]}
-                    {s.halaqah ? ` · ${s.halaqah.nama}` : ""}
+                    {s.kelas ? ` · ${s.kelas.nama}` : ""}
                   </p>
                   <p className="mt-3 text-xs text-redup">
                     Tutup {fmtJam(s.waktuTutup)} · {s._count.presensi} tercatat
@@ -136,7 +136,7 @@ const pilihanSesi = {
   waktuBuka: true,
   waktuTutup: true,
   kegiatan: { select: { nama: true } },
-  halaqah: { select: { nama: true } },
+  kelas: { select: { nama: true } },
   _count: { select: { presensi: true } },
   presensi: { select: { status: true } },
 } as const;
@@ -149,7 +149,7 @@ type BarisSesi = {
   waktuBuka: Date;
   waktuTutup: Date;
   kegiatan: { nama: string };
-  halaqah: { nama: string } | null;
+  kelas: { nama: string } | null;
   _count: { presensi: number };
   presensi: { status: string }[];
 };
@@ -209,7 +209,7 @@ function BagianTabel({
                   </Td>
                   <Td className="hidden text-redup lg:table-cell">
                     {GENDER_LABEL[s.gender]}
-                    {s.halaqah ? ` · ${s.halaqah.nama}` : ""}
+                    {s.kelas ? ` · ${s.kelas.nama}` : ""}
                   </Td>
                   <Td className="text-center text-sekunder">
                     {s._count.presensi}

@@ -31,7 +31,7 @@ import {
 } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import {
-  rekapPerHalaqah,
+  rekapPerKelas,
   rekapPerKegiatan,
   rekapPerSantri,
   ringkasanDasbor,
@@ -48,12 +48,12 @@ export async function DasborPengurus({
   sesi: Sesi;
   gender?: string;
 }) {
-  const [ringkas, tren, perKegiatan, perHalaqah, sesiHariIni, izinMenunggu, flag, perSantri] =
+  const [ringkas, tren, perKegiatan, perKelas, sesiHariIni, izinMenunggu, flag, perSantri] =
     await Promise.all([
       ringkasanDasbor(gender),
       trenHarian({ gender, hari: 30 }),
       rekapPerKegiatan({ gender }),
-      rekapPerHalaqah({ gender }),
+      rekapPerKelas({ gender }),
       prisma.sesiPresensi.findMany({
         where: {
           tanggal: { gte: awalHari(), lte: akhirHari() },
@@ -66,7 +66,7 @@ export async function DasborPengurus({
           waktuBuka: true,
           waktuTutup: true,
           kegiatan: { select: { nama: true } },
-          halaqah: { select: { nama: true } },
+          kelas: { select: { nama: true } },
           _count: { select: { presensi: true } },
         },
         orderBy: { waktuBuka: "asc" },
@@ -78,7 +78,6 @@ export async function DasborPengurus({
         },
         select: {
           id: true,
-          kode: true,
           jenis: true,
           mulai: true,
           selesai: true,
@@ -213,8 +212,8 @@ export async function DasborPengurus({
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-teks">
                         {s.kegiatan.nama}
-                        {s.halaqah ? (
-                          <span className="text-redup"> · {s.halaqah.nama}</span>
+                        {s.kelas ? (
+                          <span className="text-redup"> · {s.kelas.nama}</span>
                         ) : null}
                       </span>
                       <span className="block text-xs text-redup">
@@ -297,21 +296,21 @@ export async function DasborPengurus({
 
         <Kartu>
           <KepalaKartu
-            judul="Kehadiran per halaqah"
+            judul="Kehadiran per kelas"
             keterangan="Kelompok binaan pembina"
             aksi={
-              <TautanTombol href="/halaqah" gaya="kedua" ukuran="sm">
+              <TautanTombol href="/kelas" gaya="kedua" ukuran="sm">
                 Detail
               </TautanTombol>
             }
           />
           <div className="space-y-3.5 p-5">
-            {perHalaqah.filter((h) => h.total > 0).length === 0 ? (
+            {perKelas.filter((h) => h.total > 0).length === 0 ? (
               <p className="py-8 text-center text-sm text-samar">
                 Belum ada data.
               </p>
             ) : (
-              perHalaqah
+              perKelas
                 .filter((h) => h.total > 0)
                 .map((h) => (
                   <div key={h.id}>
@@ -354,7 +353,7 @@ export async function DasborPengurus({
               <thead>
                 <tr>
                   <Th>Santri</Th>
-                  <Th className="hidden sm:table-cell">Halaqah</Th>
+                  <Th className="hidden sm:table-cell">Kelas</Th>
                   <Th className="text-center">Alfa</Th>
                   <Th className="text-right">Kehadiran</Th>
                 </tr>
@@ -372,7 +371,7 @@ export async function DasborPengurus({
                       <span className="block text-xs text-samar">{s.kampus}</span>
                     </Td>
                     <Td className="hidden text-sekunder sm:table-cell">
-                      {s.halaqah ?? "-"}
+                      {s.kelas ?? "-"}
                     </Td>
                     <Td className="text-center text-bahaya">{s.alfa}</Td>
                     <Td className="text-right">

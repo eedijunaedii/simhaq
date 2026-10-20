@@ -2,7 +2,7 @@
  * Daftar santri PPM Minhajul Haq.
  *
  * Nama dan kampus berasal dari data resmi pesantren; data pendukung lain
- * (NIM, jurusan, angkatan, asal daerah, kamar, halaqah, dan seluruh riwayat
+ * (NIM, jurusan, angkatan, asal daerah, kamar, kelas, dan seluruh riwayat
  * presensi) dibangkitkan di prisma/seed.ts sebagai contoh agar tampilan dan
  * grafik ada isinya.
  *

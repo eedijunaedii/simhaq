@@ -8,12 +8,6 @@ async function masuk(page: Page, username: string, sandi: string) {
 }
 
 test.describe("Alur berbasis peran", () => {
-  test("petugas keamanan dialihkan ke pos gerbang", async ({ page }) => {
-    await masuk(page, "satpam", "petugas123");
-    await page.waitForURL(/\/gerbang/, { timeout: 15_000 });
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Pos gerbang");
-  });
-
   test("pembina melihat menu Sesi Presensi", async ({ page }) => {
     await masuk(page, "hanif", "pembina123");
     await page.waitForURL(/\/dashboard/, { timeout: 15_000 });
@@ -39,10 +33,5 @@ test.describe("Halaman publik tanpa akun", () => {
   test("token wali yang tidak sah menampilkan pesan", async ({ page }) => {
     await page.goto("/wali/token-palsu-123");
     await expect(page.getByText("Tautan tidak berlaku")).toBeVisible();
-  });
-
-  test("kartu izin yang tidak dikenal menampilkan pesan", async ({ page }) => {
-    await page.goto("/verifikasi/IZN-XXXX");
-    await expect(page.getByText("Kartu izin tidak ditemukan")).toBeVisible();
   });
 });

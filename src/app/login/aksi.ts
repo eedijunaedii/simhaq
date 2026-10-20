@@ -74,8 +74,7 @@ export async function masuk(
     entitasId: sesi.sub,
   });
 
-  // Petugas keamanan tidak punya dasbor; halaman awalnya adalah pos gerbang.
-  const bawaan = halamanAwal(sesi.role);
+  const bawaan = halamanAwal();
   const lanjut =
     lanjutDiminta.startsWith("/") && lanjutDiminta !== "/dashboard"
       ? lanjutDiminta

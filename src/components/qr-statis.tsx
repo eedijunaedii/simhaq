@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import QRCode from "qrcode";
 
-/** QR statis untuk kartu izin digital / tautan wali santri. */
+/** QR statis untuk tautan wali santri. */
 export function QrStatis({
   nilai,
   ukuran = 200,

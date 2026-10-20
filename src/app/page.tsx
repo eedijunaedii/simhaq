@@ -40,7 +40,7 @@ const FITUR = [
   {
     ikon: BarChart3,
     judul: "Rekap otomatis",
-    isi: "Persentase kehadiran per santri, per halaqah, dan per kegiatan, lengkap dengan tren mingguan serta unduhan Excel dan PDF.",
+    isi: "Persentase kehadiran per santri, per kelas, dan per kegiatan, lengkap dengan tren mingguan serta unduhan Excel dan PDF.",
   },
   {
     ikon: ShieldCheck,

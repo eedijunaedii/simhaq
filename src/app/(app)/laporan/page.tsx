@@ -18,7 +18,7 @@ import { AMBANG_PEMBINAAN, GENDER_LABEL } from "@/lib/constants";
 import { filterGender, wajibPengurus } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
-  rekapPerHalaqah,
+  rekapPerKelas,
   rekapPerKegiatan,
   rekapPerSantri,
   trenBulanan,
@@ -46,18 +46,19 @@ export default async function HalamanLaporan(props: {
           selesai: akhirHari(),
         };
 
-  const halaqahId = sp.halaqah || undefined;
+  const kelasId = sp.kelas || undefined;
   const kegiatanId = sp.kegiatan || undefined;
 
-  const [perSantri, perHalaqah, perKegiatan, tren, bulanan, daftarHalaqah, daftarKegiatan] =
+  const [perSantri, perKelas, perKegiatan, tren, bulanan, daftarKelas, daftarKegiatan] =
     await Promise.all([
-      rekapPerSantri({ gender, rentang, halaqahId, kegiatanId }),
-      rekapPerHalaqah({ gender, rentang }),
+      rekapPerSantri({ gender, rentang, kelasId, kegiatanId }),
+      rekapPerKelas({ gender, rentang }),
       rekapPerKegiatan({ gender, rentang }),
       trenHarian({ gender, hari: 30 }),
       trenBulanan({ gender, bulan: 6 }),
-      prisma.halaqah.findMany({
-        where: gender ? { gender } : {},
+      prisma.kelas.findMany({
+        // Kelas campur bergender "SEMUA" harus ikut terdaftar sebagai penyaring.
+        where: gender ? { gender: { in: [gender, "SEMUA"] } } : {},
         select: { id: true, nama: true },
         orderBy: { nama: "asc" },
       }),
@@ -92,7 +93,7 @@ export default async function HalamanLaporan(props: {
           keterangan="Atur periode lalu unduh rekap untuk kebutuhan rapat dan arsip pesantren."
         />
         <Suspense fallback={<div className="p-5 text-sm text-samar">Memuat...</div>}>
-          <Penyaring halaqah={daftarHalaqah} kegiatan={daftarKegiatan} />
+          <Penyaring kelas={daftarKelas} kegiatan={daftarKegiatan} />
         </Suspense>
       </Kartu>
 
@@ -165,18 +166,18 @@ export default async function HalamanLaporan(props: {
         </Kartu>
 
         <Kartu>
-          <KepalaKartu judul="Kehadiran per halaqah" />
+          <KepalaKartu judul="Kehadiran per kelas" />
           <div className="space-y-3.5 p-5">
-            {perHalaqah.length === 0 ? (
+            {perKelas.length === 0 ? (
               <p className="py-8 text-center text-sm text-samar">
                 Belum ada data.
               </p>
             ) : (
-              perHalaqah.map((h) => (
+              perKelas.map((h) => (
                 <div key={h.id}>
                   <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
                     <Link
-                      href={`/halaqah/${h.id}`}
+                      href={`/kelas/${h.id}`}
                       className="inline-block -my-1 truncate py-1 text-sekunder transition-colors duration-150 hover:text-aksen"
                     >
                       {h.nama}
@@ -206,7 +207,7 @@ export default async function HalamanLaporan(props: {
             <thead>
               <tr>
                 <Th>Santri</Th>
-                <Th className="hidden sm:table-cell">Halaqah</Th>
+                <Th className="hidden sm:table-cell">Kelas</Th>
                 <Th className="text-center">Alfa</Th>
                 <Th className="text-center">Izin</Th>
                 <Th className="text-right">Kehadiran</Th>
@@ -225,7 +226,7 @@ export default async function HalamanLaporan(props: {
                     <span className="block text-xs text-samar">{s.kampus}</span>
                   </Td>
                   <Td className="hidden text-sekunder sm:table-cell">
-                    {s.halaqah ?? "-"}
+                    {s.kelas ?? "-"}
                   </Td>
                   <Td className="text-center text-bahaya">{s.alfa}</Td>
                   <Td className="text-center text-info/80">{s.izin + s.sakit}</Td>
@@ -254,7 +255,7 @@ export default async function HalamanLaporan(props: {
               <tr>
                 <Th className="w-12">#</Th>
                 <Th>Santri</Th>
-                <Th className="hidden lg:table-cell">Halaqah</Th>
+                <Th className="hidden lg:table-cell">Kelas</Th>
                 <Th className="text-center">H</Th>
                 <Th className="text-center">T</Th>
                 <Th className="text-center">I</Th>
@@ -277,7 +278,7 @@ export default async function HalamanLaporan(props: {
                     <span className="block text-xs text-samar">{s.kampus}</span>
                   </Td>
                   <Td className="hidden text-sekunder lg:table-cell">
-                    {s.halaqah ?? "-"}
+                    {s.kelas ?? "-"}
                   </Td>
                   <Td className="text-center text-sekunder">{s.hadir}</Td>
                   <Td className="text-center text-waspada/80">{s.terlambat}</Td>

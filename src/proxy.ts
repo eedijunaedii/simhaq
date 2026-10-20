@@ -12,7 +12,7 @@ const RUTE_TERLINDUNGI = [
   "/izin",
   "/santri",
   "/kegiatan",
-  "/halaqah",
+  "/kelas",
   "/kamar",
   "/pengajar",
   "/laporan",
@@ -20,7 +20,6 @@ const RUTE_TERLINDUNGI = [
   "/pengaturan",
   "/profil",
   "/scan",
-  "/gerbang",
 ];
 
 export async function proxy(request: NextRequest) {

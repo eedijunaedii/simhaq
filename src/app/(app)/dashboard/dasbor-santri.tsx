@@ -36,7 +36,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
           kampus: true,
           jurusan: true,
           deviceId: true,
-          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
+          kelas: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       }),
@@ -52,7 +52,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
           waktuTutup: true,
           batasTerlambat: true,
           kegiatan: { select: { nama: true } },
-          halaqah: { select: { nama: true } },
+          kelas: { select: { nama: true } },
           presensi: { where: { santriId }, select: { status: true } },
         },
         orderBy: { waktuBuka: "asc" },
@@ -61,7 +61,6 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
         where: { santriId },
         select: {
           id: true,
-          kode: true,
           jenis: true,
           status: true,
           mulai: true,
@@ -111,7 +110,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
                   {belumPresensi
                     .map(
                       (s) =>
-                        `${s.kegiatan.nama}${s.halaqah ? ` (${s.halaqah.nama})` : ""}`
+                        `${s.kegiatan.nama}${s.kelas ? ` (${s.kelas.nama})` : ""}`
                     )
                     .join(", ")}{" "}
                   · tutup {selisihManusiawi(belumPresensi[0].waktuTutup)}
@@ -131,7 +130,7 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
           Berlaku sampai {fmtTanggalJam(izinAktif.selesai)}. Sesi presensi pada rentang
           ini tercatat otomatis sebagai izin.{" "}
           <Link href={`/izin/${izinAktif.id}`} className="tautan-halus">
-            Lihat kartu izin
+            Lihat rincian izin
           </Link>
         </Peringatan>
       ) : null}
@@ -294,10 +293,10 @@ export async function DasborSantri({ sesi }: { sesi: Sesi }) {
             <Info label="NIM / Kampus" nilai={`${profil.nim} · ${profil.kampus}`} />
             <Info label="Program studi" nilai={profil.jurusan} />
             <Info
-              label="Halaqah"
+              label="Kelas"
               nilai={
-                profil.halaqah
-                  ? `${profil.halaqah.nama} — ${profil.halaqah.pembina?.nama ?? "-"}`
+                profil.kelas
+                  ? `${profil.kelas.nama} — ${profil.kelas.pembina?.nama ?? "-"}`
                   : "Belum ditentukan"
               }
             />

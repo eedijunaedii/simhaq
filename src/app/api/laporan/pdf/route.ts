@@ -4,7 +4,7 @@ import autoTable from "jspdf-autotable";
 import { ambilSesi, filterGender } from "@/lib/auth";
 import { APP, AMBANG_PEMBINAAN, ROLE, STATUS_PRESENSI_LABEL } from "@/lib/constants";
 import {
-  rekapPerHalaqah,
+  rekapPerKelas,
   rekapPerKegiatan,
   rekapPerSantri,
   ringkasanDasbor,
@@ -23,14 +23,14 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const { rentang, label } = bacaRentang(url.searchParams);
-  const halaqahId = url.searchParams.get("halaqah") ?? undefined;
+  const kelasId = url.searchParams.get("kelas") ?? undefined;
   const kegiatanId = url.searchParams.get("kegiatan") ?? undefined;
   const { gender } = filterGender(pengguna);
 
-  const [ringkas, perSantri, perHalaqah, perKegiatan] = await Promise.all([
+  const [ringkas, perSantri, perKelas, perKegiatan] = await Promise.all([
     ringkasanDasbor(gender),
-    rekapPerSantri({ gender, rentang, halaqahId, kegiatanId }),
-    rekapPerHalaqah({ gender, rentang }),
+    rekapPerSantri({ gender, rentang, kelasId, kegiatanId }),
+    rekapPerKelas({ gender, rentang }),
     rekapPerKegiatan({ gender, rentang }),
   ]);
 
@@ -99,10 +99,10 @@ export async function GET(request: Request) {
     didDrawPage: () => undefined,
   });
 
-  // --- Per halaqah --------------------------------------------------------
+  // --- Per kelas --------------------------------------------------------
   autoTable(doc, {
-    head: [["Halaqah", "Pembina", "Santri", "Hadir", "Izin", "Alfa", "%"]],
-    body: perHalaqah.map((h) => [
+    head: [["Kelas", "Pembina", "Santri", "Hadir", "Izin", "Alfa", "%"]],
+    body: perKelas.map((h) => [
       h.nama,
       h.pembina,
       String(h.jumlahSantri),
@@ -133,12 +133,12 @@ export async function GET(request: Request) {
 
   autoTable(doc, {
     startY: 23,
-    head: [["No", "Nama", "Kampus", "Halaqah", "H", "T", "I", "S", "A", "%"]],
+    head: [["No", "Nama", "Kampus", "Kelas", "H", "T", "I", "S", "A", "%"]],
     body: perSantri.map((r, i) => [
       String(i + 1),
       r.nama,
       r.kampus,
-      r.halaqah ?? "-",
+      r.kelas ?? "-",
       String(r.hadir),
       String(r.terlambat),
       String(r.izin),

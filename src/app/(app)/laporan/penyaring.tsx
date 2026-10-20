@@ -5,10 +5,10 @@ import { FileSpreadsheet, FileText, Filter } from "lucide-react";
 import { Bidang, Input, Select, Tombol } from "@/components/ui";
 
 export function Penyaring({
-  halaqah,
+  kelas,
   kegiatan,
 }: {
-  halaqah: { id: string; nama: string }[];
+  kelas: { id: string; nama: string }[];
   kegiatan: { id: string; nama: string }[];
 }) {
   const router = useRouter();
@@ -22,7 +22,7 @@ export function Penyaring({
     const mulai = String(data.get("mulai") ?? "");
     const selesai = String(data.get("selesai") ?? "");
     const h = String(data.get("hari") ?? "");
-    const halaqahId = String(data.get("halaqah") ?? "");
+    const kelasId = String(data.get("kelas") ?? "");
     const kegiatanId = String(data.get("kegiatan") ?? "");
 
     if (mulai && selesai) {
@@ -31,7 +31,7 @@ export function Penyaring({
     } else if (h) {
       p.set("hari", h);
     }
-    if (halaqahId) p.set("halaqah", halaqahId);
+    if (kelasId) p.set("kelas", kelasId);
     if (kegiatanId) p.set("kegiatan", kegiatanId);
 
     router.push(`/laporan?${p.toString()}`);
@@ -56,10 +56,10 @@ export function Penyaring({
         <Input type="date" name="selesai" defaultValue={sp.get("selesai") ?? ""} />
       </Bidang>
 
-      <Bidang label="Halaqah">
-        <Select name="halaqah" defaultValue={sp.get("halaqah") ?? ""}>
-          <option value="">Semua halaqah</option>
-          {halaqah.map((h) => (
+      <Bidang label="Kelas">
+        <Select name="kelas" defaultValue={sp.get("kelas") ?? ""}>
+          <option value="">Semua kelas</option>
+          {kelas.map((h) => (
             <option key={h.id} value={h.id}>
               {h.nama}
             </option>

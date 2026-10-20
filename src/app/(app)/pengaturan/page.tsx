@@ -40,7 +40,7 @@ export default async function HalamanPengaturan() {
         gender: true,
         aktif: true,
         pengajar: { select: { jabatan: true, dewanGuru: true } },
-        _count: { select: { halaqahDiampu: true } },
+        _count: { select: { kelasDiampu: true } },
       },
       orderBy: [{ role: "asc" }, { nama: "asc" }],
     }),
@@ -103,7 +103,7 @@ export default async function HalamanPengaturan() {
               <tr>
                 <Th>Nama</Th>
                 <Th className="hidden sm:table-cell">Peran</Th>
-                <Th className="hidden lg:table-cell">Halaqah diampu</Th>
+                <Th className="hidden lg:table-cell">Kelas diampu</Th>
                 <Th className="text-center">Status</Th>
                 <Th className="text-right">Tindakan</Th>
               </tr>
@@ -126,7 +126,7 @@ export default async function HalamanPengaturan() {
                     ) : null}
                   </Td>
                   <Td className="hidden text-center text-sekunder lg:table-cell">
-                    {u._count.halaqahDiampu}
+                    {u._count.kelasDiampu}
                   </Td>
                   <Td className="text-center">
                     <Lencana

@@ -7,7 +7,6 @@ import {
   BadgeCheck,
   BookOpen,
   CalendarClock,
-  DoorClosed,
   ClipboardList,
   DoorOpen,
   FileBarChart,
@@ -45,12 +44,6 @@ const MENU: { grup: string; item: Menu[] }[] = [
         ikon: LayoutDashboard,
         peran: ["SANTRI", "PEMBINA", "ADMIN"],
       },
-      {
-        href: "/gerbang",
-        label: "Pos Gerbang",
-        ikon: DoorClosed,
-        peran: ["PETUGAS", "PEMBINA", "ADMIN"],
-      },
       { href: "/scan", label: "Pindai QR", ikon: ScanLine, peran: ["SANTRI"] },
       {
         href: "/presensi/saya",
@@ -77,8 +70,8 @@ const MENU: { grup: string; item: Menu[] }[] = [
     item: [
       { href: "/santri", label: "Santri", ikon: Users, peran: ["PEMBINA", "ADMIN"] },
       {
-        href: "/halaqah",
-        label: "Halaqah",
+        href: "/kelas",
+        label: "Kelas",
         ikon: BookOpen,
         peran: ["PEMBINA", "ADMIN"],
       },

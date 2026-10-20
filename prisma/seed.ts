@@ -115,15 +115,16 @@ const PENGAJAR = [
   { nama: "Ustadzah Khadijah Mumtaz", gelar: null, jabatan: "Pembina", bidang: "Kepengasuhan Putri", gender: "PUTRI", dewanGuru: false, role: "PEMBINA", username: "khadijah" },
 ];
 
-const HALAQAH = [
-  { nama: "Halaqah Al-Fatih", gender: "PUTRA", pembina: "hanif" },
-  { nama: "Halaqah Al-Faruq", gender: "PUTRA", pembina: "naufal" },
-  { nama: "Halaqah Ibnu Sina", gender: "PUTRA", pembina: "rafi" },
-  { nama: "Halaqah Al-Ghazali", gender: "PUTRA", pembina: "ridwan" },
-  { nama: "Halaqah Khadijah", gender: "PUTRI", pembina: "aisyah" },
-  { nama: "Halaqah Hafshah", gender: "PUTRI", pembina: "salsabila" },
-  { nama: "Halaqah Ummu Salamah", gender: "PUTRI", pembina: "khadijah" },
-  { nama: "Halaqah Sumayyah", gender: "PUTRI", pembina: "fatimah" },
+/*
+  Empat kelas yang memuat santri putra maupun putri. Gendernya "SEMUA"
+  supaya sesi presensi kelas mencakup seluruh anggotanya; pemisahan data
+  putra-putri tetap berlaku di lapisan akses (lihat genderYangBolehDiakses).
+*/
+const KELAS = [
+  { nama: "Kelas A", gender: "SEMUA", pembina: "hanif" },
+  { nama: "Kelas B", gender: "SEMUA", pembina: "aisyah" },
+  { nama: "Kelas C", gender: "SEMUA", pembina: "naufal" },
+  { nama: "Kelas D", gender: "SEMUA", pembina: "salsabila" },
 ];
 
 type DefKegiatan = {
@@ -134,7 +135,7 @@ type DefKegiatan = {
   deskripsi: string;
   toleransi: number;
   pengampu: string | null;
-  perHalaqah?: boolean;
+  perKelas?: boolean;
   jadwal: { hari: number[]; jamMulai: string; jamSelesai: string; lokasi: string };
 };
 
@@ -151,14 +152,14 @@ const KEGIATAN: DefKegiatan[] = [
   },
   {
     kode: "TAHSIN",
-    nama: "Halaqah Tahsin & Tahfizh",
+    nama: "Tahsin & Tahfizh",
     kategori: "HARIAN",
     gender: "SEMUA",
-    deskripsi: "Setoran hafalan dan perbaikan bacaan bersama pembina halaqah masing-masing.",
+    deskripsi: "Setoran hafalan dan perbaikan bacaan bersama pembina kelas masing-masing.",
     toleransi: 10,
     pengampu: "hanif",
-    perHalaqah: true,
-    jadwal: { hari: [0, 1, 2, 3, 4, 6], jamMulai: "18:15", jamSelesai: "19:00", lokasi: "Ruang kelas halaqah" },
+    perKelas: true,
+    jadwal: { hari: [0, 1, 2, 3, 4, 6], jamMulai: "18:15", jamSelesai: "19:00", lokasi: "Ruang kelas" },
   },
   {
     kode: "ISYA",
@@ -256,7 +257,7 @@ async function bersihkan() {
   await prisma.waliToken.deleteMany();
   await prisma.profilSantri.deleteMany();
   await prisma.profilPengajar.deleteMany();
-  await prisma.halaqah.deleteMany();
+  await prisma.kelas.deleteMany();
   await prisma.kamar.deleteMany();
   await prisma.user.deleteMany();
   await prisma.pengaturanSistem.deleteMany();
@@ -267,7 +268,6 @@ async function main() {
   await bersihkan();
 
   const sandiAdmin = await bcrypt.hash("admin123", 10);
-  const sandiPetugas = await bcrypt.hash("petugas123", 10);
   const sandiPembina = await bcrypt.hash("pembina123", 10);
   const sandiSantri = await bcrypt.hash("santri123", 10);
 
@@ -281,20 +281,6 @@ async function main() {
       role: "ADMIN",
       gender: "PUTRA",
       email: "ppmminhajulhaq@gmail.com",
-      telepon: "+62 878-8982-7126",
-    },
-  });
-
-  // 1b. Petugas keamanan gerbang -------------------------------------------
-  // Satu akun untuk pos jaga. Haknya paling sempit: hanya memeriksa kartu izin
-  // dan mencatat kepulangan santri.
-  await prisma.user.create({
-    data: {
-      nama: "Pos Satpam PPM Minhajul Haq",
-      username: "satpam",
-      passwordHash: sandiPetugas,
-      role: "PETUGAS",
-      gender: "PUTRA",
       telepon: "+62 878-8982-7126",
     },
   });
@@ -325,7 +311,7 @@ async function main() {
   }
 
   // 3. Kamar --------------------------------------------------------------
-  console.log("Membuat kamar & halaqah...");
+  console.log("Membuat kamar & kelas...");
   const kamarPutra: string[] = [];
   const kamarPutri: string[] = [];
   for (const g of GEDUNG) {
@@ -343,10 +329,10 @@ async function main() {
     }
   }
 
-  // 4. Halaqah ------------------------------------------------------------
-  const halaqahRows: { id: string; nama: string; gender: string; pembina: string }[] = [];
-  for (const h of HALAQAH) {
-    const row = await prisma.halaqah.create({
+  // 4. Kelas ------------------------------------------------------------
+  const kelasRows: { id: string; nama: string; gender: string; pembina: string }[] = [];
+  for (const h of KELAS) {
+    const row = await prisma.kelas.create({
       data: {
         nama: h.nama,
         gender: h.gender,
@@ -356,10 +342,9 @@ async function main() {
         }.`,
       },
     });
-    halaqahRows.push({ id: row.id, nama: h.nama, gender: h.gender, pembina: h.pembina });
+    kelasRows.push({ id: row.id, nama: h.nama, gender: h.gender, pembina: h.pembina });
   }
-  const halaqahPutra = halaqahRows.filter((h) => h.gender === "PUTRA").map((h) => h.id);
-  const halaqahPutri = halaqahRows.filter((h) => h.gender === "PUTRI").map((h) => h.id);
+  const kelasPool = kelasRows.map((h) => h.id);
 
   // 5. Santri (dari daftar resmi pesantren) --------------------------------
   const totalSantri = SANTRI_PUTRA.length + SANTRI_PUTRI.length;
@@ -371,7 +356,7 @@ async function main() {
     userId: string;
     nama: string;
     gender: string;
-    halaqahId: string;
+    kelasId: string;
     disiplin: number;
   };
   const santriSemua: SantriSeed[] = [];
@@ -380,7 +365,6 @@ async function main() {
   for (const gender of ["PUTRA", "PUTRI"] as const) {
     const daftar = gender === "PUTRA" ? SANTRI_PUTRA : SANTRI_PUTRI;
     const kamarPool = gender === "PUTRA" ? kamarPutra : kamarPutri;
-    const halaqahPool = gender === "PUTRA" ? halaqahPutra : halaqahPutri;
 
     for (let i = 0; i < daftar.length; i++) {
       urut++;
@@ -393,7 +377,7 @@ async function main() {
         ? pilih(KAMPUS_JURUSAN[kampusSumber] ?? [BELUM_DIISI])
         : BELUM_DIISI;
       const angkatan = acakInt(2022, 2025);
-      const halaqahId = halaqahPool[i % halaqahPool.length];
+      const kelasId = kelasPool[urut % kelasPool.length];
 
       const u = await prisma.user.create({
         data: {
@@ -417,7 +401,7 @@ async function main() {
           tanggalMasuk: new Date(angkatan, 7, acakInt(1, 28)),
           status: "AKTIF",
           kamarId: kamarPool[i % kamarPool.length],
-          halaqahId,
+          kelasId,
         },
       });
 
@@ -426,7 +410,7 @@ async function main() {
         userId: u.id,
         nama,
         gender,
-        halaqahId,
+        kelasId,
         // Sebagian kecil santri sengaja dibuat berkehadiran rendah supaya
         // fitur "prioritas pembinaan" pada dasbor terlihat berfungsi.
         disiplin: acak() < 0.12 ? 0.45 + acak() * 0.2 : 0.82 + acak() * 0.17,
@@ -494,14 +478,11 @@ async function main() {
     else status = acak() < 0.2 ? "DIPROSES" : "DISETUJUI";
 
     const disetujui = status === "DISETUJUI" || status === "SELESAI";
-    const pembinaHalaqah = HALAQAH.find(
-      (h) => h.gender === santri.gender
-    )!.pembina;
+    const pembinaKelas = kelasRows.find((h) => h.id === santri.kelasId)!.pembina;
 
     nomorIzin++;
     const izin = await prisma.izin.create({
       data: {
-        kode: `IZN-${new Date().getFullYear()}${String(nomorIzin).padStart(4, "0")}`,
         santriId: santri.id,
         jenis,
         mulai,
@@ -510,7 +491,7 @@ async function main() {
         tujuan: jenis === "PULANG" ? pilih(DAERAH) : jenis === "SAKIT" ? "Klinik / kamar" : "Kampus",
         status,
         diprosesOlehId:
-          status === "DIAJUKAN" ? null : userPengajar[pembinaHalaqah].userId,
+          status === "DIAJUKAN" ? null : userPengajar[pembinaKelas].userId,
         waktuProses: status === "DIAJUKAN" ? null : new Date(mulai.getTime() - 3_600_000),
         catatanPengurus:
           status === "DITOLAK"
@@ -518,36 +499,11 @@ async function main() {
             : disetujui
               ? "Disetujui. Mohon kembali tepat waktu."
               : null,
-        waktuKembali: status === "SELESAI" ? new Date(selesai.getTime() + acakInt(-40, 90) * 60000) : null,
       },
     });
 
     if (disetujui) {
       izinTersimpan.push({ id: izin.id, santriId: santri.id, mulai, selesai, jenis });
-    }
-  }
-
-  // Tandai izin yang kembalinya melewati batas.
-  const izinSelesai = await prisma.izin.findMany({
-    where: { status: "SELESAI", waktuKembali: { not: null } },
-    select: { id: true, selesai: true, waktuKembali: true, santriId: true },
-  });
-  for (const z of izinSelesai) {
-    if (z.waktuKembali && z.waktuKembali > z.selesai) {
-      await prisma.izin.update({
-        where: { id: z.id },
-        data: { terlambatKembali: true },
-      });
-      await prisma.flagPelanggaran.create({
-        data: {
-          santriId: z.santriId,
-          jenis: "TELAT_KEMBALI",
-          keterangan: `Kembali ${Math.round(
-            (z.waktuKembali.getTime() - z.selesai.getTime()) / 60000
-          )} menit melewati batas izin.`,
-          status: "BARU",
-        },
-      });
     }
   }
 
@@ -558,11 +514,11 @@ async function main() {
     PUTRA: santriSemua.filter((s) => s.gender === "PUTRA"),
     PUTRI: santriSemua.filter((s) => s.gender === "PUTRI"),
   };
-  const santriPerHalaqah = new Map<string, SantriSeed[]>();
+  const santriPerKelas = new Map<string, SantriSeed[]>();
   for (const s of santriSemua) {
-    const arr = santriPerHalaqah.get(s.halaqahId) ?? [];
+    const arr = santriPerKelas.get(s.kelasId) ?? [];
     arr.push(s);
-    santriPerHalaqah.set(s.halaqahId, arr);
+    santriPerKelas.set(s.kelasId, arr);
   }
 
   const izinPerSantri = new Map<string, typeof izinTersimpan>();
@@ -591,20 +547,20 @@ async function main() {
 
       const kelompok: {
         gender: string;
-        halaqahId: string | null;
+        kelasId: string | null;
         pembina: string;
         peserta: SantriSeed[];
-      }[] = def.perHalaqah
-        ? halaqahRows.map((h) => ({
+      }[] = def.perKelas
+        ? kelasRows.map((h) => ({
             gender: h.gender,
-            halaqahId: h.id,
+            kelasId: h.id,
             pembina: h.pembina,
-            peserta: santriPerHalaqah.get(h.id) ?? [],
+            peserta: santriPerKelas.get(h.id) ?? [],
           }))
         : (["PUTRA", "PUTRI"] as const).map((g) => ({
             gender: g,
-            halaqahId: null,
-            pembina: halaqahRows.find((h) => h.gender === g)!.pembina,
+            kelasId: null,
+            pembina: kelasRows[0].pembina,
             peserta: santriPerGender[g],
           }));
 
@@ -615,7 +571,7 @@ async function main() {
         const sesi = await prisma.sesiPresensi.create({
           data: {
             kegiatanId,
-            halaqahId: kel.halaqahId,
+            kelasId: kel.kelasId,
             gender: kel.gender,
             tanggal,
             waktuBuka: new Date(mulai.getTime() - 15 * 60000),
@@ -747,9 +703,8 @@ Seed selesai.
 
 Akun uji:
   admin    / admin123     (Admin / Pimpinan)
-  satpam   / petugas123   (Petugas Keamanan - pos gerbang)
-  hanif    / pembina123   (Pembina putra - Halaqah Al-Fatih)
-  aisyah   / pembina123   (Pembina putri - Halaqah Khadijah)
+  hanif    / pembina123   (Pembina - Kelas A)
+  aisyah   / pembina123   (Pembina - Kelas B)
   ${slugUsername(santriSemua[0].nama, 1)} / santri123 (Santri: ${santriSemua[0].nama})
 `);
 }

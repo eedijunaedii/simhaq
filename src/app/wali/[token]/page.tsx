@@ -49,7 +49,7 @@ export default async function HalamanWali(props: {
           kampus: true,
           jurusan: true,
           user: { select: { nama: true } },
-          halaqah: { select: { nama: true, pembina: { select: { nama: true } } } },
+          kelas: { select: { nama: true, pembina: { select: { nama: true } } } },
           kamar: { select: { nama: true, gedung: true } },
         },
       },
@@ -133,8 +133,8 @@ export default async function HalamanWali(props: {
             {santri.nim} · {santri.kampus} — {santri.jurusan}
           </p>
           <p className="mt-0.5 text-sm text-redup">
-            {santri.halaqah?.nama ?? "-"}
-            {santri.halaqah?.pembina ? ` · Pembina ${santri.halaqah.pembina.nama}` : ""}
+            {santri.kelas?.nama ?? "-"}
+            {santri.kelas?.pembina ? ` · Pembina ${santri.kelas.pembina.nama}` : ""}
             {santri.kamar ? ` · Kamar ${santri.kamar.nama}, ${santri.kamar.gedung}` : ""}
           </p>
         </Kartu>

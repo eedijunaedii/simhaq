@@ -25,13 +25,6 @@ export const ROLE = {
   SANTRI: "SANTRI",
   PEMBINA: "PEMBINA",
   ADMIN: "ADMIN",
-  /**
-   * Petugas keamanan yang berjaga di pintu dan parkiran. Hak aksesnya sengaja
-   * dibuat paling sempit: hanya memeriksa kartu izin dan mencatat kepulangan
-   * santri. Tidak dapat melihat data santri, rekap kehadiran, maupun
-   * menyetujui izin.
-   */
-  PETUGAS: "PETUGAS",
 } as const;
 export type Role = (typeof ROLE)[keyof typeof ROLE];
 
@@ -39,7 +32,6 @@ export const ROLE_LABEL: Record<Role, string> = {
   SANTRI: "Santri",
   PEMBINA: "Pembina",
   ADMIN: "Admin / Pimpinan",
-  PETUGAS: "Petugas Keamanan",
 };
 
 export const GENDER = { PUTRA: "PUTRA", PUTRI: "PUTRI" } as const;
@@ -184,14 +176,12 @@ export const JENIS_FLAG = {
   PERANGKAT_GANDA: "PERANGKAT_GANDA",
   DILUAR_RADIUS: "DILUAR_RADIUS",
   TOKEN_KEDALUWARSA: "TOKEN_KEDALUWARSA",
-  TELAT_KEMBALI: "TELAT_KEMBALI",
 } as const;
 
 export const JENIS_FLAG_LABEL: Record<string, string> = {
   PERANGKAT_GANDA: "Perangkat dipakai dua akun",
   DILUAR_RADIUS: "Pemindaian di luar radius",
   TOKEN_KEDALUWARSA: "Token QR kedaluwarsa",
-  TELAT_KEMBALI: "Terlambat kembali dari izin",
 };
 
 export const STATUS_FLAG_LABEL: Record<string, string> = {

@@ -61,7 +61,7 @@ export default async function HalamanDetailSantri(props: {
       user: {
         select: { nama: true, username: true, gender: true, telepon: true, email: true },
       },
-      halaqah: { select: { id: true, nama: true, pembina: { select: { nama: true } } } },
+      kelas: { select: { id: true, nama: true, pembina: { select: { nama: true } } } },
       kamar: { select: { nama: true, gedung: true } },
       waliToken: { select: { token: true, namaWali: true, aktif: true } },
     },
@@ -91,7 +91,6 @@ export default async function HalamanDetailSantri(props: {
       where: { santriId: santri.id },
       select: {
         id: true,
-        kode: true,
         jenis: true,
         status: true,
         mulai: true,
@@ -229,7 +228,7 @@ export default async function HalamanDetailSantri(props: {
                           {JENIS_IZIN_LABEL[z.jenis]}
                         </span>
                         <span className="block text-xs text-redup">
-                          {z.kode} · {fmtTanggalPendek(z.mulai)} –{" "}
+                          {fmtTanggalPendek(z.mulai)} –{" "}
                           {fmtTanggalPendek(z.selesai)}
                         </span>
                       </span>
@@ -268,16 +267,16 @@ export default async function HalamanDetailSantri(props: {
               <Baris label="Gender">{GENDER_LABEL[santri.user.gender]}</Baris>
               <Baris label="Asal daerah">{santri.asalDaerah}</Baris>
               <Baris label="Telepon">{santri.user.telepon ?? "-"}</Baris>
-              <Baris label="Halaqah">
-                {santri.halaqah ? (
-                  <Link href={`/halaqah/${santri.halaqah.id}`} className="tautan-halus">
-                    {santri.halaqah.nama}
+              <Baris label="Kelas">
+                {santri.kelas ? (
+                  <Link href={`/kelas/${santri.kelas.id}`} className="tautan-halus">
+                    {santri.kelas.nama}
                   </Link>
                 ) : (
                   "-"
                 )}
               </Baris>
-              <Baris label="Pembina">{santri.halaqah?.pembina?.nama ?? "-"}</Baris>
+              <Baris label="Pembina">{santri.kelas?.pembina?.nama ?? "-"}</Baris>
               <Baris label="Kamar">
                 {santri.kamar ? `${santri.kamar.nama}, ${santri.kamar.gedung}` : "-"}
               </Baris>

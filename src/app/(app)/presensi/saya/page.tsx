@@ -15,6 +15,7 @@ import {
 } from "@/components/ui";
 import {
   METODE_PRESENSI_LABEL,
+  JENIS_IZIN_LABEL,
   ROLE,
   STATUS_PRESENSI_LABEL,
   STATUS_PRESENSI_STYLE,
@@ -42,13 +43,13 @@ export default async function HalamanPresensiSaya() {
         metode: true,
         waktuScan: true,
         catatan: true,
-        izin: { select: { kode: true } },
+        izin: { select: { jenis: true } },
         sesi: {
           select: {
             tanggal: true,
             waktuBuka: true,
             kegiatan: { select: { nama: true } },
-            halaqah: { select: { nama: true } },
+            kelas: { select: { nama: true } },
           },
         },
       },
@@ -109,9 +110,9 @@ export default async function HalamanPresensiSaya() {
                       <span className="block font-medium text-teks">
                         {p.sesi.kegiatan.nama}
                       </span>
-                      {p.sesi.halaqah ? (
+                      {p.sesi.kelas ? (
                         <span className="block text-xs text-samar">
-                          {p.sesi.halaqah.nama}
+                          {p.sesi.kelas.nama}
                         </span>
                       ) : null}
                     </Td>
@@ -127,7 +128,7 @@ export default async function HalamanPresensiSaya() {
                       {METODE_PRESENSI_LABEL[p.metode] ?? p.metode}
                       {p.izin ? (
                         <span className="block text-[11px] text-samar">
-                          {p.izin.kode}
+                          {JENIS_IZIN_LABEL[p.izin.jenis] ?? p.izin.jenis}
                         </span>
                       ) : null}
                     </Td>

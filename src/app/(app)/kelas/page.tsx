@@ -10,35 +10,35 @@ import {
 } from "@/components/ui";
 import { GENDER_LABEL } from "@/lib/constants";
 import { filterGender, wajibPengurus } from "@/lib/auth";
-import { rekapPerHalaqah } from "@/lib/rekap";
+import { rekapPerKelas } from "@/lib/rekap";
 import { cn, warnaKehadiran } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Halaqah" };
+export const metadata: Metadata = { title: "Kelas" };
 export const dynamic = "force-dynamic";
 
-export default async function HalamanHalaqah() {
+export default async function HalamanKelas() {
   const pengguna = await wajibPengurus();
   const { gender } = filterGender(pengguna);
-  const daftar = await rekapPerHalaqah({ gender });
+  const daftar = await rekapPerKelas({ gender });
 
   return (
     <>
       <JudulHalaman
-        judul="Halaqah"
+        judul="Kelas"
         keterangan="Kelompok binaan santri beserta pembina pendampingnya. Persentase dihitung dari 30 hari terakhir."
       />
 
       {daftar.length === 0 ? (
         <Kartu>
           <Kosong
-            judul="Belum ada halaqah"
-            keterangan="Admin dapat menambahkan kelompok halaqah pada pengaturan data induk."
+            judul="Belum ada kelas"
+            keterangan="Admin dapat menambahkan kelompok kelas pada pengaturan data induk."
           />
         </Kartu>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {daftar.map((h) => (
-            <Link key={h.id} href={`/halaqah/${h.id}`}>
+            <Link key={h.id} href={`/kelas/${h.id}`}>
               <Kartu dapatDiklik className="h-full p-5">
                 <div className="flex items-start justify-between gap-3">
                   <span className="grid size-10 place-items-center rounded-xl bg-sukses/15 text-sukses">

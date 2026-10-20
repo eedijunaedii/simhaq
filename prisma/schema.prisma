@@ -34,7 +34,7 @@ model User {
   santri   ProfilSantri?
   pengajar ProfilPengajar?
 
-  halaqahDiampu   Halaqah[]        @relation("PembinaHalaqah")
+  kelasDiampu   Kelas[]        @relation("PembinaKelas")
   sesiDibuka      SesiPresensi[]   @relation("SesiDibukaOleh")
   sesiDitutup     SesiPresensi[]   @relation("SesiDitutupOleh")
   presensiDicatat Presensi[]       @relation("PresensiDicatatOleh")
@@ -65,8 +65,8 @@ model ProfilSantri {
 
   kamarId   String?
   kamar     Kamar?   @relation(fields: [kamarId], references: [id], onDelete: SetNull)
-  halaqahId String?
-  halaqah   Halaqah? @relation(fields: [halaqahId], references: [id], onDelete: SetNull)
+  kelasId String?
+  kelas   Kelas? @relation(fields: [kelasId], references: [id], onDelete: SetNull)
 
   // Keterikatan perangkat: satu akun santri terikat pada satu perangkat.
   deviceId      String?
@@ -82,7 +82,7 @@ model ProfilSantri {
   updatedAt DateTime @updatedAt
 
   @@index([kamarId])
-  @@index([halaqahId])
+  @@index([kelasId])
   @@index([status])
 }
 
@@ -122,14 +122,14 @@ model Kamar {
   @@index([gender])
 }
 
-model Halaqah {
+model Kelas {
   id        String  @id @default(cuid())
   nama      String
-  gender    String // PUTRA | PUTRI
+  gender    String // PUTRA | PUTRI | SEMUA (kelas boleh campur)
   deskripsi String?
 
   pembinaId String?
-  pembina   User?   @relation("PembinaHalaqah", fields: [pembinaId], references: [id], onDelete: SetNull)
+  pembina   User?   @relation("PembinaKelas", fields: [pembinaId], references: [id], onDelete: SetNull)
 
   santri ProfilSantri[]
   sesi   SesiPresensi[]
@@ -194,8 +194,8 @@ model SesiPresensi {
   jadwalId String?
   jadwal   JadwalKegiatan? @relation(fields: [jadwalId], references: [id], onDelete: SetNull)
 
-  halaqahId String?
-  halaqah   Halaqah? @relation(fields: [halaqahId], references: [id], onDelete: SetNull)
+  kelasId String?
+  kelas   Kelas? @relation(fields: [kelasId], references: [id], onDelete: SetNull)
 
   gender  String // PUTRA | PUTRI | SEMUA
   tanggal DateTime
@@ -269,7 +269,6 @@ model Presensi {
 
 model Izin {
   id   String @id @default(cuid())
-  kode String @unique
 
   santriId String
   santri   ProfilSantri @relation(fields: [santriId], references: [id], onDelete: Cascade)
@@ -286,9 +285,6 @@ model Izin {
   diprosesOleh   User?   @relation("IzinDiprosesOleh", fields: [diprosesOlehId], references: [id], onDelete: SetNull)
   waktuProses    DateTime?
   catatanPengurus String?
-
-  waktuKembali     DateTime?
-  terlambatKembali Boolean @default(false)
 
   lampiran  LampiranIzin[]
   presensi  Presensi[]
@@ -327,7 +323,7 @@ model FlagPelanggaran {
   sesiId String?
   sesi   SesiPresensi? @relation(fields: [sesiId], references: [id], onDelete: SetNull)
 
-  jenis       String // PERANGKAT_GANDA | DILUAR_RADIUS | TOKEN_KEDALUWARSA | TELAT_KEMBALI
+  jenis       String // PERANGKAT_GANDA | DILUAR_RADIUS | TOKEN_KEDALUWARSA
   keterangan  String
   status      String @default("BARU") // BARU | DITINJAU | SELESAI
 

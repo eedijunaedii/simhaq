@@ -73,24 +73,9 @@ export function wajibAdmin() {
   return wajibPeran(ROLE.ADMIN);
 }
 
-/**
- * Boleh memeriksa kartu izin dan mencatat kepulangan santri di gerbang.
- *
- * Petugas keamanan sengaja tidak dimasukkan ke `wajibPengurus`: ia hanya
- * berwenang pada dua tindakan gerbang tersebut, bukan pada data santri,
- * rekap kehadiran, maupun persetujuan izin.
- */
-export function wajibPenjagaGerbang() {
-  return wajibPeran(ROLE.PETUGAS, ROLE.PEMBINA, ROLE.ADMIN);
-}
-
-export function bolehJagaGerbang(role: Role) {
-  return role === ROLE.PETUGAS || role === ROLE.PEMBINA || role === ROLE.ADMIN;
-}
-
-/** Halaman awal setelah masuk, berbeda menurut peran. */
-export function halamanAwal(role: Role) {
-  return role === ROLE.PETUGAS ? "/gerbang" : "/dashboard";
+/** Halaman awal setelah masuk; sama untuk seluruh peran. */
+export function halamanAwal() {
+  return "/dashboard";
 }
 
 /**
@@ -102,10 +87,6 @@ export function filterGender(sesi: Sesi): { gender?: Gender } {
   if (sesi.role === ROLE.ADMIN && process.env.ADMIN_LINTAS_GENDER === "true") {
     return {};
   }
-  // Petugas keamanan menjaga satu gerbang untuk seluruh santri, sehingga tidak
-  // dibatasi gender. Sebagai gantinya, data yang ditampilkan kepadanya dibatasi
-  // seminimal mungkin: nama, jenis izin, dan batas waktu kembali saja.
-  if (sesi.role === ROLE.PETUGAS) return {};
   return { gender: sesi.gender };
 }
 
@@ -114,7 +95,6 @@ export function genderYangBolehDiakses(sesi: Sesi): string[] {
   if (sesi.role === ROLE.ADMIN && process.env.ADMIN_LINTAS_GENDER === "true") {
     return ["PUTRA", "PUTRI", "SEMUA"];
   }
-  if (sesi.role === ROLE.PETUGAS) return ["PUTRA", "PUTRI", "SEMUA"];
   return [sesi.gender, "SEMUA"];
 }
 

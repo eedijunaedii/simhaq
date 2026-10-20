@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AlertTriangle, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Kartu,
   Kosong,
@@ -20,7 +20,6 @@ import {
   STATUS_IZIN_LABEL,
   STATUS_IZIN_STYLE,
 } from "@/lib/constants";
-import { redirect } from "next/navigation";
 import { filterGender, wajibLogin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { fmtTanggalJam, fmtTanggalPendek, selisihManusiawi } from "@/lib/tanggal";
@@ -41,9 +40,6 @@ export default async function HalamanIzin(props: {
   searchParams: Promise<{ tab?: string }>;
 }) {
   const sesi = await wajibLogin();
-  // Petugas keamanan tidak berkepentingan dengan alasan izin santri; ia hanya
-  // perlu tahu siapa yang sedang di luar dan sampai kapan.
-  if (sesi.role === ROLE.PETUGAS) redirect("/gerbang");
   const { tab } = await props.searchParams;
   const { gender } = filterGender(sesi);
   const santri = sesi.role === ROLE.SANTRI;
@@ -64,20 +60,17 @@ export default async function HalamanIzin(props: {
       },
       select: {
         id: true,
-        kode: true,
         jenis: true,
         mulai: true,
         selesai: true,
         status: true,
         alasan: true,
-        terlambatKembali: true,
-        waktuKembali: true,
         _count: { select: { lampiran: true } },
         santri: {
           select: {
             id: true,
             user: { select: { nama: true } },
-            halaqah: { select: { nama: true } },
+            kelas: { select: { nama: true } },
           },
         },
       },
@@ -188,13 +181,13 @@ export default async function HalamanIzin(props: {
                     <Td>
                       <TautanBaris
                         href={`/izin/${z.id}`}
-                        aria-label={`Buka izin ${z.kode} atas nama ${z.santri.user.nama}`}
+                        aria-label={`Buka izin atas nama ${z.santri.user.nama}`}
                         className="inline-block -my-1 py-1"
                       >
                         {z.santri.user.nama}
                       </TautanBaris>
                       <span className="block text-xs text-samar">
-                        {z.santri.halaqah?.nama ?? "-"}
+                        {z.santri.kelas?.nama ?? "-"}
                       </span>
                     </Td>
                   ) : null}
@@ -202,7 +195,7 @@ export default async function HalamanIzin(props: {
                     {santri ? (
                       <TautanBaris
                         href={`/izin/${z.id}`}
-                        aria-label={`Buka izin ${z.kode}`}
+                        aria-label={`Buka izin ${JENIS_IZIN_LABEL[z.jenis]}`}
                         className="block"
                       >
                         {JENIS_IZIN_LABEL[z.jenis]}
@@ -218,7 +211,7 @@ export default async function HalamanIzin(props: {
                       </span>
                     ) : null}
                     <span className="line-clamp-1 block max-w-md text-xs text-redup">
-                      {z.kode} · {z.alasan}
+                      {z.alasan}
                     </span>
                   </Td>
                   <Td className="hidden text-xs text-redup md:table-cell">
@@ -233,12 +226,6 @@ export default async function HalamanIzin(props: {
                     <Lencana className={STATUS_IZIN_STYLE[z.status]}>
                       {STATUS_IZIN_LABEL[z.status]}
                     </Lencana>
-                    {z.terlambatKembali ? (
-                      <span className="mt-1 flex items-center justify-end gap-1 text-[11px] text-waspada">
-                        <AlertTriangle size={11} />
-                        Telat kembali
-                      </span>
-                    ) : null}
                   </Td>
                 </TrTautan>
               ))}
@@ -250,10 +237,10 @@ export default async function HalamanIzin(props: {
       {!santri ? (
         <Kartu className="mt-6 p-5">
           <p className="text-xs leading-relaxed text-redup">
-            Izin yang batas waktunya sudah lewat namun kepulangannya belum
-            dikonfirmasi petugas gerbang muncul sebagai daftar tugas pada halaman
-            Pengawasan — bukan sebagai pelanggaran, karena belum tentu santrinya
-            yang terlambat.
+            Izin yang disetujui otomatis mengisi presensi santri pada seluruh
+            kegiatan dalam rentang waktunya: jenis Sakit tercatat sebagai Sakit,
+            selebihnya sebagai Izin. Kehadiran yang sudah terlanjur tercatat
+            tidak ditimpa.
           </p>
         </Kartu>
       ) : null}

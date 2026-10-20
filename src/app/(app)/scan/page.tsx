@@ -22,21 +22,21 @@ export default async function HalamanScan(props: {
 
   const santri = await prisma.profilSantri.findUnique({
     where: { id: sesi.santriId },
-    select: { halaqahId: true, deviceId: true },
+    select: { kelasId: true, deviceId: true },
   });
 
   const sesiTerbuka = await prisma.sesiPresensi.findMany({
     where: {
       status: "DIBUKA",
       gender: { in: [sesi.gender, "SEMUA"] },
-      OR: [{ halaqahId: null }, { halaqahId: santri?.halaqahId ?? undefined }],
+      OR: [{ kelasId: null }, { kelasId: santri?.kelasId ?? undefined }],
     },
     select: {
       id: true,
       waktuTutup: true,
       batasTerlambat: true,
       kegiatan: { select: { nama: true } },
-      halaqah: { select: { nama: true } },
+      kelas: { select: { nama: true } },
       presensi: { where: { santriId: sesi.santriId }, select: { status: true } },
     },
     orderBy: { waktuBuka: "asc" },
@@ -78,9 +78,9 @@ export default async function HalamanScan(props: {
                           <p className="truncate text-sm font-medium text-teks">
                             {s.kegiatan.nama}
                           </p>
-                          {s.halaqah ? (
+                          {s.kelas ? (
                             <p className="text-xs text-redup">
-                              {s.halaqah.nama}
+                              {s.kelas.nama}
                             </p>
                           ) : null}
                         </div>

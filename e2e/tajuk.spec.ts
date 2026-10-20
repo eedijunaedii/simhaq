@@ -16,7 +16,6 @@ const HALAMAN = [
   { jalur: "/", nama: "halaman depan" },
   { jalur: "/login", nama: "halaman masuk" },
   { jalur: "/luring", nama: "halaman luring" },
-  { jalur: "/verifikasi/kode-tidak-dikenal", nama: "verifikasi kartu izin" },
   { jalur: "/wali/token-tidak-sah", nama: "rekap wali santri" },
 ];
 

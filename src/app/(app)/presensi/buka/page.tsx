@@ -13,7 +13,7 @@ export default async function HalamanBukaSesi() {
   const pengguna = await wajibPengurus();
   const genderBoleh = genderYangBolehDiakses(pengguna);
 
-  const [kegiatan, halaqah, pengaturan] = await Promise.all([
+  const [kegiatan, kelas, pengaturan] = await Promise.all([
     prisma.kegiatan.findMany({
       where: { aktif: true },
       select: {
@@ -29,7 +29,7 @@ export default async function HalamanBukaSesi() {
       },
       orderBy: { nama: "asc" },
     }),
-    prisma.halaqah.findMany({
+    prisma.kelas.findMany({
       where: { gender: { in: genderBoleh } },
       select: { id: true, nama: true, gender: true },
       orderBy: { nama: "asc" },
@@ -71,7 +71,7 @@ export default async function HalamanBukaSesi() {
           ) : (
             <FormBukaSesi
               kegiatan={kegiatan}
-              halaqah={halaqah}
+              kelas={kelas}
               genderTersedia={genderBoleh.filter((g) => g !== "SEMUA").concat(
                 genderBoleh.length > 2 ? ["SEMUA"] : []
               )}
